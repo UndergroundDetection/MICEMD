@@ -5,6 +5,8 @@ Created on Wed Aug 19 16:17:15 2020
 @author: Wang Zhen
 """
 
+import numpy as np
+
 
 def inv_forward_calculation(detector, receiver_locations, x):
     """
@@ -14,9 +16,9 @@ def inv_forward_calculation(detector, receiver_locations, x):
     Parameters
     ----------
     detector : class Detector
-    receiver_locations : numpy.ndarray
+    receiver_locations : numpy.array, size=N
         See fdem_forward_simulation.fdem_forward_simulation receiver_locations.
-    x : numpy.array, size=9
+    x : numpy.matrix, shape(9,1)
         target's parameters in inversion process.
         position x, y, z, polarizability M11, M12, M13, M22, M23, M33.
 
@@ -24,9 +26,27 @@ def inv_forward_calculation(detector, receiver_locations, x):
     -------
     predicted_mag_datamag_data : numpy.ndarray, shape(N*3)
         Predicted secondary fields.
+
+    References
+    ----------
+    Wan Y, Wang Z, Wang P, et al. A Comparative Study of Inversion Optimization
+    Algorithms for Underground Metal Target Detection[J]. IEEE Access, 2020, 8:
+    126401-126413.
     """
 
-    predicted_mag_data = None
+    predicted_mag_data = np.zeros((len(receiver_locations), 3))
+
+    # Calculate magnetic moment of transmitter coil, target's location,
+    # magnetic polarizabilitytensor.
+    m_d = np.mat([0, 0, detector.get_mag_moment()]).T
+    target_lacation = x[0:3, :]
+    M11, M12, M13, M22, M23, M33 = (x[3, 0], x[4, 0], x[5, 0], x[6, 0],
+                                    x[7, 0], x[8, 0])
+    M = np.mat([[M11, M12, M13], [M12, M22, M23], [M13, M23, M33]])
+
+    for receiver_loc in receiver_locations:
+        r_dt = 
+
 
     return predicted_mag_data
 
