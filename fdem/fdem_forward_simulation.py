@@ -70,9 +70,7 @@ class Target (object):
         self.pitch = pitch
         self.roll = roll
         self.length = length
-        self.position_x = position_x
-        self.position_y = position_y
-        self.position_z = position_z
+        self.position = [position_x, position_y, position_z]
 
     def get_principal_axis_polarizability(self, frequency):
         """
@@ -262,7 +260,7 @@ def fdem_forward_simulation(detector, target, collection):
                                            background_permeability])
 
     ind_cylinder = getIndicesCylinder(
-        [target.position_x, target.position_y, target.position_z],
+        [target.position[0], target.position[1], target.position[2]],
         target.radius, target.length, [target.pitch, target.roll], mesh.gridCC
         )
     ind_cylinder = ind_cylinder[ind_active]
