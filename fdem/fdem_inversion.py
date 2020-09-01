@@ -7,27 +7,143 @@ Created on Wed Aug 19 16:17:15 2020
 
 import numpy as np
 from scipy.constants import mu_0
-from scipy.misc import derivative
+
+
+def inv_objective_function(detector, receiver_locations, true_mag_data, x):
+    """
+    Objective function.
+
+    Parameters
+    ----------
+    detector : class Detector
+    receiver_locations : numpy.ndarray, shape=(N*3), N=len(receiver_locations)
+        All acquisition locations of the detector. Each row represents an
+        acquisition location and the three columns represent x, y and z axis
+        locations of an acquisition location.
+    true_mag_data : numpy.ndarray, shape=(N*3)
+        All secondary fields of acquisition locations (x, y and z directions).
+    x : numpy.array, size=9
+        target's parameters in inversion process, including position x, y, z,
+        polarizability M11, M12, M13, M22, M23, M33.
+
+    Returns
+    -------
+    objective_fun_value : float
+    """
+
+    residual = inv_residual_vector(
+        detector, receiver_locations, true_mag_data, x
+    )
+    objective_fun_value = (residual**2).sum() / 2.0
+
+    return objective_fun_value
+
+
+def inv_objectfun_gradient(detector, receiver_locations, true_mag_data, x):
+    """
+    The gradient of the objective function with respect to x.
+
+    Parameters
+    ----------
+    detector : class Detector
+    receiver_locations : numpy.ndarray, shape=(N*3)
+        See inv_objective_function receiver_locations.
+    true_mag_data : numpy.ndarray, shape=(N*3)
+        See inv_objective_function true_mag_data.
+    x : numpy.array, size=9
+        See inv_objective_function x.
+
+    Returns
+    -------
+    grad : numpy.array, size=9
+        The partial derivative of the objective function with respect to nine
+        parameters.
+
+    """
+
+    rx = inv_residual_vector(detector, receiver_locations, true_mag_data, x)
+    jx = inv_residual_vector_grad(detector, receiver_locations, x)
+    grad = rx.T * jx
+
+    grad = np.array(grad)[0]
+    return grad
+
+
+def inv_residual_vector(detector, receiver_locations, true_mag_data, x):
+    """
+
+
+    Parameters
+    ----------
+    detector : class Detector
+    receiver_locations : numpy.ndarray, shape=(N*3)
+        See inv_objective_function receiver_locations.
+    true_mag_data : numpy.ndarray, shape=(N*3)
+        See inv_objective_function true_mag_data.
+    x : numpy.array, size=9
+        See inv_objective_function x.
+
+    Returns
+    -------
+    residual : numpy.mat, shape=(N*3,1)
+        Residual vector.
+
+    """
+
+    predicted_mag_data = inv_get_preicted_data(detector, receiver_locations, x)
+    predicted_mag_data = predicted_mag_data.flatten()
+    true_mag_data = true_mag_data.flatten()
+    residual = predicted_mag_data - true_mag_data
+
+    residual = np.mat(residual).T
+    return residual
+
+
+def inv_get_preicted_data(detector, receiver_locations, x):
+    """
+    It generates predicted secondary fields at all receiver locations.
+
+    Parameters
+    ----------
+    detector : class Detector
+    receiver_locations : numpy.ndarray, shape=(N*3)
+        See inv_objective_function receiver_locations.
+    x : numpy.array, size=9
+        See inv_objective_function x.
+
+    Returns
+    -------
+    predicted_mag_data : numpy.ndarray, shape=(N*3)
+        Predicted secondary fields.
+
+    """
+
+    predicted_mag_data = np.zeros((len(receiver_locations), 3))
+
+    for idx, receiver_loc in enumerate(receiver_locations):
+        B = inv_forward_calculation(detector, receiver_loc, x)
+        predicted_mag_data[idx, :] = B.T
+
+    return predicted_mag_data
 
 
 def inv_forward_calculation(detector, receiver_loc, x):
     """
     Forward calculation in inversion process. It generates predicted secondary
-    fields according the linear magnetic dipole model.
+    fields according the linear magnetic dipole model at receiver_loc.
 
     Parameters
     ----------
     detector : class Detector
-    receiver_locations : numpy.ndarray, shape(N * 3)
-        See fdem_forward_simulation.fdem_forward_simulation receiver_locations.
-    x : list, size=9
-        target's parameters in inversion process.
-        position x, y, z, polarizability M11, M12, M13, M22, M23, M33.
+    receiver_loc : numpy.array, size=3
+        A receiver location.
+    x : numpy.array, size=9
+        See inv_objective_function x.
 
     Returns
     -------
-    predicted_mag_datamag_data : numpy.ndarray, shape(N*3)
-        Predicted secondary fields.
+    B : numpy.mat, shape=(3*1)
+        Predicted secondary field.
 
     References
     ----------
@@ -62,39 +178,30 @@ def inv_forward_calculation(detector, receiver_loc, x):
     return B
 
 
-def inv_get_preicted_data(detector, receiver_locations, x):
+def inv_residual_vector_grad(detector, receiver_locations, x):
     """
-    Forward calculation in inversion process. It generates predicted secondary
-    fields according the linear magnetic dipole model.
+
 
     Parameters
     ----------
     detector : class Detector
-    receiver_locations : numpy.ndarray, shape(N * 3)
-        See fdem_forward_simulation.fdem_forward_simulation receiver_locations.
-    x : list, size=9
-        target's parameters in inversion process.
-        position x, y, z, polarizability M11, M12, M13, M22, M23, M33.
+    receiver_locations : numpy.ndarray, shape=(N * 3)
+        See inv_objective_function receiver_locations.
+    x : numpy.array, size=9
+        See inv_objective_function x.
 
     Returns
     -------
-    predicted_mag_datamag_data : numpy.ndarray, shape(N*3)
-        Predicted secondary fields.
+    grad : numpy.mat, shape=(N*3,9)
+        Jacobian matrix of the residual vector.
 
-    References
-    ----------
-    Wan Y, Wang Z, Wang P, et al. A Comparative Study of Inversion Optimization
-    Algorithms for Underground Metal Target Detection[J]. IEEE Access, 2020, 8:
-    126401-126413.
     """
 
-    predicted_mag_data = np.zeros((len(receiver_locations), 3))
+    grad = np.mat(np.zeros((3*len(receiver_locations), len(x))))
+    for i, receiver_loc in enumerate(receiver_locations):
+        grad[3*i:3*i+3, :] = inv_forward_grad(detector, receiver_loc, x)
 
-    for idx, receiver_loc in enumerate(receiver_locations):
-        B = inv_forward_calculation(detector, receiver_loc, x)
-        predicted_mag_data[idx, :] = B.T
-
-    return predicted_mag_data
+    return grad
 
 
 def inv_forward_grad(detector, receiver_loc, x):
@@ -103,16 +210,15 @@ def inv_forward_grad(detector, receiver_loc, x):
 
     Parameters
     ----------
-    detector : TYPE
-        DESCRIPTION.
-    receiver_locations : TYPE
-        DESCRIPTION.
-    x : TYPE
-        DESCRIPTION.
+    detector : class Detector
+    receiver_loc : numpy.array, size=3
+        A receiver location.
+    x : numpy.array, size=9
+        See inv_objective_function x.
 
     Returns
     -------
-    None.
+    grad : numpy.mat, shape=(3*9)
 
     """
 
@@ -126,125 +232,12 @@ def inv_forward_grad(detector, receiver_loc, x):
         d = epsilon * ei
         grad[:, i] = (
             (inv_forward_calculation(detector, receiver_loc, np.array(x) + d)
-              - inv_forward_calculation(detector, receiver_loc, x)) / d[i]
+             - inv_forward_calculation(detector, receiver_loc, x)) / d[i]
         )
         # a = inv_forward_calculation(detector, receiver_loc, np.array(x) + d)
         # b = inv_forward_calculation(detector, receiver_loc, x)
         # grad[:, i] = (a - b) / d[i]
         ei[i] = 0.0
-
-    return grad
-
-
-def inv_residual_vector(detector, receiver_locations, true_mag_data, x):
-    """
-
-
-    Parameters
-    ----------
-    detector : TYPE
-        DESCRIPTION.
-    receiver_locations : TYPE
-        DESCRIPTION.
-    true_mag_data : TYPE
-        DESCRIPTION.
-    x : TYPE
-        DESCRIPTION.
-
-    Returns
-    -------
-    None.
-
-    """
-
-    predicted_mag_data = inv_forward_calculation(detector,
-                                                 receiver_locations, x)
-    predicted_mag_data = predicted_mag_data.flatten()
-    true_mag_data = true_mag_data.flatten()
-    residual = predicted_mag_data - true_mag_data
-
-    return residual
-
-
-def inv_objective_function(detector, receiver_locations, true_mag_data, x):
-    """
-    Calculate the residual and the objective function.
-
-    Parameters
-    ----------
-    detector : class Detector
-    receiver_locations : numpy.ndarray, shape(N*3)
-        See fdem_forward_simulation.fdem_forward_simulation receiver_locations.
-    true_mag_data : numpy.ndarray, shape(N*3)
-        See fdem_forward_simulation.fdem_forward_simulation mag_data.
-    x : list, size=9
-        See fdem_inversion.inv_forward_calculation x.
-
-    Returns
-    -------
-    objective_fun_value : float
-    """
-
-    residual = inv_residual_vector(
-        detector, receiver_locations, true_mag_data, x
-    )
-    objective_fun_value = (residual**2).sum() / 2.0
-
-    return objective_fun_value
-
-
-def inv_residual_vector_grad(detector, receiver_locations, x):
-    """
-
-
-    Parameters
-    ----------
-    detector : TYPE
-        DESCRIPTION.
-    receiver_locations : TYPE
-        DESCRIPTION.
-    x : TYPE
-        DESCRIPTION.
-
-    Returns
-    -------
-    None.
-
-    """
-
-    grad = np.mat(np.zeros((3*len(receiver_locations), len(x))))
-    for i, receiver_loc in enumerate(receiver_locations):
-        grad[3*i:3*i+3, :] = inv_forward_grad(detector, receiver_loc, x)
-
-    return grad
-
-
-def inv_objectfun_gradient(detector, receiver_locations, true_mag_data, x):
-    """
-
-
-    Parameters
-    ----------
-    detector : class Detector
-    receiver_locations : numpy.ndarray, shape(N*3)
-        See fdem_forward_simulation.fdem_forward_simulation receiver_locations.
-    true_mag_data : numpy.ndarray, shape(N*3)
-        See fdem_forward_simulation.fdem_forward_simulation mag_data.
-    x : numpy.array, size=9
-        See fdem_inversion.inv_forward_calculation x.
-
-    Returns
-    -------
-    gradient : numpy.array, size=9
-        The partial derivative of the objective function with respect to nine
-        parameters.
-
-    """
-
-    rx = inv_residual_vector(detector, receiver_locations, true_mag_data, x)
-    jx = inv_residual_vector_grad(detector, receiver_locations, x)
-
-    grad = jx.T * rx.T
 
     return grad
 

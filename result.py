@@ -103,6 +103,14 @@ class Result(object):
             elif self.current_method == 'tdem':
                 return "时域分类完成."
 
+    def output_check_mag_data(self):
+
+        if self.current_language == 'en':
+            return ("The forward simulation parameters had been changed. "
+                    + "Please run the forward simulation first !")
+        elif self.current_language == 'cn':
+            return "正向仿真参数已改变, 请先运行正向仿真."
+
     def get_result(self):
         """
 
