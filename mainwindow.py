@@ -19,7 +19,8 @@ from discretize import TreeMesh
 from mainwindow_ui import Ui_MainWindow
 from fdem.fdem_forward_simulation import Detector, Target, Collection
 from fdem.fdem_forward_simulation import fdem_forward_simulation
-from fdem.fdem_inversion import fdem_inversion
+from fdem.fdem_inversion import inv_objective_function, inv_objectfun_gradient
+from fdem.fdem_inversion import inv_residual_vector_grad, fdem_inversion
 from show import show_fdem_detection_scenario
 from show import show_fdem_mag_map, show_discretize
 from result import Result
@@ -276,6 +277,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         else:
             self.pb_run_fdem_inversion.setEnabled(False)
 
+            # Constructing objective function
+            self.thread_inv_fdem.fun = lambda x: inv_objective_function(
+                self.detector, self.result.fdem_receiver_locs,
+                self.result.fdem_mag_data, x)
+            self.thread_inv_fdem.grad = lambda x: inv_objectfun_gradient(
+                self.detector, self.result.fdem_receiver_locs,
+                self.result.fdem_mag_data, x)
+            self.thread_inv_fdem.jacobian = lambda x: inv_residual_vector_grad(
+                self.detector, self.result.fdem_receiver_locs, x)
+
             # Update the parameters associated with the optimization algorithm.
             self.thread_inv_fdem.method = \
                 self.cb_optimization_algorithm.currentText()
@@ -352,10 +363,10 @@ class ThreadCalFdem(QThread):
         self.collection = None
 
     def run(self):
-
         receiver_locs, mag_data, mesh, mapped_model = \
             fdem_forward_simulation(
                 self.detector, self.target, self.collection)
+
         self.trigger.emit(receiver_locs, mag_data, mesh, mapped_model)
 
 
@@ -368,15 +379,19 @@ class ThreadInvFdem(QThread):
 
     def __init__(self):
         super(ThreadInvFdem, self).__init__()
+        self.fun = None
+        self.grad = None
+        self.jacobian = None
         self.method = None
         self.iterations = None
         self.tol = None
 
     def run(self):
-
         estimate_parameters, fval, grad_val, grad_log = \
-            fdem_inversion(self.method, self.iterations, self.tol)
-        self.trigger.emit(estimate_parameters, fval, grad_val, grad_log)
+            fdem_inversion(self.fun, self.grad, self.jacobian,
+                           self.method, self.iterations, self.tol)
+
+        # self.trigger.emit(estimate_parameters, fval, grad_val, grad_log)
 
 
 if __name__ == "__main__":

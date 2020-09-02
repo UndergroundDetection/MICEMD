@@ -7,6 +7,7 @@ Created on Wed Aug 19 16:17:15 2020
 
 import numpy as np
 from scipy.constants import mu_0
+from scipy.optimize import minimize
 
 
 def inv_objective_function(detector, receiver_locations, true_mag_data, x):
@@ -34,7 +35,7 @@ def inv_objective_function(detector, receiver_locations, true_mag_data, x):
     residual = inv_residual_vector(
         detector, receiver_locations, true_mag_data, x
     )
-    objective_fun_value = (residual**2).sum() / 2.0
+    objective_fun_value = np.square(residual).sum() / 2.0
 
     return objective_fun_value
 
@@ -242,7 +243,7 @@ def inv_forward_grad(detector, receiver_loc, x):
     return grad
 
 
-def fdem_inversion(method, iterations, tol):
+def fdem_inversion(fun, grad, jacobian, method, iterations, tol):
     """
     Call optimization algorithms.
 
@@ -260,6 +261,11 @@ def fdem_inversion(method, iterations, tol):
     estimate_parameters : numpy.array, size=9
     """
 
-    estimate_parameters = None
+    x0 = np.array([0.0, 0.0, -2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 
-    return estimate_parameters
+    res = minimize(fun, x0, method='BFGS', jac=grad, tol = tol,
+                   options={'disp': True})
+
+    print(res.x)
+
+    return res.x, None, None, None
