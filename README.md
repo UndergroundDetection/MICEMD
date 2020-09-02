@@ -1,6 +1,10 @@
 # MicEMD
 Modeling, inversion and classification in electromagnetic detection
 
+## Preview
+
+![Interface](preview.png)
+
 ## Getting Started with MicEMD
 
 * **Prerequisite: Installing Python and Conda**
