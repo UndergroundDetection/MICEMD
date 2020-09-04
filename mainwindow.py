@@ -64,10 +64,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.progressBar.setVisible(False)
 
-        # let the progressbar to scroll
-        self.progressBar.setMinimum(0)
-        self.progressBar.setMaximum(0)
-
     def connect_slots(self):
 
         # When the forward calculation of FDEM is finished, the result process
@@ -203,6 +199,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.tb_output_box.setText(text)
 
         # show the fdem_forward porgram is running by progressbar
+        self.progressBar.setMinimum(0)  # let the progressbar to scroll
+        self.progressBar.setMaximum(0)  # let the progressbar to scroll
         timer = QTimer(self.progressBar)
 
         def time_change():
