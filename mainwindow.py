@@ -9,7 +9,7 @@ import sys
 import numpy as np
 
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from PyQt5.QtCore import QTranslator, QThread, pyqtSignal
+from PyQt5.QtCore import QTranslator, QThread, pyqtSignal, QTimer
 
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
@@ -39,7 +39,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Set the display position of the mainwindow.
         desktop = QApplication.desktop()
         x = (desktop.width() - self.width()) // 2
-        y = (desktop.height()-65 - self.height()) // 2
+        y = (desktop.height() - 65 - self.height()) // 2
         self.move(x, y)
 
         # Desine the translator to translate interface languages.
@@ -61,6 +61,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.fig_magnetic_field = Figure(figsize=(4.21, 3.91))
         self.canvas_magnetic_field = FigureCanvasQTAgg(self.fig_magnetic_field)
         self.gl_magnetic_field_data.addWidget(self.canvas_magnetic_field)
+
+        self.progressBar.setVisible(False)
+
+        # let the progressbar to scroll
+        self.progressBar.setMinimum(0)
+        self.progressBar.setMaximum(0)
 
     def connect_slots(self):
 
@@ -143,7 +149,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             float(self.le_detector_frequency.text()),
             float(self.le_detector_pitch.text()),
             float(self.le_detector_roll.text())
-            )
+        )
         self.target = Target(
             float(self.le_target_conductivity.text()),
             float(self.le_target_permeability.text()),
@@ -154,7 +160,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             float(self.le_target_position_x.text()),
             float(self.le_target_position_y.text()),
             float(self.le_target_position_z.text())
-            )
+        )
         self.collection = Collection(
             float(self.le_collection_spacing.text()),
             float(self.le_collection_height.text()),
@@ -164,7 +170,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             float(self.le_collection_y_min.text()),
             float(self.le_collection_y_max.text()),
             self.cb_collection_direction.currentText()
-            )
+        )
 
         # Update the parameters in the thread.
         self.thread_cal_fdem.detector = self.detector
@@ -190,10 +196,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.pb_run_fdem_forward_simulation.setEnabled(False)
         self.pb_run_fdem_inversion.setEnabled(False)
+        self.progressBar.setVisible(True)
 
         # Output begin
         text = self.result.output_forward_begin()
         self.tb_output_box.setText(text)
+
+        # show the fdem_forward porgram is running by progressbar
+        timer = QTimer(self.progressBar)
+
+        def time_change():
+            if self.thread_cal_fdem.isFinished():
+                self.progressBar.setMaximum(100)
+                self.progressBar.setValue(100)
+                timer.stop()
+
+        timer.timeout.connect(time_change)
+        timer.start(1000)
 
         # Start the thread.
         self.thread_cal_fdem.start()
@@ -324,16 +343,14 @@ class ThreadCalFdem(QThread):
         self.mapped_model = None
 
     def run(self):
-
         self.receiver_locs, self.mag_data, self.mesh, self.mapped_model = \
             fdem_forward_simulation(
                 self.detector, self.target, self.collection
-                )
+            )
         self.trigger.emit()
 
 
 if __name__ == "__main__":
-
     app = QApplication(sys.argv)
     app.setStyle('Fusion')
 
