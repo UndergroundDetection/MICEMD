@@ -201,16 +201,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # show the fdem_forward porgram is running by progressbar
         self.progressBar.setMinimum(0)  # let the progressbar to scroll
         self.progressBar.setMaximum(0)  # let the progressbar to scroll
-        timer = QTimer(self.progressBar)
-
-        def time_change():
-            if self.thread_cal_fdem.isFinished():
-                self.progressBar.setMaximum(100)
-                self.progressBar.setValue(100)
-                timer.stop()
-
-        timer.timeout.connect(time_change)
-        timer.start(1000)
 
         # Start the thread.
         self.thread_cal_fdem.start()
@@ -272,6 +262,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         text = self.result.output_forward_end()
         self.tb_output_box.setText(text)
         self.tab_show.setCurrentWidget(self.tab_magnetic_field_data)
+
+        # let the progressBar stop scrolling,it means the  fdem_forward porgram is stoping
+        self.progressBar.setMaximum(100)
+        self.progressBar.setValue(100)
 
         def run_fdem_classification_calculate(self):
             pass
