@@ -9,6 +9,8 @@ import numpy as np
 from scipy.constants import mu_0
 from scipy.optimize import minimize
 
+from utils import RotationMatrix
+
 
 def inv_objective_function(detector, receiver_locations, true_mag_data, x):
     """
@@ -25,7 +27,7 @@ def inv_objective_function(detector, receiver_locations, true_mag_data, x):
         All secondary fields of acquisition locations (x, y and z directions).
     x : numpy.array, size=9
         target's parameters in inversion process, including position x, y, z,
-        polarizability M11, M12, M13, M22, M23, M33.
+        polarizability M11, M22, M33, M12, M13, M23.
 
     Returns
     -------
@@ -72,7 +74,7 @@ def inv_objectfun_gradient(detector, receiver_locations, true_mag_data, x):
 
 def inv_residual_vector(detector, receiver_locations, true_mag_data, x):
     """
-
+    Construct the residual vector.
 
     Parameters
     ----------
@@ -157,7 +159,7 @@ def inv_forward_calculation(detector, receiver_loc, x):
     # magnetic polarizabilitytensor.
     m_d = np.mat([0, 0, detector.get_mag_moment()]).T
     target_lacation = np.mat(x[0:3]).T
-    M11, M12, M13, M22, M23, M33 = x[3:]
+    M11, M22, M33, M12, M13, M23 = x[3:]
     M = np.mat([[M11, M12, M13], [M12, M22, M23], [M13, M23, M33]])
 
     r_dt = target_lacation - np.mat(receiver_loc).T
@@ -181,7 +183,7 @@ def inv_forward_calculation(detector, receiver_loc, x):
 
 def inv_residual_vector_grad(detector, receiver_locations, x):
     """
-
+    Calculate the gradient of all the residual vectors.
 
     Parameters
     ----------
@@ -207,7 +209,8 @@ def inv_residual_vector_grad(detector, receiver_locations, x):
 
 def inv_forward_grad(detector, receiver_loc, x):
     """
-
+    Use the difference method to calculate the gradient of
+    inv_forward_calculation().
 
     Parameters
     ----------
@@ -258,14 +261,12 @@ def fdem_inversion(fun, grad, jacobian, method, iterations, tol):
 
     Returns
     -------
-    estimate_parameters : numpy.array, size=9
+    res.x : numpy.array, size=9
     """
 
     x0 = np.array([0.0, 0.0, -2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 
-    res = minimize(fun, x0, method='BFGS', jac=grad, tol = tol,
-                   options={'disp': True})
+    res = minimize(fun, x0, method='BFGS', jac=grad,
+                   options={'maxiter': iterations, 'gtol': tol, 'disp': True})
 
-    print(res.x)
-
-    return res.x, None, None, None
+    return res.x

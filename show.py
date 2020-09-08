@@ -58,7 +58,7 @@ def show_fdem_mag_map(fig, receiver_locations, mag_data):
     v_max = np.max(mag_data_plotting)
     v_min = np.min(mag_data_plotting)
 
-    ax1 = fig.add_axes([0.11, 0.12, 0.75, 0.8])
+    ax1 = fig.add_axes([0.13, 0.12, 0.7, 0.8])
     plot2Ddata(
         receiver_locations[:, 0:2],
         mag_data_plotting[0, :],
@@ -72,7 +72,7 @@ def show_fdem_mag_map(fig, receiver_locations, mag_data):
     ax1.set_ylabel("y direction [m]")
     ax1.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
 
-    ax2 = fig.add_axes([0.87, 0.12, 0.03, 0.8])
+    ax2 = fig.add_axes([0.85, 0.14, 0.03, 0.76])
     norm = mpl.colors.Normalize(vmin=v_min, vmax=v_max)
     cbar = mpl.colorbar.ColorbarBase(
         ax2, norm=norm, orientation="vertical", cmap=mpl.cm.bwr

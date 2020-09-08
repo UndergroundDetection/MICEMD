@@ -24,7 +24,7 @@ from fdem.fdem_inversion import inv_residual_vector_grad, fdem_inversion
 from show import show_fdem_detection_scenario
 from show import show_fdem_mag_map, show_discretize
 from result import Result
-from utils import mag_data_add_noise
+from utils import mag_data_add_noise, polar_tensor_to_properties
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -219,8 +219,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         """
 
-        self.pb_run_fdem_forward_simulation.setEnabled(True)
-
         # Adding noise to the origin magnetic field data.
         mag_data = mag_data_add_noise(mag_data, self.collection.SNR)
 
@@ -240,7 +238,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Plot discetize
         ind = int(mesh.hx.size / 2)
         range_x = [self.collection.x_min, self.collection.x_max]
-        range_y = [-4, 0]
+        range_y = [-6, 0]
         show_discretize(self.fig_discretize, mesh, mapped_model, 'Y', ind,
                         range_x, range_y, self.target.conductivity)
         self.canvas_discretize.draw()
@@ -262,6 +260,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         text = self.result.output_forward_end()
         self.tb_output_box.setText(text)
         self.tab_show.setCurrentWidget(self.tab_magnetic_field_data)
+        self.pb_run_fdem_forward_simulation.setEnabled(True)
 
     def run_fdem_classification_calculate(self):
         pass
@@ -270,6 +269,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         pass
 
     def run_fdem_inversion(self):
+        """
+        When 'run fdem inversion' button is clicked in fdem interface, this
+        function will ba called.
+        """
 
         if self.result.check_fdem_mag_data is False:
             text = self.result.output_check_mag_data()
@@ -301,14 +304,35 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             # Start the thread.
             self.thread_inv_fdem.start()
 
-    def run_fdem_inv_result_process(self, estimate_parameters,
-                                    fval, grad_val, grad_log):
-        pass
+    def run_fdem_inv_result_process(self, estimate_parameters):
+
+        estimate_properties = estimate_parameters[:3]
+        est_ploar_and_orientation = \
+            polar_tensor_to_properties(estimate_parameters[3:])
+        estimate_properties = np.append(estimate_properties,
+                                        est_ploar_and_orientation)
+        self.result.fdem_estimate_properties = estimate_properties
+
+        true_properties = np.array(self.target.position)
+        true_polarizability = self.target.get_principal_axis_polarizability(
+            self.detector.frequency)
+        true_properties = np.append(true_properties, true_polarizability)
+        true_properties = np.append(true_properties, self.target.pitch)
+        true_properties = np.append(true_properties, self.target.roll)
+        self.result.fdem_true_properties = true_properties
+
+        self.result.fdem_optimization_algorithm = \
+            self.cb_optimization_algorithm.currentText()
+
+        text = self.result.output_fdem_result()
+        self.tb_output_box.setText(text)
+        self.pb_run_fdem_inversion.setEnabled(True)
 
     def select_detection_method(self):
         """
-
+        When detection method is changed, this function will be called.
         """
+
         if self.tab_signal_type.currentWidget() == self.tab_FDEM:
             self.pb_run_fdem_forward_simulation.setVisible(True)
             self.pb_run_fdem_inversion.setVisible(True)
@@ -351,7 +375,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
 class ThreadCalFdem(QThread):
     """
-
+    fdem forward simulation thread.
     """
 
     trigger = pyqtSignal(np.ndarray, np.ndarray, TreeMesh, np.ndarray)
@@ -372,10 +396,10 @@ class ThreadCalFdem(QThread):
 
 class ThreadInvFdem(QThread):
     """
-
+    fdem inversion thread.
     """
 
-    trigger = pyqtSignal(np.ndarray, float, float, list)
+    trigger = pyqtSignal(np.ndarray)
 
     def __init__(self):
         super(ThreadInvFdem, self).__init__()
@@ -387,11 +411,11 @@ class ThreadInvFdem(QThread):
         self.tol = None
 
     def run(self):
-        estimate_parameters, fval, grad_val, grad_log = \
+        estimate_parameters = \
             fdem_inversion(self.fun, self.grad, self.jacobian,
                            self.method, self.iterations, self.tol)
 
-        # self.trigger.emit(estimate_parameters, fval, grad_val, grad_log)
+        self.trigger.emit(estimate_parameters)
 
 
 if __name__ == "__main__":
