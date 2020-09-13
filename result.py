@@ -4,6 +4,9 @@ Created on Wed Aug 19 10:43:09 2020
 
 @author: Shi Haodong
 """
+import numpy as np
+import pandas as pd
+import os
 
 
 class Result(object):
@@ -109,8 +112,21 @@ class Result(object):
         """
         pass
 
-    def save_mag_data(self):
-        pass
+    def save_mag_data(self, file_name):
+
+        mag_data_index = [0] * (self.fdem_mag_data.shape[0])
+        for i in range(self.fdem_mag_data.shape[0]):
+            mag_data_index[i] = 'the ' + str(i + 1) + ' observation point'
+        data = np.c_[self.fdem_receiver_locs, self.fdem_mag_data]
+        mag_data = pd.DataFrame(data, columns=['x', 'y', 'z', 'hx', 'hy', 'hz'], index=mag_data_index)
+
+        path = '../output/{}'.format(file_name)
+
+        if os.path.exists(path):
+            mag_data.to_excel('{}/mag_data.xls'.format(path))
+        else:
+            os.makedirs(path)
+            mag_data.to_excel('{}/mag_data.xls'.format(path))
 
     def save_result(self):
         pass

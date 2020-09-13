@@ -255,7 +255,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.result.fdem_receiver_locs = receiver_locs
 
         if self.cb_func_save_data.isChecked():
-            self.result.save_mag_data()
+            self.result.save_mag_data(self.get_save_fdem_dir())
         self.result.check_fdem_mag_data = True
 
         # Output finish information.
@@ -315,6 +315,27 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.retranslateUi(self)
 
         self.result.current_language = 'en'
+
+    def get_save_fdem_dir(self):
+        """
+        to get the parameters about this target scene to make fiel save the data about fdem_forward_simulation
+
+        Returns
+        -------
+        file_name : str
+            the file name to save the data about fdem_forward_simulation and fdem_inversion
+
+        """
+        file_name = "T.pos=[{:g},{:g},{:g}];T.R={:g};T.L={:g};T.pitch={:g};T.roll={:g};C.snr={:g};C.sp={:g};c.h={:g};" \
+                    "c.x=[{:g},{:g}];" \
+                    "c.y=[{:g},{:g}]".format(self.target.position_x, self.target.position_y,
+                                             self.target.position_z,
+                                             self.target.radius, self.target.length, self.target.pitch,
+                                             self.target.roll,
+                                             self.collection.SNR, self.collection.spacing, self.collection.height,
+                                             self.collection.x_min, self.collection.x_max, self.collection.y_min,
+                                             self.collection.y_max)
+        return file_name
 
 
 class ThreadCalFdem(QThread):
