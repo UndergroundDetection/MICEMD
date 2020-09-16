@@ -666,7 +666,7 @@
          </rect>
         </property>
         <property name="text">
-         <string>-3</string>
+         <string>-5</string>
         </property>
         <property name="alignment">
          <set>Qt::AlignCenter</set>
