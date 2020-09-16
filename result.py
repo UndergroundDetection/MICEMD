@@ -47,8 +47,8 @@ class Result(object):
         self.fdem_optimization_algorithm = None
         self.fdem_optimization_iterations = None
         self.fdem_optimization_fval = None
-        self.fdem_true_parameters = None
-        self.fdem_estimate_parameters = None
+        self.fdem_true_properties = None
+        self.fdem_estimate_properties = None
         self.fdem_estimate_error = None
 
     def output_forward_begin(self):
@@ -103,11 +103,46 @@ class Result(object):
             elif self.current_method == 'tdem':
                 return "时域分类完成."
 
-    def get_result(self):
+    def output_check_mag_data(self):
+
+        if self.current_language == 'en':
+            return ("The forward simulation parameters had been changed. "
+                    + "Please run the forward simulation first !")
+        elif self.current_language == 'cn':
+            return "正向仿真参数已改变, 请先运行正向仿真."
+
+    def output_fdem_result(self):
         """
 
         """
-        pass
+        if self.current_language == 'en':
+
+            text = "FDEM INVERSION RESULTS\n"
+            error = abs(self.fdem_estimate_properties
+                        - self.fdem_true_properties)
+            text += "Estimate error\n--------------\n"
+            text += "%.4f %.4f %.4f %.4f %.4f %.4f %.4f %.4f\n" \
+                % (error[0], error[1], error[2], error[3],
+                   error[4], error[5], error[6], error[7]
+                   )
+            text += "Ture properties\n---------------\n"
+            text += "%.4f %.4f %.4f %.4f %.4f %.4f %.4f %.4f\n" \
+                % (self.fdem_true_properties[0], self.fdem_true_properties[1],
+                   self.fdem_true_properties[2], self.fdem_true_properties[3],
+                   self.fdem_true_properties[4], self.fdem_true_properties[5],
+                   self.fdem_true_properties[6], self.fdem_true_properties[7]
+                   )
+            text += "Estimate properties\n-------------------\n"
+            text += "%.4f %.4f %.4f %.4f %.4f %.4f %.4f %.4f\n" \
+                % (self.fdem_estimate_properties[0], self.fdem_estimate_properties[1],
+                   self.fdem_estimate_properties[2], self.fdem_estimate_properties[3],
+                   self.fdem_estimate_properties[4], self.fdem_estimate_properties[5],
+                   self.fdem_estimate_properties[6], self.fdem_estimate_properties[7],
+                   )
+            return text
+
+        elif self.current_language == 'cn':
+            return ""
 
     def save_mag_data(self):
         pass

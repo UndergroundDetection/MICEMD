@@ -464,7 +464,7 @@ class Ui_MainWindow(object):
         self.le_target_conductivity.setText(_translate("MainWindow", "5.71e7"))
         self.label_119.setText(_translate("MainWindow", "S/m"))
         self.label_124.setText(_translate("MainWindow", "Position"))
-        self.le_target_position_z.setText(_translate("MainWindow", "-3"))
+        self.le_target_position_z.setText(_translate("MainWindow", "-5"))
         self.label_111.setText(_translate("MainWindow", "m"))
         self.le_target_position_y.setText(_translate("MainWindow", "0"))
         self.le_target_position_x.setText(_translate("MainWindow", "0"))

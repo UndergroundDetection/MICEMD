@@ -151,3 +151,69 @@ def add_wgn(data, snr):
     noise = np.random.randn(len(data)) * np.sqrt(pn)
     signal_add_noise = data + noise
     return signal_add_noise
+
+
+def polar_tensor_to_properties(polar_tensor_vector):
+    """
+
+    Parameters
+    ----------
+    polar_tensor_vector : numpy.array, size=6
+        M11, M22, M33, M12, M13, M23.
+
+    Returns
+    -------
+    None.
+
+    """
+
+    M11, M22, M33, M12, M13, M23 = polar_tensor_vector[:]
+    M = np.mat([[M11, M12, M13], [M12, M22, M23], [M13, M23, M33]])
+    eigenvalue, eigenvector = np.linalg.eig(M)
+
+    xyz_polar_index = find_xyz_polarizability_index(eigenvalue)
+    numx = int(xyz_polar_index[0])
+    numy = int(xyz_polar_index[1])
+    numz = int(xyz_polar_index[2])
+    xyz_eigenvalue = np.array([eigenvalue[numx],
+                               eigenvalue[numy], eigenvalue[numz]])
+    xyz_eigenvector = np.mat(np.zeros((3, 3)))
+    xyz_eigenvector[:, 0] = eigenvector[:, numx]
+    xyz_eigenvector[:, 1] = eigenvector[:, numy]
+    xyz_eigenvector[:, 2] = eigenvector[:, numz]
+
+    if xyz_eigenvector[0, 2] > 0:
+        xyz_eigenvector[:, 2] = - xyz_eigenvector[:, 2]
+    pitch = np.arcsin(-xyz_eigenvector[0, 2])
+    roll = np.arcsin(xyz_eigenvector[1, 2]/np.cos(pitch))
+    pitch = pitch * 180 / np.pi
+    roll = roll * 180 / np.pi
+
+    return np.append(xyz_eigenvalue, [pitch, roll])
+
+
+def find_xyz_polarizability_index(polarizability):
+    """
+
+
+    Parameters
+    ----------
+    polarizability : TYPE
+        DESCRIPTION.
+
+    Returns
+    -------
+    None.
+
+    """
+
+    difference = dict()
+    difference['012'] = abs(polarizability[0] - polarizability[1])
+    difference['021'] = abs(polarizability[0] - polarizability[2])
+    difference['120'] = abs(polarizability[1] - polarizability[2])
+    sorted_diff = sorted(difference.items(), key=lambda item: item[1])
+
+    return sorted_diff[0][0]
+
+
+# print(polar_tensor_to_properties([0.014799,    0.016576,    0.016576,  5.0804e-08,   2.534e-07, -1.0459e-06])),
