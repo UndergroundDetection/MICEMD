@@ -69,6 +69,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.canvas_magnetic_field = FigureCanvasQTAgg(self.fig_magnetic_field)
         self.gl_magnetic_field_data.addWidget(self.canvas_magnetic_field)
 
+        self.pbar_rfs.setVisible(False)
+        self.pbar_rfi.setVisible(False)
+
     def connect_slots(self):
 
         # When the forward calculation of FDEM is finished, the result process
@@ -198,6 +201,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Disable buttons.
         self.pb_run_fdem_forward_simulation.setEnabled(False)
+        self.pbar_rfs.setVisible(True)
 
         # Update the parameters in the thread.
         self.thread_cal_fdem.detector = self.detector
@@ -207,6 +211,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Output begin
         text = self.result.output_forward_begin()
         self.tb_output_box.setText(text)
+
+        # show the fdem_forward porgram is running by progressbar
+        self.pbar_rfs.setMinimum(0)  # let the progressbar to scroll
+        self.pbar_rfs.setMaximum(0)  # let the progressbar to scroll
 
         # Start the thread.
         self.thread_cal_fdem.start()
@@ -253,7 +261,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.result.fdem_receiver_locs = receiver_locs
 
         if self.cb_func_save_data.isChecked():
-            self.result.save_mag_data()
+            self.result.save_mag_data(self.get_save_fdem_dir())
         self.result.check_fdem_mag_data = True
 
         # Output finish information.
@@ -261,6 +269,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.tb_output_box.setText(text)
         self.tab_show.setCurrentWidget(self.tab_magnetic_field_data)
         self.pb_run_fdem_forward_simulation.setEnabled(True)
+
+        # let the progressBar stop scrolling,it means the  fdem_forward porgram is stoping
+        self.pbar_rfs.setMaximum(100)
+        self.pbar_rfs.setValue(100)
 
     def run_fdem_classification_calculate(self):
         pass
@@ -279,6 +291,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.tb_output_box.setText(text)
         else:
             self.pb_run_fdem_inversion.setEnabled(False)
+            self.pbar_rfi.setVisible(True)
 
             # Constructing objective function
             self.thread_inv_fdem.fun = lambda x: inv_objective_function(
@@ -300,6 +313,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             # Output begin
             text = self.result.output_data_process_begin()
             self.tb_output_box.setText(text)
+
+            self.pbar_rfi.setMinimum(0)  # let the progressbar to scroll
+            self.pbar_rfi.setMaximum(0)  # let the progressbar to scroll
 
             # Start the thread.
             self.thread_inv_fdem.start()
@@ -327,6 +343,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         text = self.result.output_fdem_result()
         self.tb_output_box.setText(text)
         self.pb_run_fdem_inversion.setEnabled(True)
+        self.pbar_rfi.setMaximum(100)
+        self.pbar_rfi.setValue(100)
 
     def select_detection_method(self):
         """
@@ -371,6 +389,27 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.retranslateUi(self)
 
         self.result.current_language = 'en'
+
+    def get_save_fdem_dir(self):
+        """
+        to get the parameters about this target scene to make fiel save the data about fdem_forward_simulation
+
+        Returns
+        -------
+        file_name : str
+            the file name to save the data about fdem_forward_simulation and fdem_inversion
+
+        """
+        file_name = "T.pos=[{:g},{:g},{:g}];T.R={:g};T.L={:g};T.pitch={:g};T.roll={:g};C.snr={:g};C.sp={:g};c.h={:g};" \
+                    "c.x=[{:g},{:g}];" \
+                    "c.y=[{:g},{:g}]".format(self.target.position[0], self.target.position[1],
+                                             self.target.position[2],
+                                             self.target.radius, self.target.length, self.target.pitch,
+                                             self.target.roll,
+                                             self.collection.SNR, self.collection.spacing, self.collection.height,
+                                             self.collection.x_min, self.collection.x_max, self.collection.y_min,
+                                             self.collection.y_max)
+        return file_name
 
 
 class ThreadCalFdem(QThread):

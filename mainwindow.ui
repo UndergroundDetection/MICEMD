@@ -34,6 +34,8 @@
      <font>
       <family>Microsoft YaHei</family>
       <pointsize>9</pointsize>
+      <stylestrategy>PreferAntialias</stylestrategy>
+      <kerning>true</kerning>
      </font>
     </property>
     <property name="autoFillBackground">
@@ -193,6 +195,9 @@
         <property name="font">
          <font>
           <family>DejaVu Sans Mono</family>
+          <pointsize>9</pointsize>
+          <stylestrategy>PreferAntialias</stylestrategy>
+          <kerning>true</kerning>
          </font>
         </property>
         <property name="layoutDirection">
@@ -466,7 +471,10 @@
         </property>
         <property name="font">
          <font>
+          <family>Microsoft YaHei</family>
           <pointsize>8</pointsize>
+          <stylestrategy>PreferAntialias</stylestrategy>
+          <kerning>true</kerning>
          </font>
         </property>
         <property name="text">
@@ -622,7 +630,10 @@
         </property>
         <property name="font">
          <font>
+          <family>Microsoft YaHei</family>
           <pointsize>8</pointsize>
+          <stylestrategy>PreferAntialias</stylestrategy>
+          <kerning>true</kerning>
          </font>
         </property>
         <property name="text">
@@ -1259,6 +1270,8 @@
     <property name="font">
      <font>
       <family>Microsoft YaHei</family>
+      <stylestrategy>PreferAntialias</stylestrategy>
+      <kerning>true</kerning>
      </font>
     </property>
     <property name="autoFillBackground">
@@ -1400,6 +1413,50 @@
      <string>Run forward simulation</string>
     </property>
    </widget>
+   <widget class="QProgressBar" name="pbar_rfs">
+    <property name="geometry">
+     <rect>
+      <x>580</x>
+      <y>585</y>
+      <width>205</width>
+      <height>6</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QProgressBar {   border: 2px solid grey;   border-radius: 5px;   background-color: #FFFFFF;}QProgressBar::chunk {   background-color: #007FFF;   width: 10px;}QProgressBar {   border: 2px solid grey;   border-radius: 5px;   text-align: center;}</string>
+    </property>
+    <property name="maximum">
+     <number>0</number>
+    </property>
+    <property name="value">
+     <number>-1</number>
+    </property>
+    <property name="textVisible">
+     <bool>false</bool>
+    </property>
+   </widget>
+   <widget class="QProgressBar" name="pbar_rfi">
+    <property name="geometry">
+     <rect>
+      <x>795</x>
+      <y>585</y>
+      <width>205</width>
+      <height>6</height>
+     </rect>
+    </property>
+    <property name="styleSheet">
+     <string notr="true">QProgressBar {   border: 2px solid grey;   border-radius: 5px;   background-color: #FFFFFF;}QProgressBar::chunk {   background-color: #007FFF;   width: 10px;}QProgressBar {   border: 2px solid grey;   border-radius: 5px;   text-align: center;}</string>
+    </property>
+    <property name="maximum">
+     <number>0</number>
+    </property>
+    <property name="value">
+     <number>-1</number>
+    </property>
+    <property name="textVisible">
+     <bool>false</bool>
+    </property>
+   </widget>
    <zorder>pb_run_tdem_classification</zorder>
    <zorder>pb_run_tdem_forward_simulation</zorder>
    <zorder>tab_signal_type</zorder>
@@ -1407,6 +1464,8 @@
    <zorder>groupBox_10</zorder>
    <zorder>pb_run_fdem_forward_simulation</zorder>
    <zorder>pb_run_fdem_inversion</zorder>
+   <zorder>pbar_rfs</zorder>
+   <zorder>pbar_rfi</zorder>
   </widget>
   <widget class="QMenuBar" name="menubar">
    <property name="geometry">
@@ -1420,6 +1479,8 @@
    <property name="font">
     <font>
      <family>Microsoft YaHei</family>
+     <stylestrategy>PreferAntialias</stylestrategy>
+     <kerning>true</kerning>
     </font>
    </property>
    <widget class="QMenu" name="menuLanguage">
