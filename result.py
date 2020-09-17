@@ -155,7 +155,7 @@ class Result(object):
         data = np.c_[self.fdem_receiver_locs, self.fdem_mag_data]
         mag_data = pd.DataFrame(data, columns=['x', 'y', 'z', 'hx', 'hy', 'hz'], index=mag_data_index)
 
-        path = '../output/{}'.format(file_name)
+        path = './results/fdemResults/{}'.format(file_name)
 
         if os.path.exists(path):
             mag_data.to_excel('{}/mag_data.xls'.format(path))
