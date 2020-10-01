@@ -188,6 +188,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # Update the detection scenario.
         show_fdem_detection_scenario(self.fig_scenario,
                                      self.target, self.collection)
+        self.canvas_scenario.draw()
 
     def get_tdem_simulation_parameters(self):
         pass
@@ -336,12 +337,16 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         true_properties = np.append(true_properties, self.target.pitch)
         true_properties = np.append(true_properties, self.target.roll)
         self.result.fdem_true_properties = true_properties
+        self.result.fdem_estimate_error = abs(self.result.fdem_true_properties - self.result.fdem_estimate_properties)
 
         self.result.fdem_optimization_algorithm = \
             self.cb_optimization_algorithm.currentText()
 
         text = self.result.output_fdem_result()
         self.tb_output_box.setText(text)
+        if self.cb_func_save_data.isChecked():
+            self.result.save_result(self.get_save_fdem_dir())
+
         self.pb_run_fdem_inversion.setEnabled(True)
         self.pbar_rfi.setMaximum(100)
         self.pbar_rfi.setValue(100)
@@ -400,9 +405,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             the file name to save the data about fdem_forward_simulation and fdem_inversion
 
         """
-        file_name = "T.pos=[{:g},{:g},{:g}];T.R={:g};T.L={:g};T.pitch={:g};T.roll={:g};C.snr={:g};C.sp={:g};c.h={:g};" \
-                    "c.x=[{:g},{:g}];" \
-                    "c.y=[{:g},{:g}]".format(self.target.position[0], self.target.position[1],
+        file_name = "T.pos=[{:g},{:g},{:g}];T.R={:g};T.L={:g};T.pitch={:g};T.roll={:g};C.snr={:g};C.sp={:g};C.h={:g};" \
+                    "C.x=[{:g},{:g}];" \
+                    "C.y=[{:g},{:g}]".format(self.target.position[0], self.target.position[1],
                                              self.target.position[2],
                                              self.target.radius, self.target.length, self.target.pitch,
                                              self.target.roll,

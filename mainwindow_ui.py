@@ -72,7 +72,7 @@ class Ui_MainWindow(object):
         self.label_99 = QtWidgets.QLabel(self.groupBox_12)
         self.label_99.setGeometry(QtCore.QRect(10, 30, 71, 21))
         font = QtGui.QFont()
-        font.setFamily("DejaVu Sans Mono")
+        font.setFamily("Microsoft YaHei")
         font.setPointSize(9)
         font.setKerning(True)
         font.setStyleStrategy(QtGui.QFont.PreferAntialias)
