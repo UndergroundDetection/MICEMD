@@ -10,11 +10,18 @@ import numpy as np
 from SimPEG.utils import plot2Ddata
 
 import matplotlib as mpl
+import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D
+from mpl_toolkits.mplot3d.art3d import Poly3DCollection
+
+from utils import RotationMatrix
 
 
 def show_fdem_detection_scenario(fig, target, collection):
     """
+    in 3D ax show the detection scene,the main part is to show the
+    metal cylinder with different posture,the posture of the metal
+    cylinder can be showed by the rotation matrix
 
     Parameters
     ----------
@@ -31,8 +38,61 @@ def show_fdem_detection_scenario(fig, target, collection):
 
     """
 
-    fig.clf()
-    detection_deep = 5
+    fig.clf()  # Clear the figure in different detection scene
+    # show the metal cylinder
+
+    u = np.linspace(0, 2 * np.pi, 50)  # Divide the circle into 20 equal parts
+    h = np.linspace(-0.5, 0.5, 2)  # Divide the height(1m)  into 2 equal parts,corresponding to the bottom and top
+    x = target.radius * np.sin(u)
+    y = target.radius * np.cos(u)
+
+    x = np.outer(x, np.ones(len(h)))  # 20*2
+    y = np.outer(y, np.ones(len(h)))  # 20*2
+    z = np.outer(np.ones(len(u)), h)  # 20*2
+    z = z * target.length
+
+    x_rotation = np.ones(x.shape)  # 旋转后的坐标 20*2
+    y_rotation = np.ones(y.shape)
+    z_rotation = np.ones(z.shape)
+
+    th1 = target.pitch
+    th2 = target.roll
+    a = np.array(RotationMatrix(th1, th2, 0))  # 3*3 pitch,roll
+    for i in range(2):
+        r = np.c_[x[:, i], y[:, i], z[:, i]]  # 20*3
+        rT = r @ a  # 20*3
+        x_rotation[:, i] = rT[:, 0]
+        y_rotation[:, i] = rT[:, 1]
+        z_rotation[:, i] = rT[:, 2]
+    ax = fig.gca(projection='3d')
+    ax.view_init(30, 45)
+
+    ax.plot_surface(x_rotation + target.position[0], y_rotation + target.position[1], z_rotation + target.position[2],
+                    color='#E7C261', alpha=1, antialiased=False)
+    verts = [list(zip(x_rotation[:, 0] + target.position[0], y_rotation[:, 0] + target.position[1], z_rotation[:, 0] + target.position[2]))]
+    ax.add_collection3d(Poly3DCollection(verts, facecolors='#E7C261'))
+    verts = [list(zip(x_rotation[:, 1] + target.position[0], y_rotation[:, 1] + target.position[1],
+                      z_rotation[:, 1] + target.position[2]))]
+    ax.add_collection3d(Poly3DCollection(verts, facecolors='#E7C261'))
+
+    scan_x = np.arange(collection.x_min, collection.x_max+1e-8, collection.spacing)
+    scan_y = np.arange(collection.y_min, collection.y_max+1e-8, collection.spacing)
+    scan_x, scan_y = np.meshgrid(scan_x, scan_y)
+    scan_z = np.ones(scan_x.shape) * collection.height
+
+    for i in range(scan_x.shape[1]):
+        ax.plot(scan_x[:, i], scan_y[:, i], scan_z[:, i], 'black')
+        ax.scatter(scan_x[:, i], scan_y[:, i], scan_z[:, i], marker='o', color='w', edgecolors='blue')
+    ax.set_xticks(np.arange(collection.x_min, collection.x_max+1, 1))
+    ax.set_yticks(np.arange(collection.y_min, collection.y_max+1, 1))
+    ax.set_xlabel('X/m')
+    ax.set_ylabel('Y/m')
+    ax.set_zlabel('Z/m')
+    ax.set_xlim(collection.x_min, collection.x_max)
+    ax.set_ylim(collection.y_min, collection.y_max)
+    ax.set_zlim(target.position[2] - 2, collection.height)
+
+    ax.grid(None)  # delete the background grid
 
 
 def show_fdem_mag_map(fig, receiver_locations, mag_data):
@@ -66,7 +126,7 @@ def show_fdem_mag_map(fig, receiver_locations, mag_data):
         ncontour=30,
         clim=(-v_max, v_max),
         contourOpts={"cmap": "bwr"},
-        )
+    )
     ax1.tick_params(width=0)
     ax1.set_xlabel("x direction [m]")
     ax1.set_ylabel("y direction [m]")
@@ -84,7 +144,6 @@ def show_fdem_mag_map(fig, receiver_locations, mag_data):
 
 def show_discretize(fig, mesh, mapped_model, normal, ind, range_x, range_y,
                     target_conductivity):
-
     fig.clf()
 
     ax1 = fig.add_axes([0.13, 0.12, 0.7, 0.8])

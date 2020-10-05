@@ -194,7 +194,7 @@
         </property>
         <property name="font">
          <font>
-          <family>DejaVu Sans Mono</family>
+          <family>Microsoft YaHei</family>
           <pointsize>9</pointsize>
           <stylestrategy>PreferAntialias</stylestrategy>
           <kerning>true</kerning>
