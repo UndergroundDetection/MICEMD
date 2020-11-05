@@ -137,13 +137,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.le_collection_y_max.editingFinished.connect(
             self.get_fdem_simulation_parameters)
         self.cb_collection_direction.currentIndexChanged.connect(
-            self.get_fdem_simulation_parameters)
-        self.cb_optimization_algorithm.currentIndexChanged.connect(
-            self.get_fdem_simulation_parameters)
-        self.le_optimization_tol.editingFinished.connect(
-            self.get_fdem_simulation_parameters)
-        self.le_optimization_iterations.editingFinished.connect(
-            self.get_fdem_simulation_parameters)
+             self.get_fdem_simulation_parameters)
 
     def get_fdem_simulation_parameters(self):
         """
@@ -192,7 +186,6 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def get_tdem_simulation_parameters(self):
         pass
-
     def run_fdem_forward_calculate(self):
         """
         When 'run forward simulation' button is clicked in fdem interface, this
