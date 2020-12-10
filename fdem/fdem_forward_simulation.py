@@ -139,7 +139,7 @@ def fdem_forward_simulation(detector, target, collection):
     ----------
     detector : class Detector
     target : class Target
-    collention : class Collection
+    collection : class Collection
 
     Returns
     -------
