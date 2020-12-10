@@ -8,6 +8,8 @@ Created on Wed Aug 19 16:17:15 2020
 import numpy as np
 from scipy.constants import mu_0
 from scipy.optimize import minimize
+from fdem.optimization import Steepest_descent, BFGS, conjugate_gradient, LM
+
 
 from utils import RotationMatrix
 
@@ -266,7 +268,13 @@ def fdem_inversion(fun, grad, jacobian, method, iterations, tol):
 
     x0 = np.array([0.0, 0.0, -2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 
-    res = minimize(fun, x0, method='BFGS', jac=grad,
-                   options={'maxiter': iterations, 'gtol': tol, 'disp': True})
+    if method == "Steepest descent":
+        x, fval, grad_val, x_log, y_log, grad_log = Steepest_descent(fun, grad, x0, iterations, tol)
+    elif method == "BFGS":
+        x, fval, grad_val, x_log, y_log, grad_log = BFGS(fun, grad, x0, iterations, tol)
+    elif method == "Conjugate gradient":
+        x, fval, grad_val, x_log, y_log, grad_log = conjugate_gradient(fun, grad, x0, iterations, tol)
+    else :
+        x, fval, grad_val, x_log, y_log, grad_log = LM(fun, grad, jacobian, x0, iterations, tol)
 
-    return res.x
+    return x
