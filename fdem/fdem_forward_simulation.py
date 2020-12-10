@@ -70,9 +70,7 @@ class Target (object):
         self.pitch = pitch
         self.roll = roll
         self.length = length
-        self.position_x = position_x
-        self.position_y = position_y
-        self.position_z = position_z
+        self.position = [position_x, position_y, position_z]
 
     def get_principal_axis_polarizability(self, frequency):
         """
@@ -86,15 +84,30 @@ class Target (object):
 
         Returns
         -------
-        polarizability_x : float
-            Polarizability of x axis.
-        polarizability_y : float
-            Polarizability of y axis.
-        polarizability_z : float
-            Polarizability of z axis.
+        polarizability : numpy.array, size=3
 
+        References
+        ----------
+        Wan Y, Wang Z, Wang P, et al. A Comparative Study of Inversion
+        Optimization Algorithms for Underground Metal Target Detection[J].
+        IEEE Access, 2020, 8: 126401-126413. equation (9)(10).
         """
-        pass
+
+        volume = np.pi * self.radius**2 * self.length
+        omega = 2 * np.pi * frequency
+        relative_permeability = self.permeability / mu_0
+        tau = (self.radius**2 * self.conductivity * self.permeability
+               / relative_permeability**2)
+        beta_x = beta_y = 0.5 * volume * (0.35
+                                          + (np.sqrt(1j * omega * tau) - 2)
+                                          / (np.sqrt(1j * omega * tau) + 1))
+
+        beta_z = (self.length * volume / (4 * self.radius)
+                  * (- 0.7
+                     + (np.sqrt(1j * omega * tau * 31) - 2)
+                     / (np.sqrt(1j * omega * tau * 31) + 1)))
+
+        return np.array([abs(beta_x), abs(beta_y), abs(beta_z)])
 
 
 class Collection (object):
@@ -126,7 +139,7 @@ def fdem_forward_simulation(detector, target, collection):
     ----------
     detector : class Detector
     target : class Target
-    collention : class Collection
+    collection : class Collection
 
     Returns
     -------
@@ -152,7 +165,7 @@ def fdem_forward_simulation(detector, target, collection):
     frequencies = [detector.frequency]
 
     # Conductivity in S/m (or resistivity in Ohm m)
-    background_conductivity = 1e-3
+    background_conductivity = 1e-6
     air_conductivity = 1e-8
 
     # Permeability in H/m
@@ -239,7 +252,7 @@ def fdem_forward_simulation(detector, target, collection):
     )
 
     # Refine core mesh region
-    xp, yp, zp = np.meshgrid([-1.5, 1.5], [-1.5, 1.5], [-4, -2])
+    xp, yp, zp = np.meshgrid([-1.5, 1.5], [-1.5, 1.5], [-6, -4])
     xyz = np.c_[mkvc(xp), mkvc(yp), mkvc(zp)]
     mesh = refine_tree_xyz(mesh, xyz, octree_levels=[0, 6], method="box",
                            finalize=False)
@@ -262,7 +275,7 @@ def fdem_forward_simulation(detector, target, collection):
                                            background_permeability])
 
     ind_cylinder = getIndicesCylinder(
-        [target.position_x, target.position_y, target.position_z],
+        [target.position[0], target.position[1], target.position[2]],
         target.radius, target.length, [target.pitch, target.roll], mesh.gridCC
         )
     ind_cylinder = ind_cylinder[ind_active]

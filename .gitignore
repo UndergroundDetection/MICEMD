@@ -1,3 +1,11 @@
+# Readme file
+README.md
+# Test file
+test/
+test.py
+# Files of Results
+results/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -136,3 +144,4 @@ dmypy.json
 
 # Cython debug symbols
 cython_debug/
+.idea

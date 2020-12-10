@@ -10,6 +10,7 @@ from scipy.constants import mu_0
 from scipy.optimize import minimize
 from fdem.optimization import Steepest_descent, BFGS, conjugate_gradient, LM
 
+
 from utils import RotationMatrix
 
 
