@@ -167,16 +167,16 @@ def inv_forward_calculation(detector, receiver_loc, x):
     r_dt = target_lacation - np.mat(receiver_loc).T
     # Calculate primary field using formaula (2)
     H = 1 / (4 * np.pi) * (
-        (3 * r_dt * (m_d.T * r_dt)) / (np.linalg.norm(r_dt))**5
-        - m_d / (np.linalg.norm(r_dt))**3
+            (3 * r_dt * (m_d.T * r_dt)) / (np.linalg.norm(r_dt)) ** 5
+            - m_d / (np.linalg.norm(r_dt)) ** 3
     )
     # Calculate induced magnetic moment
     m_t = M * H
     # Calculate secondary field using formula (5)
     r_td = - r_dt
     B = mu_0 / (4 * np.pi) * (
-        (3 * r_td * (m_t.T * r_td)) / (np.linalg.norm(r_td))**5
-        - m_t / (np.linalg.norm(r_td))**3
+            (3 * r_td * (m_t.T * r_td)) / (np.linalg.norm(r_td)) ** 5
+            - m_t / (np.linalg.norm(r_td)) ** 3
     )
     B = abs(B) * 1e9
 
@@ -202,9 +202,9 @@ def inv_residual_vector_grad(detector, receiver_locations, x):
 
     """
 
-    grad = np.mat(np.zeros((3*len(receiver_locations), len(x))))
+    grad = np.mat(np.zeros((3 * len(receiver_locations), len(x))))
     for i, receiver_loc in enumerate(receiver_locations):
-        grad[3*i:3*i+3, :] = inv_forward_grad(detector, receiver_loc, x)
+        grad[3 * i:3 * i + 3, :] = inv_forward_grad(detector, receiver_loc, x)
 
     return grad
 
@@ -237,8 +237,8 @@ def inv_forward_grad(detector, receiver_loc, x):
         ei[i] = 1.0
         d = epsilon * ei
         grad[:, i] = (
-            (inv_forward_calculation(detector, receiver_loc, np.array(x) + d)
-             - inv_forward_calculation(detector, receiver_loc, x)) / d[i]
+                (inv_forward_calculation(detector, receiver_loc, np.array(x) + d)
+                 - inv_forward_calculation(detector, receiver_loc, x)) / d[i]
         )
         # a = inv_forward_calculation(detector, receiver_loc, np.array(x) + d)
         # b = inv_forward_calculation(detector, receiver_loc, x)
@@ -274,7 +274,7 @@ def fdem_inversion(fun, grad, jacobian, method, iterations, tol):
         x, fval, grad_val, x_log, y_log, grad_log = BFGS(fun, grad, x0, iterations, tol)
     elif method == "Conjugate gradient":
         x, fval, grad_val, x_log, y_log, grad_log = conjugate_gradient(fun, grad, x0, iterations, tol)
-    else :
+    else:
         x, fval, grad_val, x_log, y_log, grad_log = LM(fun, grad, jacobian, x0, iterations, tol)
 
     return x

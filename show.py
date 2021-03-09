@@ -171,3 +171,5 @@ def show_discretize(fig, mesh, mapped_model, normal, ind, range_x, range_y,
     cbar.set_label("Conductivity [S/m]", rotation=270, labelpad=15)
     ax2.tick_params(width=0)
     ax2.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
+
+
