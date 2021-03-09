@@ -4,13 +4,14 @@ Created on Wed Aug 19 16:17:35 2020
 
 @author: Liu Wen
 """
+__all__ = ['numopt']
 
 import numpy as np
 from numpy import asarray, Inf, isinf
 from scipy.optimize.optimize import _line_search_wolfe12, _LineSearchError
 
 
-def Steepest_descent(fun, grad, x0, iterations, tol):
+def steepest_descent(fun, grad, x0, iterations, tol):
     """
     Minimization of scalar function of one or more variables using the
     steepest descent algorithm.
@@ -47,7 +48,7 @@ def Steepest_descent(fun, grad, x0, iterations, tol):
     grad_log = []
 
     x0 = asarray(x0).flatten()
-    iterations = len(x0) * 200
+    # iterations = len(x0) * 200
     old_fval = fun(x0)
     gfk = grad(x0)
     k = 0
@@ -80,7 +81,7 @@ def Steepest_descent(fun, grad, x0, iterations, tol):
     return xk, fval, grad_val, x_log, y_log, grad_log
 
 
-def BFGS(fun, grad, x0, iterations, tol):
+def bfgs(fun, grad, x0, iterations, tol):
     """
     Minimization of scalar function of one or more variables using the
     BFGS algorithm.
@@ -117,7 +118,7 @@ def BFGS(fun, grad, x0, iterations, tol):
     grad_log = []
 
     x0 = asarray(x0).flatten()
-    iterations = len(x0) * 200
+    # iterations = len(x0) * 200
     old_fval = fun(x0)
     gfk = grad(x0)
     k = 0
@@ -209,7 +210,7 @@ def conjugate_gradient(fun, grad, x0, iterations, tol):
     grad_log = []
 
     x0 = asarray(x0).flatten()
-    iterations = len(x0) * 200
+    # iterations = len(x0) * 200
     old_fval = fun(x0)
     gfk = grad(x0)
 
@@ -282,7 +283,7 @@ def conjugate_gradient(fun, grad, x0, iterations, tol):
     return xk, fval, grad_val, x_log, y_log, grad_log
 
 
-def LM(fun, grad, jacobian, x0, iterations, tol):
+def levenberg_marquardt(fun, grad, jacobian, x0, iterations, tol):
     """
     Minimization of scalar function of one or more variables using the
     Levenberg-Marquardt algorithm.
@@ -323,7 +324,7 @@ def LM(fun, grad, jacobian, x0, iterations, tol):
     x0 = asarray(x0).flatten()
     if x0.ndim == 0:
         x0.shape = (1,)
-    iterations = len(x0) * 200
+    # iterations = len(x0) * 200
 
     k = 1
     xk = x0
@@ -368,3 +369,33 @@ def LM(fun, grad, jacobian, x0, iterations, tol):
     grad_val = grad_log[-1]
 
     return xk, fval, grad_val, x_log, y_log, grad_log
+
+
+def numopt(fun, grad, jacobian, x0, iterations, method='BFGS', tol=1e-9):
+    """
+        Call optimization algorithms.
+
+        Parameters
+        ----------
+        method : str
+            The name of optimization algorithms.
+        iterations : int
+            Maximum iterations of optimization algorithms.
+        tol : float
+            Tolerance of optimization algorithms.
+
+        Returns
+        -------
+        res.x : numpy.array, size=9
+        """
+
+    if method == "SD":
+        x, fval, grad_val, x_log, y_log, grad_log = steepest_descent(fun, grad, x0, iterations, tol)
+    elif method == "BFGS":
+        x, fval, grad_val, x_log, y_log, grad_log = bfgs(fun, grad, x0, iterations, tol)
+    elif method == "CG":
+        x, fval, grad_val, x_log, y_log, grad_log = conjugate_gradient(fun, grad, x0, iterations, tol)
+    else:
+        x, fval, grad_val, x_log, y_log, grad_log = levenberg_marquardt(fun, grad, jacobian, x0, iterations, tol)
+
+    return x
