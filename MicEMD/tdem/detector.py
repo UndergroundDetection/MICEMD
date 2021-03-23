@@ -14,5 +14,23 @@ class Detector(object):
 
     """
 
-    def __init__(self, *args, **kwargs):
-        pass
+    def __init__(self, radius, current, pitch, roll):
+        self.radius = radius
+        self.current = current
+        self.pitch = pitch
+        self.roll = roll
+
+    @property
+    def mag_moment(self):
+        """
+        Calculate magnetic moment value of transmitter coil according to
+        detector parameters.
+
+        Returns
+        -------
+        TYPE : float
+            The value of magnetic moment of z axis.
+
+        """
+
+        return self.current * np.pi * self.radius ** 2

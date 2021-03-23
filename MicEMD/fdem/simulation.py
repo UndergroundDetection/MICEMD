@@ -6,7 +6,7 @@ from .survey import *
 from .source import *
 from .model import *
 from .results import *
-from ..handler import Handler
+from ..handler import FDEMHandler
 import matplotlib.pyplot as plt
 
 
@@ -39,7 +39,7 @@ def simulate(target, detector, collection, model='simpeg', save=True, show=False
         simulation = Simulation(_model)
         result = simulation.pred()
         result = ForwardResult((result, simulation, {'method': 'simpeg'}))
-        handler = Handler(result, None)
+        handler = FDEMHandler(result, None)
         handler.save_forward(save)
         if show:
             fig1 = plt.figure()

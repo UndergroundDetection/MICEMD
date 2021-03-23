@@ -20,7 +20,7 @@ from MicEMD.fdem.target import Target
 from MicEMD.fdem.detector import Detector
 from utilities.show import show_fdem_detection_scenario
 from utilities.threadSet import ThreadCalFdem, ThreadInvFdem
-from MicEMD.handler import Handler
+from MicEMD.handler import FDEMHandler
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -234,7 +234,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         self.result.forward_result = forward_result
         self.result.check_FPara_change = True
-        handler = Handler(forward_result, None)
+        handler = FDEMHandler(forward_result, None)
 
         # Plot discetize
         handler.show_discretize(self.fig_discretize)

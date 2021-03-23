@@ -1,4 +1,4 @@
-__all__ = ['Handler']
+__all__ = ['FDEMHandler', 'TDEMHandler']
 
 from abc import ABCMeta
 from abc import abstractmethod
@@ -9,6 +9,8 @@ from ..utils import RotationMatrix
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from SimPEG.utils import plot2Ddata
 import matplotlib as mpl
+import matplotlib.pyplot as plt
+
 
 
 class FDEMBaseHandler(metaclass=ABCMeta):
@@ -26,7 +28,7 @@ class FDEMBaseHandler(metaclass=ABCMeta):
         pass
 
 
-class Handler(FDEMBaseHandler):
+class FDEMHandler(FDEMBaseHandler):
     def __init__(self, ForwardResult, InvResult):
         FDEMBaseHandler.__init__(self, ForwardResult, InvResult)
 
@@ -82,10 +84,10 @@ class Handler(FDEMBaseHandler):
         path = './results/fdemResults/{}'.format(file_name)
 
         if os.path.exists(path):
-            mag_data.to_excel('{}/mag_data.xls'.format(path))
+            mag_data.to_csv('{}/mag_data.csv'.format(path))
         else:
             os.makedirs(path)
-            mag_data.to_excel('{}/mag_data.xls'.format(path))
+            mag_data.to_csv('{}/mag_data.csv'.format(path))
 
     def save_result(self, file_name):
         """
@@ -118,10 +120,10 @@ class Handler(FDEMBaseHandler):
         inv_filename = self.inv_result.condition['method'] + '_invResult'
 
         if os.path.exists(path):
-            inv_result.to_excel('{}/{}.xls'.format(path, inv_filename))
+            inv_result.to_csv('{}/{}.csv'.format(path, inv_filename))
         else:
             os.makedirs(path)
-            inv_result.to_excel('{}/invResult.xls'.format(path))
+            inv_result.to_csv('{}/{}.csv'.format(path, inv_filename))
 
     def save_forward(self, forward_flag):
         if forward_flag:
@@ -318,5 +320,111 @@ class Handler(FDEMBaseHandler):
         path = './results/fdemResults/{}'.format(self.get_save_fdem_dir())
         path = '{}/{}.png'.format(path, 'discretize')
         fig.savefig(path)
+
+
+class TDEMBaseHandler(metaclass=ABCMeta):
+    @abstractmethod
+    def __init__(self, ForwardResult, InvResult):
+        self.forward_result = ForwardResult
+        self.inv_result = InvResult
+
+    @abstractmethod
+    def save_forward(self):
+        pass
+
+    @abstractmethod
+    def save_cls(self):
+        pass
+
+
+class TDEMHandler(TDEMBaseHandler):
+    def __init__(self, ForwardResult, ClsResult):
+        FDEMBaseHandler.__init__(self, ForwardResult, ClsResult)
+        self.forward_result = ForwardResult
+        self.cls_result = ClsResult
+
+    def save_forward(self, forward_flag):
+        if forward_flag:
+            pass
+
+    def save_cls(self, inv_flag):
+        if inv_flag:
+            pass
+
+    def get_save_fdem_dir(self):
+        """
+        to get the parameters about this target scene to make file save the data about fdem_forward_simulation
+
+        Returns
+        -------
+        file_name : str
+            the file name to save the data about fdem_forward_simulation and fdem_inversion
+
+        """
+        simulation = self.forward_result.simulation
+        collection = simulation.model.survey.source.collection
+        target = simulation.model.survey.source.target
+        file_name = "T.material={};T.a=[{:g},{:g}];T.b=[{:g},{:g}];T.a_r_step={:g};T.b_r_step={:g};C.SNR={:g};" \
+                    "C.t_split={:g}".format(target.material, target.ta_min, target.ta_max, target.tb_min,
+                                             target.tb_max, target.a_r_step, target.b_r_step,
+                                             collection.SNR, collection.t_split)
+        return file_name
+
+    def save_response_data(self, file_name):
+        response = self.forward_result.response
+        response = pd.DataFrame(response)
+        path = './results/tdemResults/{}'.format(file_name)
+
+        if os.path.exists(path):
+            response.to_csv('{}/response.csv'.format(path))
+        else:
+            os.makedirs(path)
+            response.to_csv('{}/response.csv'.format(path))
+
+    def save_sample_data(self, file_name):
+        sample = self.forward_result.sample
+
+        sample_data = sample['data']
+        snr = sample['SNR']
+        path = './results/tdemResults/{}/sample selected'.format(file_name)
+        if os.path.exists(path):
+            sample_data.to_csv('{}/sample_{}dB.csv'.format(path, snr))
+            self.plot_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
+                           sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
+                           sample['ta'], sample['tb'], '{}/sample_{}dB.png'.format(path, snr))
+        else:
+            os.makedirs(path)
+            sample_data.to_csv('{}/sample_{}dB.csv'.format(path, snr))
+            self.plot_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
+                           sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
+                           sample['ta'], sample['tb'], '{}/sample_{}dB.png'.format(path, snr))
+
+    def save_forward(self, forward_flag):
+        if forward_flag:
+            self.save_response_data(self.get_save_fdem_dir())
+            self.save_sample_data(self.get_save_fdem_dir())
+
+    def plot_data(self, M1=None, M2=None, M1_without_noise=None, M2_without_noise=None, t=None,
+                  SNR=None, material=None, ta=None, tb=None, file_name=None):
+        fig, ax = plt.subplots()
+        ax.set_xscale("log")
+        ax.set_yscale("log")
+        ax.set_xlim(1e-8, 1e1)
+        plt.plot(t, np.array(M1_without_noise).flatten(), '--', color="r", label="M1_noiseless")
+        plt.plot(t, np.array(M2_without_noise).flatten(), '--', color="b", label="M2_noiseless")
+        plt.plot(t, M1, 'o', color="y", label="M1")
+        plt.plot(t, M2, 'o', color="g", label="M2")
+        plt.xlabel("t /s")
+        plt.ylabel("M")
+        plt.title(str(material) + " ta=" + "%.2f" % ta + " tb=" + "%.2f" % tb + " SNR=" + str(SNR) + "dB")
+        plt.savefig(file_name, dpi=1000, bbox_inches='tight')
+        # plt.show()
+        # plt.close()
+
+
+
+
+
+
 
 

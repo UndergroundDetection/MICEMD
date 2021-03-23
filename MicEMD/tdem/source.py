@@ -4,7 +4,7 @@ from abc import ABCMeta
 from abc import abstractmethod
 
 
-class BaseSource(metaclass=ABCMeta):
+class BaseTDEMSource(metaclass=ABCMeta):
 
     @abstractmethod
     def __init__(self, Target, Detector, Collection, *args):
@@ -17,14 +17,16 @@ class BaseSource(metaclass=ABCMeta):
         pass
 
 
-class Source(BaseSource):
+class Source(BaseTDEMSource):
 
     def __init__(self, Target, Detector, Collection, *args):
-        BaseSource.__init__(self, Target, Detector, Collection)
+        BaseTDEMSource.__init__(self, Target, Detector, Collection)
 
     @property
     def source_list(self):
         pass
+
+
 
 
 
