@@ -7,7 +7,7 @@ import numpy as np
 from scipy.constants import mu_0
 from ..optimization import *
 from .results import *
-from ..handler import Handler
+from ..handler import FDEMHandler
 
 
 class BaseInversion(metaclass=ABCMeta):
@@ -383,6 +383,6 @@ def inverse(method, x0, iterations, tol, ForwardResult, save, *args, **kwargs):
             _result.append(inversion.error)
             _result.append(opt_condition)
             result = InvResult(_result)
-            handler = Handler(ForwardResult, result)
+            handler = FDEMHandler(ForwardResult, result)
             handler.save_inv(save)
             return result

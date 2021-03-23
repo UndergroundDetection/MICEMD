@@ -11,9 +11,7 @@ class BaseClassification(metaclass=ABCMeta):
     def __init__(self, ForwardResult):
         pass
 
-    @abstractmethod
-    def true_properties(self):
-        pass
+
 
     @abstractmethod
     def run(self):
@@ -23,21 +21,12 @@ class BaseClassification(metaclass=ABCMeta):
     def error(self):
         pass
 
-    @abstractmethod
-    def inv_objective_function(self):
-        pass
+
 
 
 class Classification(BaseClassification):
 
     def __init__(self, ForwardResult, *args, **kwargs):
-        pass
-
-    @property
-    def true_properties(self):
-        pass
-
-    def inv_objective_function(self):
         pass
 
     def run(self):
