@@ -121,6 +121,18 @@ class Model(BaseTDEMModel):
         return npower
 
     def dpred(self):
+        """
+
+        Returns
+        -------
+        feature_lable : ndarry
+        shape(n,402), n represent the number of simulation
+        feature_lable include material_flag, shape_flag and the response
+
+        sample: dict
+        represent a sample,it's to show the data one of the collection
+
+        """
         t_split = self.survey.source.collection.t_split
         attribute = self.survey.source.target.attribute
         snr = self.survey.source.collection.SNR

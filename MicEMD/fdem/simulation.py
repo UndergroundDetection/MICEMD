@@ -31,14 +31,14 @@ class Simulation(BaseSimulation):
         return result
 
 
-def simulate(target, detector, collection, model='simpeg', save=True, show=False, *args, **kwargs):
+def simulate(target, detector, collection, model='simpeg', save=True, show=True, *args, **kwargs):
     if model == 'simpeg':
         source = Source(target, detector, collection)
         survey = Survey(source)
         _model = Model(survey)
         simulation = Simulation(_model)
         result = simulation.pred()
-        result = ForwardResult((result, simulation, {'method': 'simpeg'}))
+        result = ForwardResult((result, simulation, {'method': model}))
         handler = FDEMHandler(result, None)
         handler.save_forward(save)
         if show:
