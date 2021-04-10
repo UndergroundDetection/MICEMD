@@ -5,11 +5,14 @@ from abc import abstractmethod
 import numpy as np
 import pandas as pd
 import os
+
+from ..preprocessor import data_prepare
 from ..utils import RotationMatrix
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from SimPEG.utils import plot2Ddata
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+
 
 
 
@@ -153,11 +156,10 @@ class FDEMHandler(FDEMBaseHandler):
             None.
 
             """
-        target = self.forward_result.simulation.model.survey.source.target
-        collection = self.forward_result.simulation.model.survey.source.collection
-
         fig.clf()  # Clear the figure in different detection scene
         # show the metal cylinder
+        target = self.forward_result.simulation.model.survey.source.target
+        collection = self.forward_result.simulation.model.survey.source.collection
 
         u = np.linspace(0, 2 * np.pi, 50)  # Divide the circle into 20 equal parts
         h = np.linspace(-0.5, 0.5, 2)  # Divide the height(1m)  into 2 equal parts,corresponding to the bottom and top
@@ -343,10 +345,6 @@ class TDEMHandler(TDEMBaseHandler):
         self.forward_result = ForwardResult
         self.cls_result = ClsResult
 
-    def save_forward(self, forward_flag):
-        if forward_flag:
-            pass
-
     def save_cls(self, inv_flag):
         if inv_flag:
             pass
@@ -373,7 +371,7 @@ class TDEMHandler(TDEMBaseHandler):
     def save_response_data(self, file_name):
         response = self.forward_result.response
         response = pd.DataFrame(response)
-        path = './results/tdemResults/{}'.format(file_name)
+        path = './results/tdemResults/{}/originData'.format(file_name)
 
         if os.path.exists(path):
             response.to_csv('{}/response.csv'.format(path))
@@ -386,7 +384,7 @@ class TDEMHandler(TDEMBaseHandler):
 
         sample_data = sample['data']
         snr = sample['SNR']
-        path = './results/tdemResults/{}/sample selected'.format(file_name)
+        path = './results/tdemResults/{}/originData/sample selected'.format(file_name)
         if os.path.exists(path):
             sample_data.to_csv('{}/sample_{}dB.csv'.format(path, snr))
             self.plot_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
@@ -420,6 +418,31 @@ class TDEMHandler(TDEMBaseHandler):
         plt.savefig(file_name, dpi=1000, bbox_inches='tight')
         # plt.show()
         # plt.close()
+
+    def save_preparation(self, save_flag):
+        if save_flag:
+            data_set = data_prepare(self.forward_result)
+            train_set_material = pd.DataFrame(data_set[0])
+            test_set_material = pd.DataFrame(data_set[1])
+            train_set_shape = pd.DataFrame(data_set[2])
+            test_set_shape = pd.DataFrame(data_set[3])
+            path_material = './results/tdemResults/{}/prepareData_material'.format(self.get_save_fdem_dir())
+            path_shape = './results/tdemResults/{}/prepareData_shape'.format(self.get_save_fdem_dir())
+            if os.path.exists(path_material):
+                train_set_material.to_csv('{}/train_set.csv'.format(path_material))
+                test_set_material.to_csv('{}/test_set.csv'.format(path_material))
+            else:
+                os.makedirs(path_material)
+                train_set_material.to_csv('{}/train_set.csv'.format(path_material))
+                test_set_material.to_csv('{}/test_set.csv'.format(path_material))
+            if os.path.exists(path_shape):
+                train_set_shape.to_csv('{}/train_set.csv'.format(path_shape))
+                test_set_shape.to_csv('{}/test_set.csv'.format(path_shape))
+            else:
+                os.makedirs(path_shape)
+                train_set_shape.to_csv('{}/train_set.csv'.format(path_shape))
+                test_set_shape.to_csv('{}/test_set.csv'.format(path_shape))
+
 
 
 

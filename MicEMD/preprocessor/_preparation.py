@@ -1,0 +1,42 @@
+__all__ = ['data_prepare']
+
+import numpy as np
+from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.preprocessing import MinMaxScaler
+
+
+def data_prepare(ForwardResult, filename=None):
+    if filename is not None:
+        pass
+
+    data = ForwardResult.response
+
+    feature_lable = np.array(data)
+
+    feature = feature_lable[:, 2:feature_lable.shape[1]]
+
+    # 优化目标 Y  向量化
+    material_label = feature_lable[:, 1]
+    shape_label = feature_lable[:, 2]
+    X = feature
+
+    # print("开始划分数据集")
+    X1_train, X1_test, Y1_train, Y1_test = train_test_split(X, material_label, test_size=0.3, random_state=5)
+    X2_train, X2_test, Y2_train, Y2_test = train_test_split(X, shape_label, test_size=0.3, random_state=5)
+
+    # 归一化处理
+    min_max_scaler = MinMaxScaler(feature_range=(0, 1))
+    X1_train = min_max_scaler.fit_transform(X1_train)
+    X1_test = min_max_scaler.transform(X1_test)
+
+    # print("x1归一化完成")
+    X2_train = min_max_scaler.fit_transform(X2_train)
+    X2_test = min_max_scaler.transform(X2_test)
+    # print("x2归一化完成")
+    testing_set_material = np.hstack((X1_test, Y1_test.reshape((-1, 1))))
+    training_set_material = np.hstack((X1_train, Y1_train.reshape((-1, 1))))
+
+    testing_set_shape = np.hstack((X2_test, Y2_test.reshape((-1, 1))))
+    training_set_shape = np.hstack((X2_train, Y2_train.reshape((-1, 1))))
+
+    return training_set_material, testing_set_material, training_set_shape, testing_set_shape
