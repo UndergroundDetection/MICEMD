@@ -27,8 +27,9 @@ class Target(object):
 
     """
 
-    def __init__(self, material, attribute, ta_min, ta_max, tb_min, tb_max, a_r_step, b_r_step, **kwargs):
+    def __init__(self, material, shape, attribute, ta_min, ta_max, tb_min, tb_max, a_r_step, b_r_step, **kwargs):
         self.material = material
+        self.shape = shape
         self.attribute = attribute
         self.ta_min = ta_min
         self.ta_max = ta_max

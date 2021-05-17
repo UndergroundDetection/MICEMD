@@ -5,6 +5,10 @@ from abc import abstractmethod
 import numpy as np
 import pandas as pd
 import os
+import itertools
+
+from matplotlib import gridspec
+from sklearn.metrics import confusion_matrix
 
 from ..preprocessor import data_prepare
 from ..utils import RotationMatrix
@@ -12,8 +16,6 @@ from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from SimPEG.utils import plot2Ddata
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-
-
 
 
 class FDEMBaseHandler(metaclass=ABCMeta):
@@ -326,9 +328,10 @@ class FDEMHandler(FDEMBaseHandler):
 
 class TDEMBaseHandler(metaclass=ABCMeta):
     @abstractmethod
-    def __init__(self, ForwardResult, InvResult):
+    def __init__(self, ForwardResult, PreResult, ClsResult):
         self.forward_result = ForwardResult
-        self.inv_result = InvResult
+        self.pre_result = PreResult
+        self.cls_result = ClsResult
 
     @abstractmethod
     def save_forward(self):
@@ -340,9 +343,10 @@ class TDEMBaseHandler(metaclass=ABCMeta):
 
 
 class TDEMHandler(TDEMBaseHandler):
-    def __init__(self, ForwardResult, ClsResult):
-        FDEMBaseHandler.__init__(self, ForwardResult, ClsResult)
+    def __init__(self, ForwardResult, PreResult=None, ClsResult=None):
+        TDEMBaseHandler.__init__(self, ForwardResult, PreResult, ClsResult)
         self.forward_result = ForwardResult
+        self.pre_result = PreResult
         self.cls_result = ClsResult
 
     def save_cls(self, inv_flag):
@@ -364,8 +368,8 @@ class TDEMHandler(TDEMBaseHandler):
         target = simulation.model.survey.source.target
         file_name = "T.material={};T.a=[{:g},{:g}];T.b=[{:g},{:g}];T.a_r_step={:g};T.b_r_step={:g};C.SNR={:g};" \
                     "C.t_split={:g}".format(target.material, target.ta_min, target.ta_max, target.tb_min,
-                                             target.tb_max, target.a_r_step, target.b_r_step,
-                                             collection.SNR, collection.t_split)
+                                            target.tb_max, target.a_r_step, target.b_r_step,
+                                            collection.SNR, collection.t_split)
         return file_name
 
     def save_response_data(self, file_name):
@@ -379,7 +383,7 @@ class TDEMHandler(TDEMBaseHandler):
             os.makedirs(path)
             response.to_csv('{}/response.csv'.format(path))
 
-    def save_sample_data(self, file_name):
+    def save_sample_data(self, file_name, show):
         sample = self.forward_result.sample
 
         sample_data = sample['data']
@@ -389,21 +393,21 @@ class TDEMHandler(TDEMBaseHandler):
             sample_data.to_csv('{}/sample_{}dB.csv'.format(path, snr))
             self.plot_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
                            sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
-                           sample['ta'], sample['tb'], '{}/sample_{}dB.png'.format(path, snr))
+                           sample['ta'], sample['tb'], '{}/sample_{}dB.png'.format(path, snr), show)
         else:
             os.makedirs(path)
             sample_data.to_csv('{}/sample_{}dB.csv'.format(path, snr))
             self.plot_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
                            sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
-                           sample['ta'], sample['tb'], '{}/sample_{}dB.png'.format(path, snr))
+                           sample['ta'], sample['tb'], '{}/sample_{}dB.png'.format(path, snr), show)
 
-    def save_forward(self, forward_flag):
-        if forward_flag:
+    def save_forward(self, save, show):
+        if save:
             self.save_response_data(self.get_save_fdem_dir())
-            self.save_sample_data(self.get_save_fdem_dir())
+            self.save_sample_data(self.get_save_fdem_dir(), show)
 
-    def plot_data(self, M1=None, M2=None, M1_without_noise=None, M2_without_noise=None, t=None,
-                  SNR=None, material=None, ta=None, tb=None, file_name=None):
+    def plot_data(self, M1, M2, M1_without_noise, M2_without_noise, t,
+                  SNR, material, ta, tb, file_name, show):
         fig, ax = plt.subplots()
         ax.set_xscale("log")
         ax.set_yscale("log")
@@ -416,18 +420,13 @@ class TDEMHandler(TDEMBaseHandler):
         plt.ylabel("M")
         plt.title(str(material) + " ta=" + "%.2f" % ta + " tb=" + "%.2f" % tb + " SNR=" + str(SNR) + "dB")
         plt.savefig(file_name, dpi=1000, bbox_inches='tight')
-        # plt.show()
-        # plt.close()
-
-    def save_preparation(self, save_flag):
-        if save_flag:
-            data_set = data_prepare(self.forward_result)
+        if show:
+            plt.show()
+    def save_preparation(self, data_set, task, save_flag):
+        if save_flag and task == 'material':
             train_set_material = pd.DataFrame(data_set[0])
             test_set_material = pd.DataFrame(data_set[1])
-            train_set_shape = pd.DataFrame(data_set[2])
-            test_set_shape = pd.DataFrame(data_set[3])
             path_material = './results/tdemResults/{}/prepareData_material'.format(self.get_save_fdem_dir())
-            path_shape = './results/tdemResults/{}/prepareData_shape'.format(self.get_save_fdem_dir())
             if os.path.exists(path_material):
                 train_set_material.to_csv('{}/train_set.csv'.format(path_material))
                 test_set_material.to_csv('{}/test_set.csv'.format(path_material))
@@ -435,6 +434,10 @@ class TDEMHandler(TDEMBaseHandler):
                 os.makedirs(path_material)
                 train_set_material.to_csv('{}/train_set.csv'.format(path_material))
                 test_set_material.to_csv('{}/test_set.csv'.format(path_material))
+        if save_flag and task == 'shape':
+            train_set_shape = pd.DataFrame(data_set[0])
+            test_set_shape = pd.DataFrame(data_set[1])
+            path_shape = './results/tdemResults/{}/prepareData_shape'.format(self.get_save_fdem_dir())
             if os.path.exists(path_shape):
                 train_set_shape.to_csv('{}/train_set.csv'.format(path_shape))
                 test_set_shape.to_csv('{}/test_set.csv'.format(path_shape))
@@ -443,11 +446,68 @@ class TDEMHandler(TDEMBaseHandler):
                 train_set_shape.to_csv('{}/train_set.csv'.format(path_shape))
                 test_set_shape.to_csv('{}/test_set.csv'.format(path_shape))
 
+    def save_dim_reduction(self, saveFlag):
+        train_set = self.pre_result.train_set
+        test_set = self.pre_result.test_set
+        task = self.pre_result.task
+        dim_red_method = self.pre_result.dim_red_method
 
+        if saveFlag and task == 'material':
+            train_set_material = pd.DataFrame(train_set)
+            test_set_material = pd.DataFrame(test_set)
+            path_material = './results/tdemResults/{}/dimReductionData_material/{}'.format(self.get_save_fdem_dir(),
+                                                                                           dim_red_method)
+            if os.path.exists(path_material):
+                train_set_material.to_csv('{}/train_set.csv'.format(path_material))
+                test_set_material.to_csv('{}/test_set.csv'.format(path_material))
+            else:
+                os.makedirs(path_material)
+                train_set_material.to_csv('{}/train_set.csv'.format(path_material))
+                test_set_material.to_csv('{}/test_set.csv'.format(path_material))
+        if saveFlag and task == 'shape':
+            train_set_material = pd.DataFrame(train_set)
+            test_set_material = pd.DataFrame(test_set)
+            path_shape = './results/tdemResults/{}/dimReductionData_shape/{}'.format(self.get_save_fdem_dir(),
+                                                                                     dim_red_method)
+            if os.path.exists(path_shape):
+                train_set_material.to_csv('{}/train_set.csv'.format(path_shape))
+                test_set_material.to_csv('{}/test_set.csv'.format(path_shape))
+            else:
+                os.makedirs(path_shape)
+                train_set_material.to_csv('{}/train_set.csv'.format(path_shape))
+                test_set_material.to_csv('{}/test_set.csv'.format(path_shape))
 
+    # cm：混淆矩阵；classes：类别名称
+    def plot_confusion_matrix(self, show):
+        """
+        This function prints and plots the confusion matrix.
+        Normalization can be applied by setting `normalize=True`.
+        """
+        cmap = plt.cm.YlGnBu
+        plt.figure()
+        # gs = gridspec.GridSpec(1, 2, width_ratios=[4.45, 5.55])
+        # plt.subplot(gs[0])
+        cm = confusion_matrix(y_true=self.cls_result.cls_result[1], y_pred=self.cls_result.cls_result[2])
+        if self.pre_result.task == 'material':
+            classes = self.forward_result.simulation.model.survey.source.target.material
+        else:
+            classes = self.forward_result.simulation.model.model.survey.source.target.shape
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        plt.ylabel('True label', fontsize=17)
+        plt.xlabel('Predicted label', fontsize=17)
+        plt.imshow(cm, interpolation='nearest', cmap=cmap)
+        plt.title('Confusion matrix', fontsize=17)
+        tick_marks = np.arange(len(classes))
+        plt.xticks(tick_marks, classes, rotation=0, fontsize=15)
+        plt.yticks(tick_marks - 0.25, classes, rotation=90, fontsize=15)
+        plt.tick_params(bottom=False, top=False, left=False, right=False)  # 移除全部刻度线
+        fmt = '.2f'
+        thresh = cm.max() / 2.
+        for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+            plt.text(j, i, format(cm[i, j], fmt),
+                     horizontalalignment="center",
+                     color="white" if cm[i, j] > thresh else "black", fontsize=26)
 
-
-
-
-
-
+        plt.colorbar(shrink=1)
+        if show:
+            plt.show()

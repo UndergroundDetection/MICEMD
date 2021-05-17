@@ -39,7 +39,8 @@ def simulate(target, detector, collection, model='dipole', save=True, show=False
     simulation = Simulation(_model)
     result = simulation.pred()
     result = ForwardResult((result, simulation, {'method': model}))
-    handler = TDEMHandler(result, None)
-    handler.save_forward(save)
-    handler.save_preparation(save)
+    handler = TDEMHandler(result)
+    handler.save_forward(save, show)
+
+    #handler.save_preparation(save)
     return result
