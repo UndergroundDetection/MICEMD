@@ -1,3 +1,11 @@
+# -*- coding: utf-8 -*-
+"""
+The model class, represent the model in TDEM
+
+Class:
+- Model: the implement class of the BaseTDEMModel
+"""
+
 __all__ = ['Model']
 
 from abc import ABCMeta
@@ -5,11 +13,21 @@ from abc import abstractmethod
 import numpy as np
 import pandas as pd
 from functools import partial
-import os
-import matplotlib.pyplot as plt
 
 
 class BaseTDEMModel(metaclass=ABCMeta):
+    """the abstract class about the model in TDEM
+
+    Attributes
+    ----------
+    Survey: class
+        the Survey in TDEM
+
+    Methods:
+    dpred
+        Returns the forward simulation data of the TDEM
+        """
+
     @abstractmethod
     def __init__(self, Survey):
         self.survey = Survey
@@ -24,23 +42,51 @@ class Model(BaseTDEMModel):
         BaseTDEMModel.__init__(self, Survey)
 
     def parameter_sphere(self, c, c0, d, r):  # c是相对磁化率 μr；d是电导率 σ；r是半径；t是时间区间
+        """use less para to fit the sphere response
+        To reduce the computational complexity of the charac-
+        teristic response, a simple empirical function defined by a
+        minimum number of parameters is utilized to replicate the
+        features of the characteristic response
+
+        Parameters
+        ----------
+        c: float
+            the relative permeability of the target
+        c0: float
+            the permeability of vacuum
+        d: float
+            the conductivity of the target
+        r: float
+            the radius of the target
+
+        Returns
+        -------
+        k, a, b, R: the tuple of the fitting parameters
+
+        References
+        ----------
+        .. [1] J. T. Smith, H. F. Morrison, and A. Becker, “Parametric forms and the
+            inductive response of a permeable conducting sphere,” Journal of Envi-
+            ronmental & Engineering Geophysics, vol. 9, no. 4, pp. 213–216, 2004.
+
+        """
         # pi = 3.14
         pi = np.pi
         e1 = pi
-        e2 = pi * 1.5  # 二分范围
-        # c=1.00125;              #相对磁化率 μr
-        # c0 = 1.2566370614 * 1e-6  # 绝对磁化率 μ0
-        # d=10**7                 #电导率 σ
+        e2 = pi * 1.5
+        # c=1.00125;              # μr
+        # c0 = 1.2566370614 * 1e-6  # μ0
+        # d=10**7                 #σ
         a1 = 1.38  # a=1.38
-        # r=0.02                  #半径
+        # r=0.02
         e = np.e
         global step
         step = 0
 
         def f(x, y):
-            return np.tan(x) - ((y - 1) * x / ((y - 1) + x ** 2))  # 超越方程  先验方程
+            return np.tan(x) - ((y - 1) * x / ((y - 1) + x ** 2))
 
-        def erfen(a, b, c):  # a、b为方程的根区间，c是相对磁化率
+        def erfen(a, b, c):
             global step
             fhalf = f((a + b) / 2, c)
             half = (a + b) / 2
@@ -60,8 +106,7 @@ class Model(BaseTDEMModel):
             else:
                 return erfen(a, half, c)
 
-        x = erfen(e1, e2, c)  # x即为超越方程的解  δ1
-        # print(x)
+        x = erfen(e1, e2, c)  # δ1
 
         #################  t0 t1 ############
         t0 = (d * c * c0 * r ** 2) / (x ** 2)
@@ -79,7 +124,6 @@ class Model(BaseTDEMModel):
         r1 = (1 + pow((a1 * t1 / 2 * t0), 1 / 2)) / (1 + pow((a1 * t1 / 2 * t0), 1 / 2) - b / 4)  # b
         R = r1 * t0
 
-        # 椭球体改变了K
         return k, a, b, R
 
     def ellipsoid_k_plus(self, ta, tb, c):
@@ -102,6 +146,7 @@ class Model(BaseTDEMModel):
         return k1_plus, k2_plus
 
     def ellipsoid_parameter(self, c, c0, d, ta, tb):
+        # the fit para of the radial and axial response
         k1, a1, b1, R1 = self.parameter_sphere(c, c0, d, tb)
         k2, a2, b2, R2 = self.parameter_sphere(c, c0, d, ta)
         k1_plus, k2_plus = self.ellipsoid_k_plus(ta, tb, c)
@@ -110,27 +155,33 @@ class Model(BaseTDEMModel):
 
         return k1_ellipsoid, a1, b1, R1, k2_ellipsoid, a2, b2, R2
 
-    def func(self, t, k, a, b, R):  # 返回球体的响应方程，用于拟合算法，需要此方程
+    def func(self, t, k, a, b, R):
+        """calculate the response of the sphere and return it
+        """
         e = np.e
         return k * pow((1 + pow(t / a, 1 / 2)), -b) * pow(e, -t / R)
 
     def wgn_one_npower(self, x, snr):
+        """add the noise to the date
+        """
         snr = 10 ** (snr / 10.0)
         xpower = np.sum(x ** 2) / len(x)
         npower = float(xpower / snr)
         return npower
 
     def dpred(self):
-        """
+        """product the forward data
 
         Returns
         -------
         feature_lable : ndarry
-        shape(n,402), n represent the number of simulation
-        feature_lable include material_flag, shape_flag and the response
+            shape(n,402), n represent the number of simulation
+            feature_lable include material_flag, shape_flag and the response
 
         sample: dict
-        represent a sample,it's to show the data one of the collection
+            represent a sample,it's to show the data one of the collection
+            key = ['data', 'M1', 'M2', 'M1_without_noise', 'M2_without_noise',
+            't', 'SNR', 'material', 'ta', 'tb']
 
         """
         t_split = self.survey.source.collection.t_split
@@ -167,15 +218,7 @@ class Model(BaseTDEMModel):
                             M2_without_noise = np.array(
                                 list(map(partial(self.func, k=k2_ellipsoid, a=a2, b=b2, R=R2), t)))
                             M = np.hstack((M1_without_noise, M2_without_noise))
-                            # 保存响应曲线的数据
-                            # if material_cnt == 0:
-                            #     if (ta == 0.04) & (tb == 0.08):
-                            #         pd.DataFrame([M1_without_noise, M2_without_noise, t],
-                            #                      index=['M1', 'M2', 't']).to_csv('./response_curve.csv')
-                            #         pd.DataFrame([[k1_ellipsoid, a1, b1, R1, k2_ellipsoid, a2, b2, R2]],
-                            #                      columns=['k1_ellipsoid', 'a1', 'b1', 'R1', 'k2_ellipsoid', 'a2', 'b2',
-                            #                               'R2']).to_csv(
-                            #             './results/tdemResults/response_parameter.csv')
+
                         if snr != None:
                             k1_ellipsoid, a1, b1, R1, k2_ellipsoid, a2, b2, R2 = self.ellipsoid_parameter(c, c0, d, ta,
                                                                                                           tb)
@@ -188,7 +231,7 @@ class Model(BaseTDEMModel):
                             M1 = M1_without_noise + np.random.randn(len(M1_without_noise)) * np.sqrt(noise_power)
                             M2 = M2_without_noise + np.random.randn(len(M2_without_noise)) * np.sqrt(noise_power)
                             M = np.hstack((M1, M2))
-                            # 输出第400个样本的分布情况
+                            # sample the number of 400 sample
                             plot_flag += 1
                             if plot_flag == 400:
                                 data_collect = np.vstack((M1, M2, M1_without_noise, M2_without_noise, t))
@@ -202,9 +245,9 @@ class Model(BaseTDEMModel):
                                 # data_collect.to_csv(dir_selected + 'SNR=' + str(snr) + 'dB.csv')
                         material_flag = material_cnt
                         if ta > tb:
-                            shape_flag = 0  # 径向大于轴向，扁椭球体
+                            shape_flag = 0  # Radial radius greater than axial radius, Oblate ellipsoid
                         else:
-                            shape_flag = 1  # 径向小于轴向，长椭球体
+                            shape_flag = 1  # Radial radius less than axial radius, Prolate spheroid
                         if sample_num == 0:
                             feature = M
                             lable = [[material_flag, shape_flag]]
@@ -212,10 +255,9 @@ class Model(BaseTDEMModel):
                             feature = np.vstack((feature, M))
                             lable = np.vstack((lable, [[material_flag, shape_flag]]))
                         sample_num += 1
-                        print("这是第%d个样本" % sample_num, material_flag, shape_flag, snr)
+                        print("number %d sample" % sample_num, material_flag, shape_flag, snr)
                     tb += b_r_step
                 ta += a_r_step
             material_cnt += 1
         feature_lable = np.hstack((lable, feature))
         return feature_lable, sample
-
