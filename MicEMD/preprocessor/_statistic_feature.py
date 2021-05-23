@@ -1,11 +1,13 @@
+# -*- coding: utf-8 -*-
+"""
+the statistic feature method of the dimensionality reduction
+
+Methods:
+- statistic_feature: Reducing dimensions of the original data in TDEM
+"""
 __all__ = ['statistic_feature']
-import pandas as pd
 import numpy as np
-import os
 
-
-# 最大值，最小值，均值，标准差，方差，
-# 平均绝对方差（mean absolute deviation) ,skeness
 
 def my_mad(X=None):
     return np.sum(np.absolute(X - np.mean(X, axis=1).reshape((-1, 1))), axis=1).reshape((-1, 1)) / X.shape[1]
@@ -31,7 +33,7 @@ def statistic_feature(data):
     train_set = train_feature_lable[:, 0:400]
     test_set = test_feature_lable[:, 0:400]
 
-    # 计算数据集的统计特征
+    # compute the feature of the statistic
     train_statistic = np.max(train_set, axis=1).reshape((-1, 1))
     train_statistic = np.hstack((train_statistic, np.min(train_set, axis=1).reshape((-1, 1))))
     train_statistic = np.hstack((train_statistic, np.mean(train_set, axis=1).reshape((-1, 1))))

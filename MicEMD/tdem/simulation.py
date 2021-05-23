@@ -1,6 +1,16 @@
+# -*- coding: utf-8 -*-
+"""
+The simulation in TDEM
+
+Class:
+- Simulation: the implement class of the BaseTDEMSimulation
+
+Methods:
+- simulate: the interface of the simulation in TDEM
+"""
+
 __all__ = ['Simulation', 'simulate']
 
-import pandas as pd
 from abc import ABCMeta
 from abc import abstractmethod
 from .survey import *
@@ -13,6 +23,17 @@ import matplotlib.pyplot as plt
 
 
 class BaseTDEMSimulation(metaclass=ABCMeta):
+    """the abstract class about the simulation in TDEM
+
+    Attributes
+    ----------
+    model: class
+    the model in TDEM
+
+    Methods:
+    pred
+        Returns the forward_result of the TDEM
+    """
     @abstractmethod
     def __init__(self, model):
         self.model = model
@@ -33,14 +54,34 @@ class Simulation(BaseTDEMSimulation):
 
 
 def simulate(target, detector, collection, model='dipole', save=True, show=False, *args, **kwargs):
-    source = Source(target, detector, collection)
-    survey = Survey(source)
-    _model = Model(survey)
-    simulation = Simulation(_model)
-    result = simulation.pred()
-    result = ForwardResult((result, simulation, {'method': model}))
-    handler = TDEMHandler(result)
-    handler.save_forward(save, show)
+    """the interface of the simulation
 
-    #handler.save_preparation(save)
-    return result
+    Parameters
+    ----------
+    target: class
+        the target of the TDEM
+    detector: class
+        the detector of the TDEM
+    collection: class
+        the collection of the TDEM
+    model: str
+        the name of the model
+
+    Returns
+    -------
+    res: tuple
+        the result of the method dpred in model class
+    """
+    if model == 'dipole':
+        source = Source(target, detector, collection)
+        survey = Survey(source)
+        _model = Model(survey)
+        simulation = Simulation(_model)
+        result = simulation.pred()
+
+        # result = ForwardResult((result, simulation, {'method': model}))
+        # handler = TDEMHandler(result)
+        # handler.save_forward(save, show)
+        return result
+    else:
+        pass

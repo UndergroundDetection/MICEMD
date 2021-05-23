@@ -1,20 +1,27 @@
 # -*- coding: utf-8 -*-
+"""
+The classification class in TDEM
+
+Class:
+- classification: the implement class of the BaseTDEMSimulation
+
+Methods:
+- simulate: the interface of the simulation in TDEM
+"""
 __all__ = ['Classification', 'classify']
 
 from abc import ABCMeta
 from abc import abstractmethod
 
-from . import ClsResult
 from ..classification._classfiy import classify_method
-from ..handler import TDEMHandler
-from ..preprocessor import *
-from ..classification.ANN import *
 
 
-class BaseClassification(metaclass=ABCMeta):
+class BaseTDEMClassification(metaclass=ABCMeta):
     @abstractmethod
-    def __init__(self, PreResult):
-        pass
+    def __init__(self, data, method, cls_para):
+        self.data = data
+        self.method = method
+        self.cls_para = cls_para
 
     @abstractmethod
     def run(self):
@@ -25,31 +32,62 @@ class BaseClassification(metaclass=ABCMeta):
         pass
 
 
-class Classification(BaseClassification):
+class Classification(BaseTDEMClassification):
+    """the class of the classification algorithm
 
-    def __init__(self, PreResult, method, cls_para, *args, **kwargs):
-        self.preResult = PreResult
+    Parameters
+    ----------
+    data: tuple
+        conclude the train set and the test set
+    method: str
+        the method of classification
+    cls_para: dict
+        the Parameters for the classification algorithm
+
+    Methods:
+    -------
+    - run: run the the classification algorithm
+    - error: return the res of the classification
+    """
+
+    def __init__(self, data, method, cls_para, *args, **kwargs):
+        self.data = data
         self.method = method
         self.cls_para = cls_para
 
     def run(self):
-        if self.method == 'ANN':
-            self.res = classify_method(self.preResult.train_set, self.preResult.test_set, self.method, self.cls_para)
-        else:
-            self.res = classify_method(self.preResult.train_set, self.preResult.test_set, self.method, self.cls_para)
+        self.res = classify_method(self.data[0], self.data[1], self.method, self.cls_para)
 
     @property
     def error(self):
         return self.res
 
 
-def classify(preResult, cls_method, cls_para=None, save=True, show=True, *args, **kwargs):
+def classify(data_set, cls_method, cls_para=None, *args, **kwargs):
+    """the interface of the classification of the target
+
+    Parameters
+    ----------
+    data_set: tuple
+        conclude the train set and the test set
+    cls_method: str
+        the method of classification
+    cls_para: dict
+        the Parameters for the classification algorithm
+
+    Returns
+    -------
+    res: dict
+        keys: ['accuracy', 'y_pred', 'y_true'], represent the accuracy ,
+        predict value and true value of the classification
+
+    """
     if cls_method in ['人工神经网络', 'ANN']:
-        method = 'ANN'
-    _classify = Classification(preResult, cls_method, cls_para)
+        cls_method = 'ANN'
+    _classify = Classification(data_set, cls_method, cls_para)
     _classify.run()
     res = _classify.error
-    clsResult = ClsResult(res, cls_method, cls_para)
-    handler = TDEMHandler(preResult.forwardResult, preResult, clsResult)
-    handler.plot_confusion_matrix(show)
-    return clsResult
+    # clsResult = ClsResult(res, cls_method, cls_para)
+    # handler = TDEMHandler(preResult.forwardResult, preResult, clsResult)
+    # handler.plot_confusion_matrix(show)
+    return res

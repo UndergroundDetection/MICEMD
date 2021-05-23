@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+prepare the data
+
+Methods:
+- data_prepare: the interface of processing the data by Scalar
+"""
 __all__ = ['data_prepare']
 
 import numpy as np
@@ -5,25 +12,24 @@ from sklearn.model_selection import train_test_split, cross_val_score
 from sklearn.preprocessing import MinMaxScaler
 
 
-def data_prepare(ForwardResult, task, filename=None):
+def data_prepare(response, task):
     """preparation of the tdem data
 
     Parameters
     ----------
-    ForwardResult
-    filename
+    response: ndarry
+        the data of response in TDEM
+    task: str
+        the specific task of classification
 
     Returns
     -------
-
+    res: tuple
+        conclude the train set and the test set.
     """
-    if filename is not None:
-        pass
 
-    data = ForwardResult.response
-
+    data = response
     feature_lable = np.array(data)
-
     feature = feature_lable[:, 2:feature_lable.shape[1]]
 
     if task == 'material':
@@ -45,14 +51,6 @@ def data_prepare(ForwardResult, task, filename=None):
 
         return training_set_material, testing_set_material
     if task == 'shape':
-        if filename is not None:
-            pass
-
-        data = ForwardResult.response
-
-        feature_lable = np.array(data)
-
-        feature = feature_lable[:, 2:feature_lable.shape[1]]
 
         shape_label = feature_lable[:, 1]
         X = feature

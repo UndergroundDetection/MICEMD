@@ -6,11 +6,9 @@ import numpy as np
 import pandas as pd
 import os
 import itertools
+import re
 
-from matplotlib import gridspec
 from sklearn.metrics import confusion_matrix
-
-from ..preprocessor import data_prepare
 from ..utils import RotationMatrix
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from SimPEG.utils import plot2Ddata
@@ -328,10 +326,8 @@ class FDEMHandler(FDEMBaseHandler):
 
 class TDEMBaseHandler(metaclass=ABCMeta):
     @abstractmethod
-    def __init__(self, ForwardResult, PreResult, ClsResult):
-        self.forward_result = ForwardResult
-        self.pre_result = PreResult
-        self.cls_result = ClsResult
+    def __init__(self):
+        pass
 
     @abstractmethod
     def save_forward(self):
@@ -343,11 +339,20 @@ class TDEMBaseHandler(metaclass=ABCMeta):
 
 
 class TDEMHandler(TDEMBaseHandler):
-    def __init__(self, ForwardResult, PreResult=None, ClsResult=None):
-        TDEMBaseHandler.__init__(self, ForwardResult, PreResult, ClsResult)
-        self.forward_result = ForwardResult
-        self.pre_result = PreResult
-        self.cls_result = ClsResult
+    """the data Handler class of TDEM
+
+
+    Methods
+    -------
+    - save_response_data:
+    - save_sample_data
+    - plot_data
+
+
+    """
+
+    def __init__(self):
+        TDEMBaseHandler.__init__(self)
 
     def save_cls(self, inv_flag):
         if inv_flag:
@@ -372,34 +377,64 @@ class TDEMHandler(TDEMBaseHandler):
                                             collection.SNR, collection.t_split)
         return file_name
 
-    def save_response_data(self, file_name):
-        response = self.forward_result.response
+    def save_fwd_data(self, response, file_name=None):
+        """save the data of the forward_res
+        the function as the general save function of the forward res
+
+        Parameters
+        ----------
+        response: ndarry
+            the dataset to save
+        file_name: str
+            the name of the file that you want to save, the Default relative
+            path is '../results/tdemResults/forward_res',if you just input
+            the file name, it will be saved in the path
+        """
+
         response = pd.DataFrame(response)
-        path = './results/tdemResults/{}/originData'.format(file_name)
+        path = os.path.dirname(file_name)
+        name = os.path.basename(file_name)
 
+        if path is '':
+            path = '../results/tdemResults/forward_res'
         if os.path.exists(path):
-            response.to_csv('{}/response.csv'.format(path))
+            response.to_csv('{}/{}'.format(path, name))
         else:
             os.makedirs(path)
-            response.to_csv('{}/response.csv'.format(path))
+            response.to_csv('{}/{}'.format(path, name))
 
-    def save_sample_data(self, file_name, show):
-        sample = self.forward_result.sample
+    def save_sample_data(self, sample, file_name, show=False):
+        """save the sample data of the forward_res
 
+        Parameters
+        ----------
+        sample: ndarry
+            the dataset to save
+        file_name: str
+            the name of the file that you want to save, the Default relative
+            path is '../results/tdemResults/forward_res',if you just input
+            the file name, it will be saved in the path
+        show: bool
+            show the picture of the sample data
+        """
         sample_data = sample['data']
-        snr = sample['SNR']
-        path = './results/tdemResults/{}/originData/sample selected'.format(file_name)
+        path = os.path.dirname(file_name)
+        name = os.path.basename(file_name)
+        pic_name = name.replace('.csv', '.png')
+
+        if path is '' or None:
+            path = '../results/tdemResults/forward_res'
         if os.path.exists(path):
-            sample_data.to_csv('{}/sample_{}dB.csv'.format(path, snr))
+            sample_data.to_csv('{}/{}'.format(path, name))
             self.plot_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
                            sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
-                           sample['ta'], sample['tb'], '{}/sample_{}dB.png'.format(path, snr), show)
+                           sample['ta'], sample['tb'], '{}/{}'.format(path, pic_name), show)
         else:
             os.makedirs(path)
-            sample_data.to_csv('{}/sample_{}dB.csv'.format(path, snr))
+            sample_data.to_csv('{}/{}'.format(path, name))
             self.plot_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
                            sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
-                           sample['ta'], sample['tb'], '{}/sample_{}dB.png'.format(path, snr), show)
+                           sample['ta'], sample['tb'], '{}/{}'.format(path, pic_name), show)
 
     def save_forward(self, save, show):
         if save:
@@ -408,6 +443,35 @@ class TDEMHandler(TDEMBaseHandler):
 
     def plot_data(self, M1, M2, M1_without_noise, M2_without_noise, t,
                   SNR, material, ta, tb, file_name, show):
+        """show the sample data
+
+        Parameters
+        ----------
+        M1: ndarry
+            the M1 response of the target
+        M2: ndarry
+            the M2 response of the target
+        M1_without_noise: ndarry
+            the M1 response of the target without the noise
+        M2_without_noise: ndarry
+            the M2 response of the target without the noise
+        t: int
+            the times collected per second
+        SNR: int
+            SNR(Signal to Noise Ratio)
+        material: str
+            the material of the target of the sample
+        ta: int
+            the radial radius of the target of the sample
+        tb: int
+            the axial radius of the target of the sample
+        file_name: str
+            the name of the file that you want to save, the Default relative
+            path is '../results/tdemResults/forward_res',if you just input
+            the file name, it will be saved in the path
+        show: bool
+            whether to show the picture
+        """
         fig, ax = plt.subplots()
         ax.set_xscale("log")
         ax.set_yscale("log")
@@ -422,8 +486,22 @@ class TDEMHandler(TDEMBaseHandler):
         plt.savefig(file_name, dpi=1000, bbox_inches='tight')
         if show:
             plt.show()
-    def save_preparation(self, data_set, task, save_flag):
-        if save_flag and task == 'material':
+
+    def save_preparation(self, data_set, file_name):
+
+        train_set_material = pd.DataFrame(data_set[0])
+        test_set_material = pd.DataFrame(data_set[1])
+        path_material = './results/tdemResults/{}/prepareData_material'.format(self.get_save_fdem_dir())
+        if os.path.exists(path_material):
+            train_set_material.to_csv('{}/train_set.csv'.format(path_material))
+            test_set_material.to_csv('{}/test_set.csv'.format(path_material))
+        else:
+            os.makedirs(path_material)
+            train_set_material.to_csv('{}/train_set.csv'.format(path_material))
+            test_set_material.to_csv('{}/test_set.csv'.format(path_material))
+
+    def save_preparation2(self, data_set, task):
+        if task == 'material':
             train_set_material = pd.DataFrame(data_set[0])
             test_set_material = pd.DataFrame(data_set[1])
             path_material = './results/tdemResults/{}/prepareData_material'.format(self.get_save_fdem_dir())
@@ -434,7 +512,7 @@ class TDEMHandler(TDEMBaseHandler):
                 os.makedirs(path_material)
                 train_set_material.to_csv('{}/train_set.csv'.format(path_material))
                 test_set_material.to_csv('{}/test_set.csv'.format(path_material))
-        if save_flag and task == 'shape':
+        if task == 'shape':
             train_set_shape = pd.DataFrame(data_set[0])
             test_set_shape = pd.DataFrame(data_set[1])
             path_shape = './results/tdemResults/{}/prepareData_shape'.format(self.get_save_fdem_dir())
@@ -477,16 +555,72 @@ class TDEMHandler(TDEMBaseHandler):
                 train_set_material.to_csv('{}/train_set.csv'.format(path_shape))
                 test_set_material.to_csv('{}/test_set.csv'.format(path_shape))
 
+    def plot_confusion_matrix(self, cls_res, type, show=False, save=False, file_name=None):
+        """This function prints and plots the confusion matrix.
+        Normalization can be applied by setting `normalize=True`.
+        Parameters:
+        -----------
+        type: list
+            the list of classification types
+        show: bool
+            whether to show
+        save: bool
+            whether to save
+        file_name: str
+            the name of the file that you want to save, the Default relative
+            path is '../results/tdemResults/classify_res',if you just input
+            the file name, it will be saved in the path, if you don't input
+            the file name, it will be saved by the name 'cls_res.pdf'
+
+        """
+        cmap = plt.cm.YlGnBu
+        plt.figure()
+        cm = confusion_matrix(y_true=cls_res['y_true'], y_pred=cls_res['y_pred'])
+        classes = type
+        cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
+        plt.ylabel('True label', fontsize=17)
+        plt.xlabel('Predicted label', fontsize=17)
+        plt.imshow(cm, interpolation='nearest', cmap=cmap)
+        plt.title('Confusion matrix', fontsize=17)
+        tick_marks = np.arange(len(classes))
+        plt.xticks(tick_marks, classes, rotation=0, fontsize=15)
+        plt.yticks(tick_marks - 0.25, classes, rotation=90, fontsize=15)
+        plt.tick_params(bottom=False, top=False, left=False, right=False)  # 移除全部刻度线
+        fmt = '.2f'
+        thresh = cm.max() / 2.
+        for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
+            plt.text(j, i, format(cm[i, j], fmt),
+                     horizontalalignment="center",
+                     color="white" if cm[i, j] > thresh else "black", fontsize=26)
+
+        plt.colorbar(shrink=1)
+        if show:
+            plt.show()
+        if save:
+            if file_name is not None:
+                path = os.path.dirname(file_name)
+                name = os.path.basename(file_name)
+                if path is '':
+                    path = '../results/tdemResults/classify_res'
+            else:
+                path = '../results/tdemResults/classify_res'
+                name = 'cls_res.pdf'
+            if os.path.exists(path):
+                plt.savefig('{}/{}'.format(path, name), format='pdf', bbox_inches='tight', dpi=600)
+            else:
+                os.makedirs(path)
+                plt.savefig('{}/{}'.format(path, name), format='pdf', bbox_inches='tight', dpi=600)
+
+
+
     # cm：混淆矩阵；classes：类别名称
-    def plot_confusion_matrix(self, show):
+    def plot_confusion_matrix2(self, show):
         """
         This function prints and plots the confusion matrix.
         Normalization can be applied by setting `normalize=True`.
         """
         cmap = plt.cm.YlGnBu
         plt.figure()
-        # gs = gridspec.GridSpec(1, 2, width_ratios=[4.45, 5.55])
-        # plt.subplot(gs[0])
         cm = confusion_matrix(y_true=self.cls_result.cls_result[1], y_pred=self.cls_result.cls_result[2])
         if self.pre_result.task == 'material':
             classes = self.forward_result.simulation.model.survey.source.target.material
@@ -511,3 +645,43 @@ class TDEMHandler(TDEMBaseHandler):
         plt.colorbar(shrink=1)
         if show:
             plt.show()
+
+    def save_cls_res(self, cls_res, file_name):
+        """save the classification result
+
+        Parameters
+        ----------
+        cls_res: dict
+            the res of the classification, conclude the accuracy, the true value and
+            the pred value
+        file_name: str
+            the name of the file that you want to save, the Default relative
+            path is '../results/tdemResults/classify_res',if you just input
+            the file name, it will be saved in the path
+
+        """
+
+        y_true = np.array(cls_res['y_true'], dtype=np.int)
+        y_pred = np.array(cls_res['y_pred'], dtype=np.int)
+        y = np.c_[y_true, y_pred]
+        accuracy = np.zeros(shape=(y_true.shape[0], 1), dtype=np.str)
+
+        res = np.c_[y, accuracy]
+        res = pd.DataFrame(res, columns=['y_true', 'y_pred', 'accuracy'])
+        res.iloc[0, 2] = cls_res['accuracy']
+        if file_name is not None:
+            path = os.path.dirname(file_name)
+            name = os.path.basename(file_name)
+            if path is '':
+                path = '../results/tdemResults/classify_res'
+        else:
+            path = '../results/tdemResults/classify_res'
+            name = 'cls_res.csv'
+
+        if os.path.exists(path):
+            res.to_csv('{}/{}'.format(path, name))
+        else:
+            os.makedirs(path)
+            res.to_csv('{}/{}'.format(path, name))
+
+
