@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+The survey class, represent the survey in FDEM
+
+Class:
+- Survey: the implement class of the BaseFDEMSurvey
+"""
 import SimPEG.electromagnetics.frequency_domain as fdem
 from abc import ABCMeta
 from abc import abstractmethod
@@ -5,7 +12,19 @@ from abc import abstractmethod
 __all__ = ['Survey']
 
 
-class BaseSurvey(metaclass=ABCMeta):
+class BaseFDEMSurvey(metaclass=ABCMeta):
+    """the abstract class about the survey in FDEM
+
+    Attributes
+    ----------
+    Source: class
+        the source in FDEM
+
+    Methods:
+    survey
+        Returns the survey of the FDEM
+    """
+
     @abstractmethod
     def __init__(self, Source):
         self.source = Source
@@ -16,10 +35,10 @@ class BaseSurvey(metaclass=ABCMeta):
         return _survey
 
 
-class Survey(BaseSurvey):
+class Survey(BaseFDEMSurvey):
 
     def __init__(self, Source):
-        BaseSurvey.__init__(self, Source)
+        BaseFDEMSurvey.__init__(self, Source)
 
     @property
     def survey(self):

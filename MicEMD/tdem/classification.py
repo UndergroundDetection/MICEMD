@@ -35,7 +35,7 @@ class BaseTDEMClassification(metaclass=ABCMeta):
 class Classification(BaseTDEMClassification):
     """the class of the classification algorithm
 
-    Parameters
+    Attributes
     ----------
     data: tuple
         conclude the train set and the test set
@@ -87,7 +87,4 @@ def classify(data_set, cls_method, cls_para=None, *args, **kwargs):
     _classify = Classification(data_set, cls_method, cls_para)
     _classify.run()
     res = _classify.error
-    # clsResult = ClsResult(res, cls_method, cls_para)
-    # handler = TDEMHandler(preResult.forwardResult, preResult, clsResult)
-    # handler.plot_confusion_matrix(show)
     return res

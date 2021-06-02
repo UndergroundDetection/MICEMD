@@ -120,8 +120,8 @@ class TFResult(object):
         """
 
         """
-        fdem_estimate_properties = self.inv_result.estimate_parameters
-        fdem_true_properties = self.inv_result.true_parameters
+        fdem_estimate_properties = self.inv_result['pred']
+        fdem_true_properties = self.inv_result['true']
         if self.current_language == 'en':
 
             text = "FDEM INVERSION RESULTS\n"

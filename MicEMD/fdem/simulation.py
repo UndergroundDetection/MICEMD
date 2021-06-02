@@ -1,3 +1,13 @@
+# -*- coding: utf-8 -*-
+"""
+The simulation in TDEM
+
+Class:
+- Simulation: the implement class of the BaseFDEMSimulation
+
+Methods:
+- simulate: the interface of the simulation in FDEM
+"""
 __all__ = ['Simulation', 'simulate']
 
 from abc import ABCMeta
@@ -38,15 +48,15 @@ def simulate(target, detector, collection, model='simpeg', save=True, show=True,
         _model = Model(survey)
         simulation = Simulation(_model)
         result = simulation.pred()
-        result = ForwardResult((result, simulation, {'method': model}))
-        handler = FDEMHandler(result, None)
-        handler.save_forward(save)
-        if show:
-            fig1 = plt.figure()
-            fig2 = plt.figure()
-            fig3 = plt.figure()
-            handler.show_fdem_detection_scenario(fig1)
-            handler.show_fdem_mag_map(fig2)
-            handler.show_discretize(fig3)
+        # result = ForwardResult((result, simulation, {'method': model}))
+        # handler = FDEMHandler(result, None)
+        # handler.save_forward(save)
+        # if show:
+        #     fig1 = plt.figure()
+        #     fig2 = plt.figure()
+        #     fig3 = plt.figure()
+        #     handler.show_fdem_detection_scenario(fig1)
+        #     handler.show_fdem_mag_map(fig2)
+        #     handler.show_discretize(fig3)
 
         return result

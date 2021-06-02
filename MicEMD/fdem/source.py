@@ -1,10 +1,32 @@
+# -*- coding: utf-8 -*-
+"""
+The Source class, represent the source in FDEM
+
+Class:
+- Source: implement class of the BaseTDEMSource in FDEM
+"""
 __all__ = ['Source']
 import SimPEG.electromagnetics.frequency_domain as fdem
 from abc import ABCMeta
 from abc import abstractmethod
 
 
-class BaseSource(metaclass=ABCMeta):
+class BaseFDEMSource(metaclass=ABCMeta):
+    """the abstract class about the source in FDEM
+
+    Attributes
+    ----------
+    Target: class
+        the target in FDEM
+    Detector: class
+        the detector class in FDEM
+    Collection: class
+        the Collection class in FDEM
+
+    Methods:
+    source_list
+        Returns the source list of the FDEM
+    """
 
     @abstractmethod
     def __init__(self, Target, Detector, Collection, *args):
@@ -17,13 +39,19 @@ class BaseSource(metaclass=ABCMeta):
         pass
 
 
-class Source(BaseSource):
-
+class Source(BaseFDEMSource):
     def __init__(self, Target, Detector, Collection, *args):
-        BaseSource.__init__(self, Target, Detector, Collection)
+        BaseFDEMSource.__init__(self, Target, Detector, Collection)
 
     @property
     def source_list(self):
+        """
+
+        Returns
+        -------
+        res: list
+            res conclude all the MagDipole class in simpeg
+        """
         # Create empty list to store sources
         frequencies = [self.detector.frequency]
         receiver_locations = self.collection.receiver_location

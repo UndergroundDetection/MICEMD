@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+"""
+The Collection class, conclude the parameters about collecting in underground detection system
+
+Class:
+- Collection: the class conclude the parameters about collecting in FDEM
+"""
 __all__ = ['Collection']
 
 
@@ -11,7 +17,29 @@ class Collection(object):
 
     Attributes
     ----------
+    spacing: float
+        the spacing of collection in x and y axis
+    height: float
+        The height of the detector above the ground
+    SNR: float
+        the SNR of the environment
+    x_min: float
+        the min value of the x axis collection
+    x_max: float
+        the max value of the x axis collection
+    y_min: float
+        the min value of the y axis collection
+    y_max: float
+        the max value of the y axis collection
+    collection_direction: str
+        the direction of the collection magnetic field
 
+    Methods
+    -------
+    receiver_location:
+        return the sample location of the receiver
+    source_locations:
+        return the location of the transmitter
     """
 
     def __init__(self, spacing, height, SNR, x_min, x_max, y_min, y_max,
@@ -27,11 +55,14 @@ class Collection(object):
 
     @property
     def receiver_location(self):
-        """get the sample location
+        """define and get the sample location of the receiver
 
         Returns
         -------
-
+        res: 2-D-ndarry
+            the location of the receiver, conclude the location of xyz axis
+            every line is a location [x, y, z], the number of row represent
+            the number of survey point
         """
         acq_area_xmin, acq_area_xmax = self.x_min, self.x_max
         acq_area_ymin, acq_area_ymax = self.y_min, self.y_max
@@ -48,6 +79,15 @@ class Collection(object):
 
     @property
     def source_locations(self):
+        """define and get the sample location of the transmitter
+
+        Returns
+        -------
+        res: 2-D-ndarry
+            the location of the receiver, conclude the location of xyz axis
+            every line is a location [x, y, z], the number of row represent
+            the number of survey point
+        """
         # Defining transmitter locations
         acquisition_spacing = self.spacing
         acq_area_xmin, acq_area_xmax = self.x_min, self.x_max

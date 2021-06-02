@@ -1,4 +1,14 @@
 # -*- coding: utf-8 -*-
+"""
+The inversion class in FDEM
+
+Class:
+- Inversion: the implement class of the BaseFDEMInversion
+
+Methods:
+- inverse: the interface of the inverse in FDEM
+"""
+
 __all__ = ['Inversion', 'inverse']
 
 from abc import ABCMeta
@@ -10,9 +20,9 @@ from .results import *
 from ..handler import FDEMHandler
 
 
-class BaseInversion(metaclass=ABCMeta):
+class BaseFDEMInversion(metaclass=ABCMeta):
     @abstractmethod
-    def __init__(self, ForwardResult):
+    def __init__(self, data, method, inv_para):
         pass
 
     @abstractmethod
@@ -32,29 +42,44 @@ class BaseInversion(metaclass=ABCMeta):
         pass
 
 
-class Inversion(BaseInversion):
+class Inversion(BaseFDEMInversion):
 
-    def __init__(self, method, x0, iterations, tol, ForwardResult):
-        BaseInversion.__init__(self, ForwardResult)
+    def __init__(self, data, method, inv_para):  # , x0, iterations, tol, ForwardResult
+        """
+
+        Parameters
+        ----------
+        data: tuple or list
+            conclude receiver_location, magnetic data, targer and detector
+        method: str
+            the optimization method
+        inv_para: dict
+            the parameters of the inversion,conclude the initial value, iteration and Threshold of loss
+
+        """
+        BaseFDEMInversion.__init__(self, data, method, inv_para)
         self.method = method
-        self.x0 = x0
-        self.iterations = iterations
-        self.tol = tol
-        self.receiver_locations = ForwardResult.receiver_locations
-        self.mag_data = ForwardResult.mag_data
-        self.target = ForwardResult.simulation.model.survey.source.target
-        self.detector = ForwardResult.simulation.model.survey.source.detector
-        self.fun = lambda x: self.inv_objective_function(
-            self.detector, self.receiver_locations,
-            self.mag_data, x)
-        self.grad = lambda x: self.inv_objectfun_gradient(
-            self.detector, self.receiver_locations,
-            self.mag_data, x)
-        self.jacobian = lambda x: self.inv_residual_vector_grad(
-            self.detector, self.receiver_locations, x)
+        self.x0 = inv_para['x0']
+        self.iterations = inv_para['iterations']
+        self.tol = inv_para['tol']
+        self.receiver_locations = data[0][:, 0:3]
+        self.mag_data = data[0][:, 3:6]
+        self.target = data[1]
+        self.detector = data[2]
+        self.fun = lambda x: self.inv_objective_function(self.detector, self.receiver_locations, self.mag_data, x)
+        self.grad = lambda x: self.inv_objectfun_gradient(self.detector, self.receiver_locations, self.mag_data, x)
+        self.jacobian = lambda x: self.inv_residual_vector_grad(self.detector, self.receiver_locations, x)
 
     @property
     def true_properties(self):
+        """return the true properties
+
+        Returns
+        -------
+        res: ndarry
+            return the true properties, conclude position, polarizability, pitch and
+            roll angle of the target, amount to 8 inverse parameters
+        """
         true_properties = np.array(self.target.position)
         true_polarizability = self.target.get_principal_axis_polarizability(
             self.detector.frequency)
@@ -64,8 +89,7 @@ class Inversion(BaseInversion):
         return true_properties
 
     def inv_objective_function(self, detector, receiver_locations, true_mag_data, x):
-        """
-        Objective function.
+        """Objective function.
 
         Parameters
         ----------
@@ -85,9 +109,7 @@ class Inversion(BaseInversion):
         objective_fun_value : float
         """
 
-        residual = self.inv_residual_vector(
-            detector, receiver_locations, true_mag_data, x
-        )
+        residual = self.inv_residual_vector(detector, receiver_locations, true_mag_data, x)
         objective_fun_value = np.square(residual).sum() / 2.0
 
         return objective_fun_value
@@ -291,7 +313,9 @@ class Inversion(BaseInversion):
         return grad
 
     def polar_tensor_to_properties(self, polar_tensor_vector):
-        """
+        """transform the polar tensor to properties
+        transform M11, M22, M33, M12, M13, M23 to polarizability
+        and pitch and roll angle
 
         Parameters
         ----------
@@ -307,7 +331,7 @@ class Inversion(BaseInversion):
         M11, M22, M33, M12, M13, M23 = polar_tensor_vector[:]
         M = np.mat([[M11, M12, M13], [M12, M22, M23], [M13, M23, M33]])
         eigenvalue, eigenvector = np.linalg.eig(M)
-
+        # because of bx=by, so we can know which is bx,by,bz
         xyz_polar_index = self.find_xyz_polarizability_index(eigenvalue)
         numx = int(xyz_polar_index[0])
         numy = int(xyz_polar_index[1])
@@ -328,8 +352,7 @@ class Inversion(BaseInversion):
         return np.append(xyz_eigenvalue, [pitch, roll])
 
     def find_xyz_polarizability_index(self, polarizability):
-        """make the order of eigenvalue correspond to the polarizability order,
-        so we can
+        """make the order of eigenvalue correspond to the polarizability order
 
         Parameters
         ----------
@@ -351,8 +374,15 @@ class Inversion(BaseInversion):
         return sorted_diff[0][0]
 
     def run(self):
-        estimate_parameters = numopt(self.fun, self.grad, self.jacobian, self.x0,
-                                     self.iterations, self.method, self.tol)
+        """run the process of the inversion
+
+        Returns
+        -------
+        res: ndarray
+            return the estimate properties[x, y, z, bx, by, bz, pitch, roll]
+        """
+        estimate_parameters = numopt(self.fun, self.grad, self.jacobian, self.x0, self.iterations, self.method,
+                                     self.tol)
         estimate_properties = estimate_parameters[:3]
         est_ploar_and_orientation = self.polar_tensor_to_properties(estimate_parameters[3:])
         estimate_properties = np.append(estimate_properties, est_ploar_and_orientation)
@@ -364,7 +394,7 @@ class Inversion(BaseInversion):
         return abs(self.true_properties - self.estimate_properties)
 
 
-def inverse(method, x0, iterations, tol, ForwardResult, save, *args, **kwargs):
+def inverse(data, method, inv_para, *args, **kwargs):
     if method in ['Levenberg-Marquardt', 'L-M']:
         method = 'LM'
     if method in ['最速下降', 'Steepest descent']:
@@ -372,17 +402,11 @@ def inverse(method, x0, iterations, tol, ForwardResult, save, *args, **kwargs):
     if method in ['共轭梯度', 'Conjugate gradient']:
         method = 'CG'
 
-    if ForwardResult.condition['method'] == 'simpeg':
-        if method in ['BFGS', 'CG', 'SD', 'LM']:
-            inversion = Inversion(method, x0, iterations, tol, ForwardResult)
-            _result = []
-            opt_condition = dict(method=method, x0=x0, iterations=iterations, tol=tol)
-            estimate_parameters = inversion.run()
-            _result.append(estimate_parameters)
-            _result.append(inversion.true_properties)
-            _result.append(inversion.error)
-            _result.append(opt_condition)
-            result = InvResult(_result)
-            handler = FDEMHandler(ForwardResult, result)
-            handler.save_inv(save)
-            return result
+    if method in ['BFGS', 'CG', 'SD', 'LM']:
+        inversion = Inversion(data, method, inv_para)
+        res = {}
+        estimate_parameters = inversion.run()
+        res['pred'] = estimate_parameters
+        res['true'] = inversion.true_properties
+        res['error'] = inversion.error
+        return res

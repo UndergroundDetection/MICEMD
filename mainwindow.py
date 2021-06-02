@@ -29,19 +29,23 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         super(MainWindow, self).__init__()
         self.setupUi(self)
 
+        # init
         self.initialize()
+
         # Connect slots function.
         self.get_fdem_simulation_parameters()
+
+        # define slots function to response to the action
         self.connect_slots()
-        self.thread_cal_fdem = ThreadCalFdem()
-        self.thread_inv_fdem = ThreadInvFdem()
+
+        # Due to the long time of forward simulation and inversion,
+        # the interface will appear suspended animation state,
+        # so multi-thread is used to complete forward simulation and inversion
+        self.thread_cal_fdem = ThreadCalFdem()  # Define the fdem forward simulation thread class.
+        self.thread_inv_fdem = ThreadInvFdem()  # Define the fdem inversion thread class.
 
     def initialize(self):
 
-        # Define the fdem forward simulation thread class.
-        # self.thread_cal_fdem = ThreadCalFdem()
-        # Define the fdem inversion thread class.
-        #self.thread_inv_fdem = ThreadInvFdem()
 
         # Set the display position of the mainwindow.
         desktop = QApplication.desktop()
@@ -67,11 +71,13 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.canvas_magnetic_field = FigureCanvasQTAgg(self.fig_magnetic_field)
         self.gl_magnetic_field_data.addWidget(self.canvas_magnetic_field)
 
+        # set the QProcessBar('rfs' represent 'run fdem simulation',
+        # 'rfi' represent 'run fdem inversion' ) invisible
         self.pbar_rfs.setVisible(False)
         self.pbar_rfi.setVisible(False)
 
     def connect_slots(self):
-
+        # the response to select language action
         self.actionChinese.triggered.connect(self.select_Chinese)
         self.actionEnglish.triggered.connect(self.select_English)
 
@@ -234,14 +240,18 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         self.result.forward_result = forward_result
         self.result.check_FPara_change = True
-        handler = FDEMHandler(forward_result, None)
+        handler = FDEMHandler(target=self.target, collection=self.collection)
+        if self.thread_cal_fdem.save:
+            handler.save_fwd_data_default(forward_result[0])
 
         # Plot discetize
-        handler.show_discretize(self.fig_discretize)
+        handler.show_discretize_default(forward_result[1], forward_result[2], self.fig_discretize, show=False,
+                                        save=self.thread_cal_fdem.save)
         self.canvas_discretize.draw()
 
         # Plot secondary field.
-        handler.show_fdem_mag_map(self.fig_magnetic_field)
+        handler.show_mag_map_default(forward_result[0], self.fig_magnetic_field, show=False,
+                                     save=self.thread_cal_fdem.save)
         self.canvas_magnetic_field.draw()
 
         # Output finish information.
@@ -279,6 +289,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.thread_inv_fdem.iterations = float(self.le_optimization_iterations.text())
             self.thread_inv_fdem.tol = float(self.le_optimization_tol.text())
             self.thread_inv_fdem.forward_result = self.result.forward_result
+            self.thread_inv_fdem.target = self.target
+            self.thread_inv_fdem.detector = self.detector
             self.thread_inv_fdem.save = save
 
             # Output begin
@@ -294,6 +306,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def run_fdem_inv_result_process(self, inv_result):
         self.result.inv_result = inv_result
+
+        if self.thread_inv_fdem.save:
+            handler = FDEMHandler(target=self.target, collection=self.collection)
+            handler.save_inv_res_default(inv_result, self.thread_inv_fdem.method)
 
         text = self.result.output_fdem_result()
         self.tb_output_box.setText(text)

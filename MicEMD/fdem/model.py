@@ -1,3 +1,10 @@
+# -*- coding: utf-8 -*-
+"""
+The model class, represent the model in FDEM
+
+Class:
+- Model: the implement class of the BaseFDEMModel
+"""
 __all__ = ['Model']
 from abc import ABCMeta
 from abc import abstractmethod
@@ -17,7 +24,18 @@ except ImportError:
     from SimPEG import SolverLU as Solver
 
 
-class BaseModel(metaclass=ABCMeta):
+class BaseFDEMModel(metaclass=ABCMeta):
+    """the abstract class about the model in FDEM
+
+    Attributes
+    ----------
+    Survey: class
+        the Survey in FDEM
+
+    Methods:
+    dpred
+        Returns the forward simulation data of the FDEM
+    """
     @abstractmethod
     def __init__(self, Survey):
         self.survey = Survey
@@ -27,9 +45,9 @@ class BaseModel(metaclass=ABCMeta):
         pass
 
 
-class Model(BaseModel):
+class Model(BaseFDEMModel):
     def __init__(self, Survey):
-        BaseModel.__init__(self, Survey)
+        BaseFDEMModel.__init__(self, Survey)
 
     def dpred(self):
         target = self.survey.source.target
@@ -103,7 +121,7 @@ class Model(BaseModel):
         )
         '''Predict'''
 
-        # Compute predicted data for a your model.
+        # Compute predicted data for your model.
         dpred = simulation.dpred(model)
         dpred = dpred * 1e9
 
@@ -124,12 +142,12 @@ class Model(BaseModel):
         mag_data = np.c_[mkvc(bx_total), mkvc(by_total), mkvc(bz_total)]
 
         mag_data = self.mag_data_add_noise(mag_data, collection.SNR)
+        data = np.c_[collection.receiver_location, mag_data]
 
-        return collection.receiver_location, mag_data, mesh, sigma_map * model
+        return data, mesh, sigma_map * model
 
     def mag_data_add_noise(self, mag_data, snr):
-        """
-
+        """add the noise for the mag_data
 
         Parameters
         ----------
@@ -140,8 +158,7 @@ class Model(BaseModel):
 
         Returns
         -------
-        None.
-
+        res: ndarry
         """
 
         mag_data[:, 0] = self.add_wgn(mag_data[:, 0], snr)
@@ -151,8 +168,7 @@ class Model(BaseModel):
         return mag_data
 
     def add_wgn(self, data, snr):
-        """
-
+        """add the noise for the data
 
         Parameters
         ----------
@@ -163,8 +179,7 @@ class Model(BaseModel):
 
         Returns
         -------
-        None.
-
+        res: ndarry
         """
 
         ps = np.sum(abs(data) ** 2) / len(data)
@@ -174,8 +189,7 @@ class Model(BaseModel):
         return signal_add_noise
 
     def getIndicesCylinder(self, center, radius, height, oritation, ccMesh):
-        """
-        Create the mesh indices of a custom cylinder
+        """Create the mesh indices of a custom cylinder
 
         Parameters
         ----------

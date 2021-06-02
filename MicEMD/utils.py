@@ -9,6 +9,7 @@ __all__ = ['mkvc', 'RotationMatrix']
 import numpy as np
 from math import sin, cos, pi
 
+
 def mkvc(x, numDims=1):
     """Creates a vector with the number of dimension specified
 
@@ -133,7 +134,6 @@ def RotationMatrix(theta, phi, psi):
                  [0, -sin(phi), cos(phi)]])
 
     return Rx * Ry * Rz
-
 
 # def mag_data_add_noise(mag_data, snr):
 #     """
