@@ -1,4 +1,10 @@
 # -*- coding: utf-8 -*-
+"""
+The target class, represent the target in underground detection
+
+Class:
+- Target: the target class in FDEM
+"""
 __all__ = ['Target']
 
 import numpy as np
@@ -6,11 +12,29 @@ from scipy.constants import mu_0
 
 
 class Target(object):
-    """
-    Refer in particular to a cylindrical target.
+    """Refer in particular to cylinder targets.
 
     Attributes
     ----------
+    conductivity: float
+        the conductivity of the target
+    permeability: float
+        the permeability of the target
+    radius: float
+        The radius of the base of a cylinder
+    pitch: float
+        the pitch angle of the cylinder
+    roll: float
+        the roll angle of the cylinder
+    length: float
+        the length of the target
+    position: list
+        the position of the target, [x, y, z]
+
+    Methods
+    -------
+    get_principal_axis_polarizability
+        return the principal axis polarizabilities of the target
 
     """
 

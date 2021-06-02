@@ -53,7 +53,7 @@ class Simulation(BaseTDEMSimulation):
         return result
 
 
-def simulate(target, detector, collection, model='dipole', save=True, show=False, *args, **kwargs):
+def simulate(target, detector, collection, model='dipole', *args, **kwargs):
     """the interface of the simulation
 
     Parameters
@@ -78,10 +78,6 @@ def simulate(target, detector, collection, model='dipole', save=True, show=False
         _model = Model(survey)
         simulation = Simulation(_model)
         result = simulation.pred()
-
-        # result = ForwardResult((result, simulation, {'method': model}))
-        # handler = TDEMHandler(result)
-        # handler.save_forward(save, show)
         return result
     else:
         pass

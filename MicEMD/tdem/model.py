@@ -26,7 +26,7 @@ class BaseTDEMModel(metaclass=ABCMeta):
     Methods:
     dpred
         Returns the forward simulation data of the TDEM
-        """
+    """
 
     @abstractmethod
     def __init__(self, Survey):

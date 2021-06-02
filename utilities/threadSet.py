@@ -1,7 +1,5 @@
 from PyQt5.QtCore import QTranslator, QThread, pyqtSignal
 import MicEMD.fdem as f
-from MicEMD.fdem import ForwardResult
-from MicEMD.fdem import InvResult
 import numpy as np
 
 
@@ -26,7 +24,7 @@ class ThreadCalFdem(QThread):
     """
 
     # use the signal to get the result of the simulation thread
-    trigger = pyqtSignal(ForwardResult)
+    trigger = pyqtSignal(tuple)
 
     def __init__(self):
         super(ThreadCalFdem, self).__init__()
@@ -38,7 +36,7 @@ class ThreadCalFdem(QThread):
     def run(self):
         """Use the information about the initial parameters to simulate"""
 
-        forward_result = f.simulate(self.target, self.detector, self.collection, 'simpeg', self.save)
+        forward_result = f.simulate(self.target, self.detector, self.collection, 'simpeg')
         self.trigger.emit(forward_result)
     # @property
     # def forward_result(self):
@@ -61,14 +59,14 @@ class ThreadInvFdem(QThread):
         The minimum cost of numeric optimization method
     x0: ndarray
         The initial parameters of inversion
-    forward_result: class
+    forward_result: tuple
         The result of simulation,consists of the information of the simulation
     save: bool
         Whether to save the result of inversion
 
     """
     # use the signal to get the result of the inversion thread
-    trigger = pyqtSignal(InvResult)
+    trigger = pyqtSignal(dict)
 
     def __init__(self):
         super(ThreadInvFdem, self).__init__()
@@ -77,6 +75,8 @@ class ThreadInvFdem(QThread):
         self.tol = None
         self.x0 = np.array([0.0, 0.0, -2.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
         self.forward_result = None
+        self.target = None
+        self.detector = None
         self.save = False
 
     def run(self):
@@ -85,7 +85,12 @@ class ThreadInvFdem(QThread):
         and utilize the signal to transfer the inv_result.
 
         """
-        inv_result = f.inverse(self.method, self.x0, self.iterations, self.tol, self.forward_result, self.save)
+
+        data = (self.forward_result[0], self.target, self.detector)
+        inv_para = {'x0': self.x0, 'iterations': self.iterations, 'tol': self.tol}
+
+        inv_result = f.inverse(data, self.method, inv_para)
+
         self.trigger.emit(inv_result)
 
 
