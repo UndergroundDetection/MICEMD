@@ -15,9 +15,7 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 
 from mainwindow_ui import Ui_MainWindow
 from result import TFResult
-from MicEMD.fdem.collection import Collection
-from MicEMD.fdem.target import Target
-from MicEMD.fdem.detector import Detector
+import MicEMD.fdem as f
 from utilities.show import show_fdem_detection_scenario
 from utilities.threadSet import ThreadCalFdem, ThreadInvFdem
 from MicEMD.handler import FDEMHandler
@@ -30,7 +28,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.setupUi(self)
         
         # let the form is not resizable
-        self.setFixedSize(self.width(), self.height())
+        # self.setFixedSize(self.width(), self.height())
 
 
         # init
@@ -152,7 +150,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.pb_run_tdem_classification.setVisible(False)
 
             self.result.current_method = 'fdem'
-            self.get_fdem_simulation_parameters()
+            # self.get_fdem_simulation_parameters()
         else:
             self.pb_run_fdem_forward_simulation.setVisible(False)
             self.pb_run_fdem_inversion.setVisible(False)
@@ -168,14 +166,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         """
 
-        self.detector = Detector(
+        self.fdetector = f.Detector(
             float(self.le_detector_radius.text()),
             float(self.le_detector_current.text()),
             float(self.le_detector_frequency.text()),
             float(self.le_detector_pitch.text()),
             float(self.le_detector_roll.text())
         )
-        self.target = Target(
+        self.ftarget = f.Target(
             float(self.le_target_conductivity.text()),
             float(self.le_target_permeability.text()),
             float(self.le_target_radius.text()),
@@ -186,7 +184,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             float(self.le_target_position_y.text()),
             float(self.le_target_position_z.text())
         )
-        self.collection = Collection(
+        self.fcollection = f.Collection(
             float(self.le_collection_spacing.text()),
             float(self.le_collection_height.text()),
             float(self.le_collection_SNR.text()),
@@ -199,7 +197,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Update the detection scenario.
         self.result.check_FPara_change = False
-        show_fdem_detection_scenario(self.fig_scenario, self.target, self.collection)
+        show_fdem_detection_scenario(self.fig_scenario, self.ftarget, self.fcollection)
         self.canvas_scenario.draw()
 
     def run_fdem_forward_calculate(self):
@@ -228,9 +226,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         # Start the thread.
         #self.thread_cal_fdem = ThreadCalFdem()
-        self.thread_cal_fdem.target = self.target
-        self.thread_cal_fdem.detector = self.detector
-        self.thread_cal_fdem.collection = self.collection
+        self.thread_cal_fdem.target = self.ftarget
+        self.thread_cal_fdem.detector = self.fdetector
+        self.thread_cal_fdem.collection = self.fcollection
         self.thread_cal_fdem.save = save
         self.thread_cal_fdem.start()
 
@@ -244,7 +242,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         self.result.forward_result = forward_result
         self.result.check_FPara_change = True
-        handler = FDEMHandler(target=self.target, collection=self.collection)
+        handler = FDEMHandler(target=self.ftarget, collection=self.fcollection)
         if self.thread_cal_fdem.save:
             handler.save_fwd_data_default(forward_result[0])
 
@@ -293,8 +291,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.thread_inv_fdem.iterations = float(self.le_optimization_iterations.text())
             self.thread_inv_fdem.tol = float(self.le_optimization_tol.text())
             self.thread_inv_fdem.forward_result = self.result.forward_result
-            self.thread_inv_fdem.target = self.target
-            self.thread_inv_fdem.detector = self.detector
+            self.thread_inv_fdem.target = self.ftarget
+            self.thread_inv_fdem.detector = self.fdetector
             self.thread_inv_fdem.save = save
 
             # Output begin
@@ -312,7 +310,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.result.inv_result = inv_result
 
         if self.thread_inv_fdem.save:
-            handler = FDEMHandler(target=self.target, collection=self.collection)
+            handler = FDEMHandler(target=self.ftarget, collection=self.fcollection)
             handler.save_inv_res_default(inv_result, self.thread_inv_fdem.method)
 
         text = self.result.output_fdem_result()
