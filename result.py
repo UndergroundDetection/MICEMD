@@ -8,6 +8,7 @@ import numpy as np
 import pandas as pd
 import os
 
+
 class TFResult(object):
     """The class of the output in mainwindow.
     It mainly processes the different output in different language.
@@ -32,8 +33,11 @@ class TFResult(object):
         self.current_language = 'en'
         self.current_method = 'fdem'
         self.forward_result = None
+        self.forward_result_t = None
         self.inv_result = None
+        self.cls_result = None
         self.check_FPara_change = False
+        self.check_TPara_change = False
 
     def output_forward_begin(self):
         """When the forward begin,the response of the mainwindow
@@ -115,6 +119,26 @@ class TFResult(object):
                     + "Please run the forward simulation first !")
         elif self.current_language == 'cn':
             return "正向仿真参数已改变, 请先运行正向仿真."
+
+    def output_check_TPara_change(self):
+        if self.current_language == 'en':
+            return ("The forward simulation parameters had been changed. "
+                    + "Please run the forward simulation first !")
+        elif self.current_language == 'cn':
+            return "正向仿真参数已改变, 请先运行正向仿真."
+
+    def output_tdem_result(self):
+        text = ''
+        accuracy = self.cls_result['accuracy']
+        if self.current_language == 'en':
+            text = "TDEM CLASSIFICATION RESULTS\n"
+            text += "accuracy\n--------------\n"
+            text += "%.4f \n" % accuracy
+        elif self.current_language == 'cn':
+            text = "TDEM的分类结果\n"
+            text += "准确度\n--------------\n"
+            text += "%.4f \n" % accuracy
+        return text
 
     def output_fdem_result(self):
         """

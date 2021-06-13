@@ -35,7 +35,7 @@ def preprocess(response, dim_red_method=None):
     """
 
     original_data = response
-    dim_reduction_data = None
+    dim_reduction_data = response
     if dim_red_method == 'SF':
         dim_reduction_data = statistic_feature(original_data)
 

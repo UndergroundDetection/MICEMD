@@ -16,9 +16,11 @@ from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 from mainwindow_ui import Ui_MainWindow
 from result import TFResult
 import MicEMD.fdem as f
+import MicEMD.tdem as t
 from utilities.show import show_fdem_detection_scenario
-from utilities.threadSet import ThreadCalFdem, ThreadInvFdem
-from MicEMD.handler import FDEMHandler
+from utilities.threadSet import ThreadCalFdem, ThreadInvFdem, ThreadCalTdem, ThreadClsTdem
+from MicEMD.handler import FDEMHandler, TDEMHandler
+import numpy as np
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
@@ -26,16 +28,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
     def __init__(self):
         super(MainWindow, self).__init__()
         self.setupUi(self)
-        
-        # let the form is not resizable
-        # self.setFixedSize(self.width(), self.height())
-
 
         # init
         self.initialize()
 
         # Connect slots function.
         self.get_fdem_simulation_parameters()
+        self.get_tdem_simulation_parameters()
+        # self.select_detection_method()
 
         # define slots function to response to the action
         self.connect_slots()
@@ -45,9 +45,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # so multi-thread is used to complete forward simulation and inversion
         self.thread_cal_fdem = ThreadCalFdem()  # Define the fdem forward simulation thread class.
         self.thread_inv_fdem = ThreadInvFdem()  # Define the fdem inversion thread class.
+        self.thread_cal_tdem = ThreadCalTdem()  # Define the fdem forward simulation thread class.
+        self.thread_cls_tdem = ThreadClsTdem()  # Define the fdem inversion thread class.
 
     def initialize(self):
-
 
         # Set the display position of the mainwindow.
         desktop = QApplication.desktop()
@@ -72,6 +73,14 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.fig_magnetic_field = Figure(figsize=(4.21, 3.91))
         self.canvas_magnetic_field = FigureCanvasQTAgg(self.fig_magnetic_field)
         self.gl_magnetic_field_data.addWidget(self.canvas_magnetic_field)
+
+        self.fig_sample_response = Figure(figsize=(4.21, 3.91))
+        self.canvas_sample_response = FigureCanvasQTAgg(self.fig_sample_response)
+        self.gl_sample_data_t.addWidget(self.canvas_sample_response)
+
+        self.fig_cls_result = Figure(figsize=(4.21, 3.91))
+        self.canvas_cls_result = FigureCanvasQTAgg(self.fig_cls_result)
+        self.gl_classification_result_t.addWidget(self.canvas_cls_result)
 
         # set the QProcessBar('rfs' represent 'run fdem simulation',
         # 'rfi' represent 'run fdem inversion' ) invisible
@@ -110,11 +119,30 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.le_collection_y_max.editingFinished.connect(self.get_fdem_simulation_parameters)
         self.cb_collection_direction.currentIndexChanged.connect(self.get_fdem_simulation_parameters)
 
+        self.le_detector_radius_t.editingFinished.connect(self.get_tdem_simulation_parameters)
+        self.le_detector_current_t.editingFinished.connect(self.get_tdem_simulation_parameters)
+        self.le_detector_pitch_t.editingFinished.connect(self.get_tdem_simulation_parameters)
+        self.le_detector_roll_t.editingFinished.connect(self.get_tdem_simulation_parameters)
+        self.le_target_a_min_t.editingFinished.connect(self.get_tdem_simulation_parameters)
+        self.le_target_a_max_t.editingFinished.connect(self.get_tdem_simulation_parameters)
+        self.le_target_b_min_t.editingFinished.connect(self.get_tdem_simulation_parameters)
+        self.le_target_b_max_t.editingFinished.connect(self.get_tdem_simulation_parameters)
+        self.le_target_a_split_t.editingFinished.connect(self.get_tdem_simulation_parameters)
+        self.le_target_b_split_t.editingFinished.connect(self.get_tdem_simulation_parameters)
+        self.le_collection_split_t.editingFinished.connect(self.get_tdem_simulation_parameters)
+        self.le_target_b_split_t.editingFinished.connect(self.get_tdem_simulation_parameters)
+
         # When run forward simulation button is clicked in fdem.
         self.pb_run_fdem_forward_simulation.clicked.connect(self.run_fdem_forward_calculate)
 
+        # When run forward simulation button is clicked in tdem.
+        self.pb_run_tdem_forward_simulation.clicked.connect(self.run_tdem_forward_calculate)
+
         # When run inversion button is clicked in fdem.
         self.pb_run_fdem_inversion.clicked.connect(self.run_fdem_inversion)
+
+        # When run classification button is clicked in tdem.
+        self.pb_run_tdem_classification.clicked.connect(self.run_tdem_classification)
 
     def select_Chinese(self):
         """
@@ -142,8 +170,10 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         """
         When detection method is changed, this function will be called.
         """
-
+        self.pbar_rfi.setVisible(False)
+        self.pbar_rfs.setVisible(False)
         if self.tab_signal_type.currentWidget() == self.tab_FDEM:
+            self.tab_show.setCurrentWidget(self.tab_detection_scenario)
             self.pb_run_fdem_forward_simulation.setVisible(True)
             self.pb_run_fdem_inversion.setVisible(True)
             self.pb_run_tdem_forward_simulation.setVisible(False)
@@ -152,6 +182,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             self.result.current_method = 'fdem'
             # self.get_fdem_simulation_parameters()
         else:
+            self.tab_show.setCurrentWidget(self.tab_sample_data_t)
             self.pb_run_fdem_forward_simulation.setVisible(False)
             self.pb_run_fdem_inversion.setVisible(False)
             self.pb_run_tdem_forward_simulation.setVisible(True)
@@ -225,7 +256,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.pbar_rfs.setMaximum(0)  # let the progressbar to scroll
 
         # Start the thread.
-        #self.thread_cal_fdem = ThreadCalFdem()
+        # self.thread_cal_fdem = ThreadCalFdem()
         self.thread_cal_fdem.target = self.ftarget
         self.thread_cal_fdem.detector = self.fdetector
         self.thread_cal_fdem.collection = self.fcollection
@@ -233,6 +264,98 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         self.thread_cal_fdem.start()
 
         self.thread_cal_fdem.trigger.connect(self.run_fdem_forward_result_process)
+
+    def get_tdem_simulation_parameters(self):
+        """
+        When parameters are update in tdem interface, the parameters used for
+        calculation will be updated.
+        """
+
+        self.tdetector = t.Detector(
+            float(self.le_detector_radius_t.text()),
+            float(self.le_detector_current_t.text()),
+            float(self.le_detector_pitch_t.text()),
+            float(self.le_detector_roll_t.text())
+        )
+        self.ttarget = t.Target(
+            self.le_target_material_t.text().split(','),
+            self.le_target_shape_t.text().split(','),
+            np.array([[696.3028547, 875 * 1e-6, 50000000], [99.47183638, 125 * 1e-6, 14619883.04],
+                      [1.000022202, 1.256665 * 1e-6, 37667620.91]]),
+            float(self.le_target_a_min_t.text()),
+            float(self.le_target_a_max_t.text()),
+            float(self.le_target_b_min_t.text()),
+            float(self.le_target_b_max_t.text()),
+            float(self.le_target_a_split_t.text()),
+            float(self.le_target_b_split_t.text())
+        )
+        self.tcollection = t.Collection(
+            int(self.le_collection_split_t.text()),
+            float(self.le_collection_SNR_t.text()),
+        )
+
+        self.result.check_tPara_change = False
+
+    def run_tdem_forward_calculate(self):
+        """
+        When 'run forward simulation' button is clicked in tdem interface, this
+        function will ba called.
+
+        """
+
+        self.get_tdem_simulation_parameters()
+
+        # Disable buttons.
+        self.pb_run_tdem_forward_simulation.setEnabled(False)
+        self.pbar_rfs.setVisible(True)
+
+        # Update the parameters in the thread.
+        save = False
+        if self.cb_func_save_data_t.isChecked():
+            save = True
+
+        # Output begin
+        text = self.result.output_forward_begin()
+        self.tb_output_box.setText(text)
+
+        # show the tdem_forward porgram is running by progressbar
+        self.pbar_rfs.setMinimum(0)  # let the progressbar to scroll
+        self.pbar_rfs.setMaximum(0)  # let the progressbar to scroll
+
+        self.thread_cal_tdem.target = self.ttarget
+        self.thread_cal_tdem.detector = self.tdetector
+        self.thread_cal_tdem.collection = self.tcollection
+        self.thread_cal_tdem.save = save
+        self.thread_cal_tdem.start()
+
+        self.thread_cal_tdem.trigger.connect(self.run_tdem_forward_result_process)
+
+    def run_tdem_forward_result_process(self, forward_result):
+        """
+        When the forward calculation of TDEM is finished, the result process
+        function will be called.
+
+        """
+
+        self.result.forward_result_t = forward_result
+        self.result.check_TPara_change = True
+        handler = TDEMHandler(target=self.ttarget, collection=self.tcollection)
+
+        if self.thread_cal_tdem.save:
+            handler.save_fwd_data_default(forward_result[0])
+        handler.save_sample_data_default(forward_result[1], self.fig_sample_response, False, self.thread_cal_tdem.save)
+        self.canvas_sample_response.draw()
+        self.tab_show.setCurrentWidget(self.tab_sample_data_t)
+
+        # Output finish information.
+        text = self.result.output_forward_end()
+        self.tb_output_box.setText(text)
+        # self.tab_show.setCurrentWidget(self.tab_magnetic_field_data)
+        self.pb_run_tdem_forward_simulation.setEnabled(True)
+
+        # let the progressBar stop scrolling,it means the  tdem_forward porgram is stoping
+        self.pbar_rfs.setMaximum(100)
+        self.pbar_rfs.setValue(100)
 
     def run_fdem_forward_result_process(self, forward_result):
         """
@@ -265,6 +388,67 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # let the progressBar stop scrolling,it means the  fdem_forward porgram is stoping
         self.pbar_rfs.setMaximum(100)
         self.pbar_rfs.setValue(100)
+
+    def run_tdem_classification(self):
+        """
+        When run fdem inversion' button is clicked in fdem interface, this
+        function will ba called.
+        """
+        if not self.result.check_TPara_change:
+            text = self.result.output_check_TPara_change()
+            self.tb_output_box.setText(text)
+
+        elif self.result.forward_result_t is None:
+            text = self.result.output_check_mag_data()
+            self.tb_output_box.setText(text)
+        else:
+            self.pb_run_tdem_classification.setEnabled(False)
+            self.pbar_rfi.setVisible(True)
+            save = False
+            if self.cb_func_save_result_t.isChecked():
+                save = True
+
+            # Update the parameters associated with the optimization algorithm.
+            task = self.cb_dr_task_t.currentText()
+            dir_method = self.cb_dr_algorithm_t.currentText()
+            if dir_method == 'None':
+                dir_method = None
+            cls_method = self.cb_cls_algorithm_t.currentText()
+
+            self.thread_cls_tdem.dir_method = dir_method
+            self.thread_cls_tdem.cls_method = cls_method
+            self.thread_cls_tdem.task = task
+            self.thread_cls_tdem.forward_result = self.result.forward_result_t
+            self.thread_cls_tdem.target = self.ttarget
+            self.thread_cls_tdem.collection = self.tcollection
+            self.thread_cls_tdem.save = save
+
+            # Output begin
+            text = self.result.output_data_process_begin()
+            self.tb_output_box.setText(text)
+
+            self.pbar_rfi.setMinimum(0)  # let the progressbar to scroll
+            self.pbar_rfi.setMaximum(0)  # let the progressbar to scroll
+
+            # Start the thread.
+            self.thread_cls_tdem.start()
+            self.thread_cls_tdem.trigger.connect(self.run_tdem_cls_result_process)
+
+    def run_tdem_cls_result_process(self, cls_result):
+
+        self.result.cls_result = cls_result
+        handler = TDEMHandler(target=self.ttarget, collection=self.tcollection)
+        handler.plot_confusion_matrix_default(cls_result, self.thread_cls_tdem.task, self.fig_cls_result, False, self.thread_cls_tdem.save)
+        handler.save_cls_res_default(cls_result)
+        self.canvas_cls_result.draw()
+        self.tab_show.setCurrentWidget(self.tab_classification_result_t)
+
+        text = self.result.output_tdem_result()
+        self.tb_output_box.setText(text)
+
+        self.pb_run_tdem_classification.setEnabled(True)
+        self.pbar_rfi.setMaximum(100)
+        self.pbar_rfi.setValue(100)
 
     def run_fdem_inversion(self):
         """When 'run fdem inversion' button is clicked in fdem interface, this
