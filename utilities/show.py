@@ -5,15 +5,9 @@ Created on Wed Aug 19 16:17:51 2020
 """
 
 import numpy as np
-from PyQt5.QtWidgets import QApplication
 
-from SimPEG.utils import plot2Ddata
-
-import matplotlib as mpl
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from MicEMD.utils import RotationMatrix
-
-
 
 
 def show_fdem_detection_scenario(fig, target, collection):
@@ -67,22 +61,23 @@ def show_fdem_detection_scenario(fig, target, collection):
 
     ax.plot_surface(x_rotation + target.position[0], y_rotation + target.position[1], z_rotation + target.position[2],
                     color='#E7C261', alpha=1, antialiased=False)
-    verts = [list(zip(x_rotation[:, 0] + target.position[0], y_rotation[:, 0] + target.position[1], z_rotation[:, 0] + target.position[2]))]
+    verts = [list(zip(x_rotation[:, 0] + target.position[0], y_rotation[:, 0] + target.position[1],
+                      z_rotation[:, 0] + target.position[2]))]
     ax.add_collection3d(Poly3DCollection(verts, facecolors='#E7C261'))
     verts = [list(zip(x_rotation[:, 1] + target.position[0], y_rotation[:, 1] + target.position[1],
                       z_rotation[:, 1] + target.position[2]))]
     ax.add_collection3d(Poly3DCollection(verts, facecolors='#E7C261'))
 
-    scan_x = np.arange(collection.x_min, collection.x_max+1e-8, collection.spacing)
-    scan_y = np.arange(collection.y_min, collection.y_max+1e-8, collection.spacing)
+    scan_x = np.arange(collection.x_min, collection.x_max + 1e-8, collection.spacing)
+    scan_y = np.arange(collection.y_min, collection.y_max + 1e-8, collection.spacing)
     scan_x, scan_y = np.meshgrid(scan_x, scan_y)
     scan_z = np.ones(scan_x.shape) * collection.height
 
     for i in range(scan_x.shape[1]):
         ax.plot(scan_x[:, i], scan_y[:, i], scan_z[:, i], 'black')
         ax.scatter(scan_x[:, i], scan_y[:, i], scan_z[:, i], marker='o', color='w', edgecolors='blue')
-    ax.set_xticks(np.arange(collection.x_min, collection.x_max+1, 1))
-    ax.set_yticks(np.arange(collection.y_min, collection.y_max+1, 1))
+    ax.set_xticks(np.arange(collection.x_min, collection.x_max + 1, 1))
+    ax.set_yticks(np.arange(collection.y_min, collection.y_max + 1, 1))
     ax.set_xlabel('X/m')
     ax.set_ylabel('Y/m')
     ax.set_zlabel('Z/m')
@@ -91,7 +86,6 @@ def show_fdem_detection_scenario(fig, target, collection):
     ax.set_zlim(target.position[2] - 2, collection.height)
 
     ax.grid(None)  # delete the background grid
-
 
 # def show_fdem_mag_map(fig, receiver_locations, mag_data):
 #     """
@@ -170,7 +164,6 @@ def show_fdem_detection_scenario(fig, target, collection):
 #     cbar.set_label("Conductivity [S/m]", rotation=270, labelpad=15)
 #     ax2.tick_params(width=0)
 #     ax2.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
-
 
 
 # import matplotlib.pyplot as plt

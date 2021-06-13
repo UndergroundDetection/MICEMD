@@ -7,7 +7,6 @@ import pandas as pd
 import os
 import itertools
 
-
 from sklearn.metrics import confusion_matrix
 from ..utils import RotationMatrix
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
@@ -690,8 +689,6 @@ class TDEMHandler(TDEMBaseHandler):
         for key, val in kwargs.items():
             setattr(self, key, val)
 
-
-
     def get_save_tdem_dir(self):
         """
         to get the parameters about this target scene to make file save the data about fdem_forward_simulation
@@ -794,7 +791,7 @@ class TDEMHandler(TDEMBaseHandler):
             os.makedirs(path)
             response.to_csv('{}/response.csv'.format(path))
 
-    def save_sample_data_default(self, sample, show=False):
+    def save_sample_data_default(self, sample, fig=None, show=True, save=True):
         """save the sample data of the forward_res
 
         Parameters
@@ -808,25 +805,33 @@ class TDEMHandler(TDEMBaseHandler):
         show: bool
             show the picture of the sample data
         """
+        if fig is not None:
+            fig.clf()
+        else:
+            fig = plt.figure()
         sample_data = sample['data']
         file_name = self.get_save_tdem_dir()
-
         snr = sample['SNR']
-        path = './results/tdemResults/{}/originData/sample selected'.format(file_name)
-        if os.path.exists(path):
-            sample_data.to_csv('{}/sample_{}dB.csv'.format(path, snr))
-            self.plot_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
-                           sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
-                           sample['ta'], sample['tb'], '{}/sample_{}dB.png'.format(path, snr), show)
+        if save:
+            path = './results/tdemResults/{}/originData/sample selected'.format(file_name)
+            if os.path.exists(path):
+                sample_data.to_csv('{}/sample_{}dB.csv'.format(path, snr))
+                self.plot_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
+                               sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
+                               sample['ta'], sample['tb'], '{}/sample_{}dB.png'.format(path, snr), show, fig)
+            else:
+                os.makedirs(path)
+                sample_data.to_csv('{}/sample_{}dB.csv'.format(path, snr))
+                self.plot_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
+                               sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
+                               sample['ta'], sample['tb'], '{}/sample_{}dB.png'.format(path, snr), show, fig)
         else:
-            os.makedirs(path)
-            sample_data.to_csv('{}/sample_{}dB.csv'.format(path, snr))
             self.plot_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
                            sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
-                           sample['ta'], sample['tb'], '{}/sample_{}dB.png'.format(path, snr), show)
+                           sample['ta'], sample['tb'], None, show, fig)
 
-
-    def plot_data(self, M1, M2, M1_without_noise, M2_without_noise, t, SNR, material, ta, tb, file_name, show):
+    def plot_data(self, M1, M2, M1_without_noise, M2_without_noise, t, SNR, material, ta, tb, file_name=None,
+                  show=False, fig=None):
         """show the sample data
 
         Parameters
@@ -856,20 +861,27 @@ class TDEMHandler(TDEMBaseHandler):
         show: bool
             whether to show the picture
         """
-        fig, ax = plt.subplots()
+        # fig, ax = plt.subplots()
+        if fig is not None:
+            # ax = fig.add_subplot()
+            ax = fig.add_axes([0.23, 0.12, 0.7, 0.8])
+        else:
+            fig, ax = plt.subplots()
+
         ax.set_xscale("log")
         ax.set_yscale("log")
         ax.set_xlim(1e-8, 1e1)
-        plt.plot(t, np.array(M1_without_noise).flatten(), '--', color="r", label="M1_noiseless")
-        plt.plot(t, np.array(M2_without_noise).flatten(), '--', color="b", label="M2_noiseless")
-        plt.plot(t, M1, 'o', color="y", label="M1")
-        plt.plot(t, M2, 'o', color="g", label="M2")
-        plt.xlabel("t /s")
-        plt.ylabel("M")
-        plt.title(str(material) + " ta=" + "%.2f" % ta + " tb=" + "%.2f" % tb + " SNR=" + str(SNR) + "dB")
-        plt.savefig(file_name, dpi=1000, bbox_inches='tight')
+        ax.plot(t, np.array(M1_without_noise).flatten(), '--', color="r", label="M1_noiseless")
+        ax.plot(t, np.array(M2_without_noise).flatten(), '--', color="b", label="M2_noiseless")
+        ax.plot(t, M1, 'o', color="y", label="M1")
+        ax.plot(t, M2, 'o', color="g", label="M2")
+        ax.set_xlabel("t /s")
+        ax.set_ylabel("M")
+        ax.set_title(str(material) + " ta=" + "%.2f" % ta + " tb=" + "%.2f" % tb + " SNR=" + str(SNR) + "dB")
+        if file_name is not None:
+            fig.savefig(file_name, dpi=1000, bbox_inches='tight')
         if show:
-            plt.show()
+            fig.show()
 
     def save_preparation_default(self, train_set, test_set, task):
         if task == 'material':
@@ -983,47 +995,60 @@ class TDEMHandler(TDEMBaseHandler):
                 plt.savefig('{}/{}'.format(path, name), format='pdf', bbox_inches='tight', dpi=600)
 
     # cm：混淆矩阵；classes：类别名称
-    def plot_confusion_matrix_default(self, cls_result, task, show=False, save=True):
+    def plot_confusion_matrix_default(self, cls_result, task, fig=None, show=False, save=True):
         """
         This function prints and plots the confusion matrix.
         Normalization can be applied by setting `normalize=True`.
         """
+        if fig is not None:
+            # ax = fig.add_subplot()
+            fig.clf()
+            ax = fig.add_axes([0.23, 0.12, 0.7, 0.8])
+        else:
+            fig = plt.figure()
+            ax = fig.add_axes([0.23, 0.12, 0.7, 0.8])
         cmap = plt.cm.YlGnBu
-        plt.figure()
         cm = confusion_matrix(y_true=cls_result['y_true'], y_pred=cls_result['y_pred'])
         if task == 'material':
             classes = self.target.material
         else:
             classes = self.target.shape
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        plt.ylabel('True label', fontsize=17)
-        plt.xlabel('Predicted label', fontsize=17)
-        plt.imshow(cm, interpolation='nearest', cmap=cmap)
-        plt.title('Confusion matrix', fontsize=17)
+        ax.set_ylabel('True label', fontsize=12)
+        ax.set_xlabel('Predicted label', fontsize=12)
+        ax.imshow(cm, interpolation='nearest', cmap=cmap)
+        ax.set_title('Confusion matrix', fontsize=12)
         tick_marks = np.arange(len(classes))
-        plt.xticks(tick_marks, classes, rotation=0, fontsize=15)
-        plt.yticks(tick_marks - 0.25, classes, rotation=90, fontsize=15)
-        plt.tick_params(bottom=False, top=False, left=False, right=False)  # 移除全部刻度线
+        ax.set_xticks(tick_marks)
+        ax.set_yticks(tick_marks)
+        ax.set_xticklabels(classes, rotation=0, fontsize=8)
+        ax.set_yticklabels(classes, rotation=360, fontsize=8)
+        # ax.set_xticks(tick_marks, classes)
+        # plt.xticks(tick_marks, classes, rotation=0, fontsize=15)
+        # plt.yticks(tick_marks - 0.25, classes, rotation=90, fontsize=15)
+        # ax.set_yticks(3 - 0.25, classes)
+        # plt.tick_params(bottom=False, top=False, left=False, right=False)  # 移除全部刻度线
         fmt = '.2f'
         thresh = cm.max() / 2.
         for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
-            plt.text(j, i, format(cm[i, j], fmt),
-                     horizontalalignment="center",
-                     color="white" if cm[i, j] > thresh else "black", fontsize=26)
+            ax.text(j, i, format(cm[i, j], fmt),
+                    horizontalalignment="center",
+                    color="white" if cm[i, j] > thresh else "black", fontsize=26)
 
-        plt.colorbar(shrink=1)
-        if show:
-            plt.show()
+        # fig.colorbar(shrink=1)
+        # fig.colorbar(plt.cm.ScalarMappable(cmap=cmap), ax)
+
         if save:
-
             path = './results/tdemResults/{}'.format(self.get_save_tdem_dir())
             if os.path.exists(path):
                 path = '{}/{}.pdf'.format(path, 'cls_res')
-                plt.savefig(path, format='pdf', bbox_inches='tight', dpi=600)
+                fig.savefig(path, format='pdf', bbox_inches='tight', dpi=600)
             else:
                 os.makedirs(path)
                 path = '{}/{}.pdf'.format(path, 'cls_res')
-                plt.savefig(path, format='pdf', bbox_inches='tight', dpi=600)
+                fig.savefig(path, format='pdf', bbox_inches='tight', dpi=600)
+        if show:
+            plt.show()
 
     def save_cls_res(self, cls_res, file_name):
         """save the classification result

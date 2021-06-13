@@ -255,7 +255,7 @@ class Model(BaseTDEMModel):
                             feature = np.vstack((feature, M))
                             lable = np.vstack((lable, [[material_flag, shape_flag]]))
                         sample_num += 1
-                        print("number %d sample" % sample_num, material_flag, shape_flag, snr)
+                        # print("number %d sample" % sample_num, material_flag, shape_flag, snr)
                     tb += b_r_step
                 ta += a_r_step
             material_cnt += 1
