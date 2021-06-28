@@ -8,7 +8,7 @@ Class:
 
 __all__ = ['Survey']
 
-from MicEMD import tdem
+# from .. import tdem
 from abc import ABCMeta
 from abc import abstractmethod
 
@@ -25,6 +25,7 @@ class BaseTDEMSurvey(metaclass=ABCMeta):
     survey
         Returns the survey of the TDEM
     """
+
     @abstractmethod
     def __init__(self, Source):
         self.source = Source

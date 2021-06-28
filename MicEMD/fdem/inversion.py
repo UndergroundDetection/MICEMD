@@ -81,8 +81,7 @@ class Inversion(BaseFDEMInversion):
             roll angle of the target, amount to 8 inverse parameters
         """
         true_properties = np.array(self.target.position)
-        true_polarizability = self.target.get_principal_axis_polarizability(
-            self.detector.frequency)
+        true_polarizability = self.target.get_principal_axis_polarizability(self.detector.frequency)
         true_properties = np.append(true_properties, true_polarizability)
         true_properties = np.append(true_properties, self.target.pitch)
         true_properties = np.append(true_properties, self.target.roll)

@@ -1,3 +1,3 @@
 from .handler import *
 
-del handler
+# del handler

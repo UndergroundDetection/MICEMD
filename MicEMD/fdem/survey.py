@@ -5,11 +5,11 @@ The survey class, represent the survey in FDEM
 Class:
 - Survey: the implement class of the BaseFDEMSurvey
 """
+__all__ = ['Survey']
+
 import SimPEG.electromagnetics.frequency_domain as fdem
 from abc import ABCMeta
 from abc import abstractmethod
-
-__all__ = ['Survey']
 
 
 class BaseFDEMSurvey(metaclass=ABCMeta):

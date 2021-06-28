@@ -3,9 +3,7 @@
 Created on Wed Aug 19 16:17:51 2020
 
 """
-
 import numpy as np
-
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 from MicEMD.utils import RotationMatrix
 
