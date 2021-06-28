@@ -6,6 +6,7 @@ Methods:
 - classify_method: Provide the name of the classification method and its parameters
  to solve the classification problem
 """
+__all__ = ['classify_method']
 from .ANN import *
 
 

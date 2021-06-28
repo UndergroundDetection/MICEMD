@@ -8,5 +8,5 @@ from .collection import *
 from .results import *
 from .preprocessing import *
 from .classification import *
-del survey, model, simulation, detector, target, source, collection, results
-__all__ = dir()
+# del survey, model, simulation, detector, target, source, collection, results
+# __all__ = dir()
