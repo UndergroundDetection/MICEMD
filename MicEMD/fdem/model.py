@@ -6,6 +6,7 @@ Class:
 - Model: the implement class of the BaseFDEMModel
 """
 __all__ = ['Model']
+
 from abc import ABCMeta
 from abc import abstractmethod
 import numpy as np
@@ -36,6 +37,7 @@ class BaseFDEMModel(metaclass=ABCMeta):
     dpred
         Returns the forward simulation data of the FDEM
     """
+
     @abstractmethod
     def __init__(self, Survey):
         self.survey = Survey
@@ -242,5 +244,9 @@ class Model(BaseFDEMModel):
         return ind
 
 
+class DipoleModle(BaseFDEMModel):
+    def __init__(self, Survey):
+        BaseFDEMModel.__init__(self, Survey)
 
-
+    def dpred(self):
+        pass
