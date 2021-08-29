@@ -346,7 +346,7 @@ class FDEMHandler(FDEMBaseHandler):
             ax=ax1,
             ncontour=30,
             clim=(-v_max, v_max),
-            contourOpts={"cmap": "bwr"},
+            contourOpts={"cmap": "rainbow"},
         )
         ax1.tick_params(width=0)
         ax1.set_xlabel("x direction [m]")
@@ -356,7 +356,7 @@ class FDEMHandler(FDEMBaseHandler):
         ax2 = fig.add_axes([0.85, 0.14, 0.03, 0.76])
         norm = mpl.colors.Normalize(vmin=v_min, vmax=v_max)
         cbar = mpl.colorbar.ColorbarBase(
-            ax2, norm=norm, orientation="vertical", cmap=mpl.cm.bwr
+            ax2, norm=norm, orientation="vertical", cmap=mpl.cm.rainbow
         )
         cbar.set_label("Secondary field [T]", rotation=270, labelpad=15)
         ax2.tick_params(width=0)
@@ -400,7 +400,7 @@ class FDEMHandler(FDEMBaseHandler):
             ind=ind,
             grid=True,
             range_x=range_x,
-            range_y=range_y
+            range_y=range_y,
         )
         ax1.tick_params(width=0)
         ax1.set_xlabel("x direction [m]")
@@ -864,17 +864,20 @@ class TDEMHandler(TDEMBaseHandler):
         # fig, ax = plt.subplots()
         if fig is not None:
             # ax = fig.add_subplot()
+            fig.clf()
             ax = fig.add_axes([0.23, 0.12, 0.7, 0.8])
         else:
-            fig, ax = plt.subplots()
+            fig = plt.figure()
+            ax = fig.add_axes([0.23, 0.12, 0.7, 0.8])
 
         ax.set_xscale("log")
-        ax.set_yscale("log")
-        ax.set_xlim(1e-8, 1e1)
+        # ax.set_yscale("log")
+        ax.set_xlim(1e-8, 1e0)
+        # ax.set_ylim(5e-2, 4.6e-1)
         ax.plot(t, np.array(M1_without_noise).flatten(), '--', color="r", label="M1_noiseless")
         ax.plot(t, np.array(M2_without_noise).flatten(), '--', color="b", label="M2_noiseless")
-        ax.plot(t, M1, 'o', color="y", label="M1")
-        ax.plot(t, M2, 'o', color="g", label="M2")
+        ax.plot(t, M1, 'x', color="plum", label="M1")
+        ax.plot(t, M2, 'x', color="lightskyblue", label="M2")
         ax.set_xlabel("t /s")
         ax.set_ylabel("M")
         ax.set_title(str(material) + " ta=" + "%.2f" % ta + " tb=" + "%.2f" % tb + " SNR=" + str(SNR) + "dB")
@@ -938,7 +941,7 @@ class TDEMHandler(TDEMBaseHandler):
                 train_set_material.to_csv('{}/train_set.csv'.format(path_shape))
                 test_set_material.to_csv('{}/test_set.csv'.format(path_shape))
 
-    def plot_confusion_matrix(self, cls_res, type, show=False, save=False, file_name=None):
+    def plot_confusion_matrix(self, cls_res, type, fig=None, show=False, save=False, file_name=None):
         """This function prints and plots the confusion matrix.
         Normalization can be applied by setting `normalize=True`.
         Parameters:
@@ -956,29 +959,36 @@ class TDEMHandler(TDEMBaseHandler):
             the file name, it will be saved by the name 'cls_res.pdf'
 
         """
+        if fig is not None:
+            # ax = fig.add_subplot()
+            fig.clf()
+            ax = fig.add_axes([0.23, 0.12, 0.7, 0.8])
+        else:
+            fig = plt.figure()
+            ax = fig.add_axes([0.23, 0.12, 0.7, 0.8])
         cmap = plt.cm.YlGnBu
-        plt.figure()
+
         cm = confusion_matrix(y_true=cls_res['y_true'], y_pred=cls_res['y_pred'])
         classes = type
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        plt.ylabel('True label', fontsize=17)
-        plt.xlabel('Predicted label', fontsize=17)
-        plt.imshow(cm, interpolation='nearest', cmap=cmap)
-        plt.title('Confusion matrix', fontsize=17)
+        ax.set_ylabel('True label', fontsize=12)
+        ax.set_xlabel('Predicted label', fontsize=12)
+        ax.imshow(cm, interpolation='nearest', cmap=cmap)
+        ax.set_title('Confusion matrix', fontsize=12)
         tick_marks = np.arange(len(classes))
-        plt.xticks(tick_marks, classes, rotation=0, fontsize=15)
-        plt.yticks(tick_marks - 0.25, classes, rotation=90, fontsize=15)
-        plt.tick_params(bottom=False, top=False, left=False, right=False)  # 移除全部刻度线
+        ax.set_xticks(tick_marks)
+        ax.set_yticks(tick_marks)
+        ax.set_xticklabels(classes, rotation=0, fontsize=8)
+        ax.set_yticklabels(classes, rotation=360, fontsize=8)
+
         fmt = '.2f'
         thresh = cm.max() / 2.
         for i, j in itertools.product(range(cm.shape[0]), range(cm.shape[1])):
             plt.text(j, i, format(cm[i, j], fmt),
                      horizontalalignment="center",
                      color="white" if cm[i, j] > thresh else "black", fontsize=26)
-
-        plt.colorbar(shrink=1)
         if show:
-            plt.show()
+            fig.show()
         if save:
             if file_name is not None:
                 path = os.path.dirname(file_name)
@@ -1048,7 +1058,7 @@ class TDEMHandler(TDEMBaseHandler):
                 path = '{}/{}.pdf'.format(path, 'cls_res')
                 fig.savefig(path, format='pdf', bbox_inches='tight', dpi=600)
         if show:
-            plt.show()
+            fig.show()
 
     def save_cls_res(self, cls_res, file_name):
         """save the classification result
