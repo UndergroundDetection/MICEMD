@@ -249,7 +249,8 @@ class FDEMHandler(FDEMBaseHandler):
             fig.clf()  # Clear the figure in different detection scene
         else:
             fig = plt.figure()
-        ax = fig.gca(projection='3d')
+        # ax = fig.gca(projection='3d')
+        ax = fig.add_subplot(projection='3d')
         ax.view_init(30, 45)
 
         ax.plot_surface(x_rotation + target.position[0], y_rotation + target.position[1],
@@ -346,7 +347,7 @@ class FDEMHandler(FDEMBaseHandler):
             ax=ax1,
             ncontour=30,
             clim=(-v_max, v_max),
-            contourOpts={"cmap": "rainbow"},
+            contourOpts={"cmap": "bwr"},
         )
         ax1.tick_params(width=0)
         ax1.set_xlabel("x direction [m]")
@@ -655,6 +656,74 @@ class FDEMHandler(FDEMBaseHandler):
         if show:
             plt.show()
 
+    def show_inv_res_default(self, inv_res, fig=None, show=True, save=True):
+        if fig is not None:
+            fig.clf()
+        else:
+            fig, ax = plt.subplots(nrows=1, ncols=2)
+        ax1 = fig.add_subplot(1, 2, 1)
+        ax2 = fig.add_subplot(1, 2, 2)
+        # ax = fig.add_axes([0.13, 0.12, 0.7, 0.8])
+        ax1.scatter(list(range(8)), inv_res['true'], marker='x', s=50)
+        ax1.scatter(list(range(8)), inv_res['pred'], marker='+')
+        ax2.bar(list(range(8)), inv_res['error'])
+        ticks = np.arange(0, 8, 1)
+        labels = ['x', 'y', 'z', r'$\beta_x$', r'$\beta_y$', r'$\beta_z$', 'pitch', 'roll']
+        ax1.set_xticks(ticks)
+        ax1.set_xticklabels(labels, rotation=30)
+        ax2.set_xticks(ticks)
+        ax2.set_xticklabels(labels, rotation=30)
+        ax1.legend(['True', 'predicted'])
+        ax1.set_title('result')
+        ax2.set_title('error')
+        if save:
+            path = './results/fdemResults/{}'.format(self.get_save_fdem_dir())
+            if os.path.exists(path):
+                path = '{}/{}.png'.format(path, 'inv_res')
+                fig.savefig(path)
+            else:
+                os.makedirs(path)
+                path = '{}/{}.png'.format(path, 'inv_res')
+                fig.savefig(path)
+
+        if show:
+            plt.show()
+
+    def show_inv_res(self, inv_res, show=False, save=False, file_name=None, fig=None):
+        if fig is not None:
+            fig.clf()
+        else:
+            fig, ax = plt.subplots(nrows=1, ncols=2)
+
+        ax[0].scatter(list(range(8)), inv_res['true'], marker='x', s=50)
+        ax[0].scatter(list(range(8)), inv_res['pred'], marker='+')
+        ax[1].bar(list(range(8)), inv_res['error'])
+        ticks = np.arange(0, 8, 1)
+        labels = ['x', 'y', 'z', r'$\beta_x$', r'$\beta_y$', r'$\beta_z$', 'pitch', 'roll']
+        ax[0].set_xticks(ticks)
+        ax[0].set_xticklabels(labels, rotation=30)
+        ax[1].set_xticks(ticks)
+        ax[1].set_xticklabels(labels, rotation=30)
+        ax[0].legend(['True', 'predicted'])
+        ax[0].set_title('result')
+        ax[1].set_title('error')
+        if save:
+            if file_name is not None:
+                path = os.path.dirname(file_name)
+                name = os.path.basename(file_name)
+                if path is '':
+                    path = '../results/fdemResults/forward_res'
+            else:
+                path = '../results/fdemResults/forward_res'
+                name = 'inv_res.png'
+            if os.path.exists(path):
+                fig.savefig('{}/{}'.format(path, name))
+            else:
+                os.makedirs(path)
+                fig.savefig('{}/{}'.format(path, name))
+
+        if show:
+            plt.show()
 
 class TDEMBaseHandler(metaclass=ABCMeta):
     @abstractmethod

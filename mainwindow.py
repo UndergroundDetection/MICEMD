@@ -370,9 +370,9 @@ class MainWindow(QMainWindow, Ui_MainWindow):
             handler.save_fwd_data_default(forward_result[0])
 
         # Plot discetize
-        handler.show_discretize_default(forward_result[1], forward_result[2], self.fig_discretize, show=False,
-                                        save=self.thread_cal_fdem.save)
-        self.canvas_discretize.draw()
+        # handler.show_discretize_default(forward_result[1], forward_result[2], self.fig_discretize, show=False,
+        #                                 save=self.thread_cal_fdem.save)
+        # self.canvas_discretize.draw()
 
         # Plot secondary field.
         handler.show_mag_map_default(forward_result[0], self.fig_magnetic_field, show=False,
@@ -492,9 +492,12 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
     def run_fdem_inv_result_process(self, inv_result):
         self.result.inv_result = inv_result
+        handler = FDEMHandler(target=self.ftarget, collection=self.fcollection)
+        handler.show_inv_res_default(inv_result, self.fig_discretize, show=False,
+                                     save=self.thread_cal_fdem.save)
+        self.canvas_discretize.draw()
 
         if self.thread_inv_fdem.save:
-            handler = FDEMHandler(target=self.ftarget, collection=self.fcollection)
             handler.save_inv_res_default(inv_result, self.thread_inv_fdem.method)
 
         text = self.result.output_fdem_result()
