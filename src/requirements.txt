@@ -1,0 +1,12 @@
+scipy==1.5.0
+pymatsolver==0.1.2
+matplotlib==3.2.2
+numpy==1.18.5
+discretize==0.4.14
+PyQt5==5.15.0
+SimPEG==0.14.2
+
+
+`conda install SimPEG --channel conda-forge`
+`conda install pyqt`
+`conda install matplotlib`

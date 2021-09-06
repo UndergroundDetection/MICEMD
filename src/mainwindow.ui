@@ -1,0 +1,1660 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>1329</width>
+    <height>821</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <family>Microsoft Tai Le</family>
+    <stylestrategy>PreferAntialias</stylestrategy>
+    <kerning>true</kerning>
+   </font>
+  </property>
+  <property name="windowTitle">
+   <string>MainWindow</string>
+  </property>
+  <property name="layoutDirection">
+   <enum>Qt::LeftToRight</enum>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="gridLayout_7">
+    <item row="0" column="0">
+     <widget class="QWidget" name="widget_4" native="true">
+      <layout class="QGridLayout" name="gridLayout_6" columnstretch="3,2">
+       <item row="0" column="1">
+        <widget class="QWidget" name="widget" native="true">
+         <layout class="QVBoxLayout" name="verticalLayout" stretch="4,2,1">
+          <item>
+           <widget class="QTabWidget" name="tab_show">
+            <property name="enabled">
+             <bool>true</bool>
+            </property>
+            <property name="font">
+             <font>
+              <family>Microsoft YaHei</family>
+              <stylestrategy>PreferAntialias</stylestrategy>
+              <kerning>true</kerning>
+             </font>
+            </property>
+            <property name="autoFillBackground">
+             <bool>false</bool>
+            </property>
+            <property name="currentIndex">
+             <number>2</number>
+            </property>
+            <widget class="QWidget" name="tab_detection_scenario">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="autoFillBackground">
+              <bool>false</bool>
+             </property>
+             <attribute name="title">
+              <string>Detection scenario</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_2">
+              <item row="0" column="0">
+               <layout class="QGridLayout" name="gl_detection_scenario"/>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="tab_magnetic_field_data">
+             <attribute name="title">
+              <string>Magnetic field data</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_3">
+              <item row="0" column="0">
+               <layout class="QGridLayout" name="gl_magnetic_field_data"/>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="tab_discretize">
+             <attribute name="title">
+              <string>Inversion result</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout">
+              <item row="0" column="0">
+               <layout class="QGridLayout" name="gl_discretize"/>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="tab_sample_data_t">
+             <attribute name="title">
+              <string>Sample response data</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_27">
+              <item row="0" column="0">
+               <layout class="QGridLayout" name="gl_sample_data_t"/>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="tab_classification_result_t">
+             <attribute name="title">
+              <string>Classification result</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_28">
+              <item row="0" column="0">
+               <layout class="QGridLayout" name="gl_classification_result_t"/>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+          <item>
+           <widget class="QGroupBox" name="groupBox_10">
+            <property name="title">
+             <string>Output</string>
+            </property>
+            <layout class="QGridLayout" name="gridLayout_4">
+             <item row="0" column="0">
+              <widget class="QTextBrowser" name="tb_output_box">
+               <property name="autoFillBackground">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </widget>
+          </item>
+          <item>
+           <widget class="QWidget" name="widget_2" native="true">
+            <widget class="QPushButton" name="pb_run_tdem_classification">
+             <property name="geometry">
+              <rect>
+               <x>280</x>
+               <y>60</y>
+               <width>206</width>
+               <height>31</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Run TDEM classification</string>
+             </property>
+            </widget>
+            <widget class="QProgressBar" name="pbar_rfi">
+             <property name="geometry">
+              <rect>
+               <x>280</x>
+               <y>40</y>
+               <width>205</width>
+               <height>6</height>
+              </rect>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QProgressBar {   border: 2px solid grey;   border-radius: 5px;   background-color: #FFFFFF;}QProgressBar::chunk {   background-color: #007FFF;   width: 10px;}QProgressBar {   border: 2px solid grey;   border-radius: 5px;   text-align: center;}</string>
+             </property>
+             <property name="maximum">
+              <number>0</number>
+             </property>
+             <property name="value">
+              <number>-1</number>
+             </property>
+             <property name="textVisible">
+              <bool>false</bool>
+             </property>
+            </widget>
+            <widget class="QPushButton" name="pb_run_fdem_forward_simulation">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>60</y>
+               <width>211</width>
+               <height>31</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Run forward simulation</string>
+             </property>
+            </widget>
+            <widget class="QPushButton" name="pb_run_fdem_inversion">
+             <property name="geometry">
+              <rect>
+               <x>280</x>
+               <y>60</y>
+               <width>206</width>
+               <height>31</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Run FDEM inversion</string>
+             </property>
+            </widget>
+            <widget class="QPushButton" name="pb_run_tdem_forward_simulation">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>60</y>
+               <width>211</width>
+               <height>31</height>
+              </rect>
+             </property>
+             <property name="text">
+              <string>Run forward simulation</string>
+             </property>
+            </widget>
+            <widget class="QProgressBar" name="pbar_rfs">
+             <property name="geometry">
+              <rect>
+               <x>0</x>
+               <y>40</y>
+               <width>205</width>
+               <height>6</height>
+              </rect>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QProgressBar {   border: 2px solid grey;   border-radius: 5px;   background-color: #FFFFFF;}QProgressBar::chunk {   background-color: #007FFF;   width: 10px;}QProgressBar {   border: 2px solid grey;   border-radius: 5px;   text-align: center;}</string>
+             </property>
+             <property name="maximum">
+              <number>0</number>
+             </property>
+             <property name="value">
+              <number>-1</number>
+             </property>
+             <property name="textVisible">
+              <bool>false</bool>
+             </property>
+            </widget>
+            <zorder>pb_run_tdem_forward_simulation</zorder>
+            <zorder>pb_run_tdem_classification</zorder>
+            <zorder>pbar_rfi</zorder>
+            <zorder>pb_run_fdem_forward_simulation</zorder>
+            <zorder>pb_run_fdem_inversion</zorder>
+            <zorder>pbar_rfs</zorder>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+       <item row="0" column="0">
+        <widget class="QWidget" name="widget_3" native="true">
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="0" column="0">
+           <widget class="QTabWidget" name="tab_signal_type">
+            <property name="font">
+             <font>
+              <family>Microsoft YaHei</family>
+              <pointsize>9</pointsize>
+              <stylestrategy>PreferAntialias</stylestrategy>
+              <kerning>true</kerning>
+             </font>
+            </property>
+            <property name="autoFillBackground">
+             <bool>true</bool>
+            </property>
+            <property name="currentIndex">
+             <number>0</number>
+            </property>
+            <widget class="QWidget" name="tab_FDEM">
+             <property name="autoFillBackground">
+              <bool>true</bool>
+             </property>
+             <attribute name="title">
+              <string>FDEM detection</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_9">
+              <item row="0" column="0">
+               <widget class="QWidget" name="widget_5" native="true">
+                <layout class="QGridLayout" name="gridLayout_10" rowstretch="7,2,1" rowminimumheight="4,1,1">
+                 <item row="1" column="0">
+                  <widget class="QGroupBox" name="groupBox">
+                   <property name="title">
+                    <string>Inversion</string>
+                   </property>
+                   <layout class="QGridLayout" name="gridLayout_15">
+                    <item row="0" column="0">
+                     <widget class="QGroupBox" name="groupBox_2">
+                      <property name="title">
+                       <string>Optimization algorithm parameters</string>
+                      </property>
+                      <layout class="QGridLayout" name="gridLayout_14" rowstretch="0,0" columnstretch="0,0,0,0">
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="label_139">
+                         <property name="text">
+                          <string>Algorithm</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QComboBox" name="cb_optimization_algorithm">
+                         <property name="layoutDirection">
+                          <enum>Qt::LeftToRight</enum>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>Levenberg-Marquardt</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>BFGS</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Conjugate gradient</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Steepest descent</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item row="0" column="2">
+                        <widget class="QLabel" name="label_141">
+                         <property name="text">
+                          <string>Tolerance:    gradient  &lt; </string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="3">
+                        <widget class="QLineEdit" name="le_optimization_tol">
+                         <property name="text">
+                          <string>1e-9</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="label_140">
+                         <property name="text">
+                          <string>Iterations</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QLineEdit" name="le_optimization_iterations">
+                         <property name="text">
+                          <string>1000</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QGroupBox" name="groupBox_11">
+                   <property name="title">
+                    <string>Forward simulation</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                   </property>
+                   <layout class="QGridLayout" name="gridLayout_8">
+                    <item row="0" column="0">
+                     <widget class="QGroupBox" name="groupBox_12">
+                      <property name="title">
+                       <string>Detector parameters</string>
+                      </property>
+                      <layout class="QGridLayout" name="gridLayout_11">
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="label_99">
+                         <property name="font">
+                          <font>
+                           <family>Microsoft YaHei</family>
+                           <pointsize>9</pointsize>
+                           <stylestrategy>PreferAntialias</stylestrategy>
+                           <kerning>true</kerning>
+                          </font>
+                         </property>
+                         <property name="layoutDirection">
+                          <enum>Qt::LeftToRight</enum>
+                         </property>
+                         <property name="text">
+                          <string>Radius</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>false</bool>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QLineEdit" name="le_detector_radius">
+                         <property name="text">
+                          <string>0.4</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="2">
+                        <widget class="QLabel" name="label_104">
+                         <property name="text">
+                          <string>m</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="3">
+                        <widget class="QLabel" name="label_97">
+                         <property name="layoutDirection">
+                          <enum>Qt::LeftToRight</enum>
+                         </property>
+                         <property name="text">
+                          <string>Current</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>false</bool>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="4">
+                        <widget class="QLineEdit" name="le_detector_current">
+                         <property name="text">
+                          <string>20</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="5">
+                        <widget class="QLabel" name="label_100">
+                         <property name="text">
+                          <string>A</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="6">
+                        <widget class="QLabel" name="label_98">
+                         <property name="layoutDirection">
+                          <enum>Qt::LeftToRight</enum>
+                         </property>
+                         <property name="text">
+                          <string>Frequency</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>false</bool>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="7">
+                        <widget class="QLineEdit" name="le_detector_frequency">
+                         <property name="text">
+                          <string>1000</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="8">
+                        <widget class="QLabel" name="label_96">
+                         <property name="text">
+                          <string>Hz</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="label_103">
+                         <property name="layoutDirection">
+                          <enum>Qt::LeftToRight</enum>
+                         </property>
+                         <property name="text">
+                          <string>Pitch</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>false</bool>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QLineEdit" name="le_detector_pitch">
+                         <property name="text">
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="2">
+                        <widget class="QLabel" name="label_101">
+                         <property name="text">
+                          <string>°</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="3">
+                        <widget class="QLabel" name="label_105">
+                         <property name="layoutDirection">
+                          <enum>Qt::LeftToRight</enum>
+                         </property>
+                         <property name="text">
+                          <string>Roll</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>false</bool>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="4">
+                        <widget class="QLineEdit" name="le_detector_roll">
+                         <property name="text">
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="5">
+                        <widget class="QLabel" name="label_102">
+                         <property name="text">
+                          <string>°</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                    <item row="2" column="0">
+                     <widget class="QGroupBox" name="groupBox_14">
+                      <property name="title">
+                       <string>Collection parameters</string>
+                      </property>
+                      <layout class="QGridLayout" name="gridLayout_13">
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="label_131">
+                         <property name="text">
+                          <string>Spacing</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="5">
+                        <widget class="QLabel" name="label_133">
+                         <property name="text">
+                          <string>Height</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="10">
+                        <widget class="QLabel" name="label_135">
+                         <property name="text">
+                          <string>SNR</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="11">
+                        <widget class="QLineEdit" name="le_collection_SNR">
+                         <property name="text">
+                          <string>30</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="12">
+                        <widget class="QLabel" name="label_136">
+                         <property name="text">
+                          <string>dB</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="label_126">
+                         <property name="text">
+                          <string>x</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QLineEdit" name="le_collection_x_min">
+                         <property name="text">
+                          <string>-2</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="2">
+                        <widget class="QLabel" name="label_127">
+                         <property name="text">
+                          <string>-</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="3">
+                        <widget class="QLineEdit" name="le_collection_x_max">
+                         <property name="text">
+                          <string>2</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="4">
+                        <widget class="QLabel" name="label_137">
+                         <property name="text">
+                          <string>m</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="5">
+                        <widget class="QLabel" name="label_128">
+                         <property name="text">
+                          <string>y</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="6">
+                        <widget class="QLineEdit" name="le_collection_y_min">
+                         <property name="text">
+                          <string>-2</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="7">
+                        <widget class="QLabel" name="label_129">
+                         <property name="text">
+                          <string>-</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="8">
+                        <widget class="QLineEdit" name="le_collection_y_max">
+                         <property name="text">
+                          <string>2</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="9">
+                        <widget class="QLabel" name="label_130">
+                         <property name="text">
+                          <string>m</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="10">
+                        <widget class="QLabel" name="label_138">
+                         <property name="text">
+                          <string>Field</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="11">
+                        <widget class="QComboBox" name="cb_collection_direction">
+                         <property name="autoFillBackground">
+                          <bool>false</bool>
+                         </property>
+                         <property name="sizeAdjustPolicy">
+                          <enum>QComboBox::AdjustToContentsOnFirstShow</enum>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>z-axis</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>x-axis</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>y-axis</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>Total</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item row="0" column="6">
+                        <widget class="QLineEdit" name="le_collection_height">
+                         <property name="text">
+                          <string>0.1</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="7">
+                        <widget class="QLabel" name="label_134">
+                         <property name="text">
+                          <string>m</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QLineEdit" name="le_collection_spacing">
+                         <property name="text">
+                          <string>0.4</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="2">
+                        <widget class="QLabel" name="label_132">
+                         <property name="text">
+                          <string>m</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QGroupBox" name="groupBox_13">
+                      <property name="title">
+                       <string>Target parameters (cylinder)</string>
+                      </property>
+                      <layout class="QGridLayout" name="gridLayout_12">
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="label_118">
+                         <property name="text">
+                          <string>Conductivity</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1" colspan="2">
+                        <widget class="QLineEdit" name="le_target_conductivity">
+                         <property name="text">
+                          <string>5.71e7</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="3" colspan="2">
+                        <widget class="QLabel" name="label_119">
+                         <property name="font">
+                          <font>
+                           <family>Microsoft YaHei</family>
+                           <pointsize>8</pointsize>
+                           <stylestrategy>PreferAntialias</stylestrategy>
+                           <kerning>true</kerning>
+                          </font>
+                         </property>
+                         <property name="text">
+                          <string>S/m</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="5" colspan="2">
+                        <widget class="QLabel" name="label_112">
+                         <property name="text">
+                          <string>Permeability</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="7">
+                        <widget class="QLineEdit" name="le_target_permeability">
+                         <property name="text">
+                          <string>1.26e-6</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="8">
+                        <widget class="QLabel" name="label_113">
+                         <property name="font">
+                          <font>
+                           <family>Microsoft YaHei</family>
+                           <pointsize>8</pointsize>
+                           <stylestrategy>PreferAntialias</stylestrategy>
+                           <kerning>true</kerning>
+                          </font>
+                         </property>
+                         <property name="text">
+                          <string>H/m</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="9">
+                        <widget class="QLabel" name="label_120">
+                         <property name="text">
+                          <string>Radius</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="10">
+                        <widget class="QLineEdit" name="le_target_radius">
+                         <property name="text">
+                          <string>0.2</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="11">
+                        <widget class="QLabel" name="label_121">
+                         <property name="text">
+                          <string>m</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="label_122">
+                         <property name="text">
+                          <string>Pitch</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QLineEdit" name="le_target_pitch">
+                         <property name="text">
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="2">
+                        <widget class="QLabel" name="label_123">
+                         <property name="text">
+                          <string>°</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="6">
+                        <widget class="QLabel" name="label_116">
+                         <property name="text">
+                          <string>Roll</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="7">
+                        <widget class="QLineEdit" name="le_target_roll">
+                         <property name="text">
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="8">
+                        <widget class="QLabel" name="label_117">
+                         <property name="text">
+                          <string>°</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="9">
+                        <widget class="QLabel" name="label_114">
+                         <property name="text">
+                          <string>Length</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="10">
+                        <widget class="QLineEdit" name="le_target_length">
+                         <property name="text">
+                          <string>1</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="11">
+                        <widget class="QLabel" name="label_115">
+                         <property name="text">
+                          <string>m</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="0">
+                        <widget class="QLabel" name="label_124">
+                         <property name="text">
+                          <string>Position</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="1">
+                        <widget class="QLineEdit" name="le_target_position_x">
+                         <property name="text">
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="2" colspan="2">
+                        <widget class="QLineEdit" name="le_target_position_y">
+                         <property name="text">
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="4" colspan="2">
+                        <widget class="QLineEdit" name="le_target_position_z">
+                         <property name="text">
+                          <string>-5</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="2" column="6">
+                        <widget class="QLabel" name="label_111">
+                         <property name="text">
+                          <string>m</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QGroupBox" name="groupBox_3">
+                   <property name="title">
+                    <string>Other functions</string>
+                   </property>
+                   <layout class="QGridLayout" name="gridLayout_16">
+                    <item row="0" column="0">
+                     <widget class="QCheckBox" name="cb_func_save_data">
+                      <property name="text">
+                       <string>Save field data</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QCheckBox" name="cb_func_save_result">
+                      <property name="text">
+                       <string>Save inversion results</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+            <widget class="QWidget" name="tab_TDEM">
+             <property name="autoFillBackground">
+              <bool>true</bool>
+             </property>
+             <attribute name="title">
+              <string>TDEM detection</string>
+             </attribute>
+             <layout class="QGridLayout" name="gridLayout_25">
+              <item row="0" column="0">
+               <widget class="QWidget" name="widget_6" native="true">
+                <layout class="QGridLayout" name="gridLayout_17" rowstretch="6,6,2" rowminimumheight="0,0,0">
+                 <item row="1" column="0">
+                  <widget class="QGroupBox" name="groupBox_4">
+                   <property name="title">
+                    <string>Classification</string>
+                   </property>
+                   <layout class="QGridLayout" name="gridLayout_18" rowminimumheight="1,1">
+                    <item row="0" column="0">
+                     <widget class="QGroupBox" name="groupBox_5">
+                      <property name="title">
+                       <string>Dimension reduction algorithm</string>
+                      </property>
+                      <layout class="QGridLayout" name="gridLayout_19">
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="label_142">
+                         <property name="text">
+                          <string>Algorithm</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QComboBox" name="cb_dr_algorithm_t">
+                         <property name="layoutDirection">
+                          <enum>Qt::LeftToRight</enum>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>SF</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>None</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item row="0" column="2">
+                        <widget class="QLabel" name="label_143">
+                         <property name="layoutDirection">
+                          <enum>Qt::LeftToRight</enum>
+                         </property>
+                         <property name="text">
+                          <string>task</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="3">
+                        <widget class="QComboBox" name="cb_dr_task_t">
+                         <item>
+                          <property name="text">
+                           <string>material</string>
+                          </property>
+                         </item>
+                         <item>
+                          <property name="text">
+                           <string>shape</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QGroupBox" name="groupBox_7">
+                      <property name="title">
+                       <string>Classification algorithm</string>
+                      </property>
+                      <layout class="QGridLayout" name="gridLayout_26" columnstretch="4,5,4,4">
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="label_150">
+                         <property name="text">
+                          <string>Algorithm</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QComboBox" name="cb_cls_algorithm_t">
+                         <property name="layoutDirection">
+                          <enum>Qt::LeftToRight</enum>
+                         </property>
+                         <item>
+                          <property name="text">
+                           <string>ANN</string>
+                          </property>
+                         </item>
+                        </widget>
+                       </item>
+                       <item row="0" column="2">
+                        <widget class="QLabel" name="label">
+                         <property name="text">
+                          <string/>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="3">
+                        <widget class="QLabel" name="label_2">
+                         <property name="text">
+                          <string/>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item row="0" column="0">
+                  <widget class="QGroupBox" name="groupBox_15">
+                   <property name="title">
+                    <string>Forward simulation</string>
+                   </property>
+                   <property name="alignment">
+                    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+                   </property>
+                   <layout class="QGridLayout" name="gridLayout_20">
+                    <item row="0" column="0">
+                     <widget class="QGroupBox" name="groupBox_16">
+                      <property name="title">
+                       <string>Detector parameters</string>
+                      </property>
+                      <layout class="QGridLayout" name="gridLayout_21">
+                       <item row="1" column="4">
+                        <widget class="QLineEdit" name="le_detector_roll_t">
+                         <property name="text">
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="label_106">
+                         <property name="font">
+                          <font>
+                           <family>Microsoft YaHei</family>
+                           <pointsize>9</pointsize>
+                           <stylestrategy>PreferAntialias</stylestrategy>
+                           <kerning>true</kerning>
+                          </font>
+                         </property>
+                         <property name="layoutDirection">
+                          <enum>Qt::LeftToRight</enum>
+                         </property>
+                         <property name="text">
+                          <string>Radius</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>false</bool>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="label_145">
+                         <property name="layoutDirection">
+                          <enum>Qt::LeftToRight</enum>
+                         </property>
+                         <property name="text">
+                          <string>Pitch</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>false</bool>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="3">
+                        <widget class="QLabel" name="label_147">
+                         <property name="layoutDirection">
+                          <enum>Qt::LeftToRight</enum>
+                         </property>
+                         <property name="text">
+                          <string>Roll</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>false</bool>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="5">
+                        <widget class="QLabel" name="label_109">
+                         <property name="text">
+                          <string>A</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="2">
+                        <widget class="QLabel" name="label_146">
+                         <property name="text">
+                          <string>°</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="4">
+                        <widget class="QLineEdit" name="le_detector_current_t">
+                         <property name="text">
+                          <string>20</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="5">
+                        <widget class="QLabel" name="label_148">
+                         <property name="text">
+                          <string>°</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QLineEdit" name="le_detector_pitch_t">
+                         <property name="text">
+                          <string>0</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="3">
+                        <widget class="QLabel" name="label_108">
+                         <property name="layoutDirection">
+                          <enum>Qt::LeftToRight</enum>
+                         </property>
+                         <property name="text">
+                          <string>Current</string>
+                         </property>
+                         <property name="scaledContents">
+                          <bool>false</bool>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QLineEdit" name="le_detector_radius_t">
+                         <property name="text">
+                          <string>0.4</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="2">
+                        <widget class="QLabel" name="label_107">
+                         <property name="text">
+                          <string>m</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                    <item row="2" column="0">
+                     <widget class="QGroupBox" name="groupBox_17">
+                      <property name="title">
+                       <string>Collection parameters</string>
+                      </property>
+                      <layout class="QGridLayout" name="gridLayout_22">
+                       <item row="0" column="12">
+                        <widget class="QLabel" name="label_152">
+                         <property name="text">
+                          <string>dB</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="11">
+                        <widget class="QLineEdit" name="le_collection_SNR_t">
+                         <property name="text">
+                          <string>35</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QLineEdit" name="le_collection_split_t">
+                         <property name="text">
+                          <string>20</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="10">
+                        <widget class="QLabel" name="label_151">
+                         <property name="text">
+                          <string>SNR</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="label_149">
+                         <property name="text">
+                          <string>t_split</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="2">
+                        <widget class="QLabel" name="label_161">
+                         <property name="text">
+                          <string>/s</string>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                    <item row="1" column="0">
+                     <widget class="QGroupBox" name="groupBox_18">
+                      <property name="title">
+                       <string>Target parameters (spheroid)</string>
+                      </property>
+                      <layout class="QGridLayout" name="gridLayout_23">
+                       <item row="1" column="4">
+                        <widget class="QLabel" name="label_173">
+                         <property name="text">
+                          <string>m</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="3">
+                        <widget class="QLineEdit" name="le_target_a_max_t">
+                         <property name="text">
+                          <string>1.5</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="1">
+                        <widget class="QLineEdit" name="le_target_material_t">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="text">
+                          <string>Steel,Ni,Al</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="0">
+                        <widget class="QLabel" name="label_168">
+                         <property name="text">
+                          <string>ta</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="1">
+                        <widget class="QLineEdit" name="le_target_a_min_t">
+                         <property name="text">
+                          <string>0.01</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="2">
+                        <widget class="QLabel" name="label_157">
+                         <property name="text">
+                          <string>——</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="0">
+                        <widget class="QLabel" name="label_162">
+                         <property name="text">
+                          <string>material</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="4">
+                        <widget class="QLabel" name="label_153">
+                         <property name="text">
+                          <string>m</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="5">
+                        <widget class="QLabel" name="label_170">
+                         <property name="text">
+                          <string>a_split</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="2">
+                        <widget class="QLabel" name="label_158">
+                         <property name="text">
+                          <string>——</string>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="1">
+                        <widget class="QLineEdit" name="le_target_b_min_t">
+                         <property name="text">
+                          <string>0.01</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="3">
+                        <widget class="QLineEdit" name="le_target_b_max_t">
+                         <property name="text">
+                          <string>1.5</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="6">
+                        <widget class="QLineEdit" name="le_target_b_split_t">
+                         <property name="text">
+                          <string>0.08</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="0">
+                        <widget class="QLabel" name="label_156">
+                         <property name="text">
+                          <string>tb</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="1" column="6">
+                        <widget class="QLineEdit" name="le_target_a_split_t">
+                         <property name="text">
+                          <string>0.08</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="3" column="5">
+                        <widget class="QLabel" name="label_172">
+                         <property name="text">
+                          <string>b_split</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="2">
+                        <widget class="QLabel" name="label_164">
+                         <property name="text">
+                          <string>shape</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                       <item row="0" column="3" colspan="4">
+                        <widget class="QLineEdit" name="le_target_shape_t">
+                         <property name="enabled">
+                          <bool>false</bool>
+                         </property>
+                         <property name="text">
+                          <string>Oblate spheroid,Prolate spheroid</string>
+                         </property>
+                         <property name="alignment">
+                          <set>Qt::AlignCenter</set>
+                         </property>
+                        </widget>
+                       </item>
+                      </layout>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                 <item row="2" column="0">
+                  <widget class="QGroupBox" name="groupBox_6">
+                   <property name="title">
+                    <string>Other functions</string>
+                   </property>
+                   <layout class="QGridLayout" name="gridLayout_24">
+                    <item row="0" column="0">
+                     <widget class="QCheckBox" name="cb_func_save_data_t">
+                      <property name="text">
+                       <string>Save response data</string>
+                      </property>
+                     </widget>
+                    </item>
+                    <item row="0" column="1">
+                     <widget class="QCheckBox" name="cb_func_save_result_t">
+                      <property name="text">
+                       <string>Save classification results</string>
+                      </property>
+                     </widget>
+                    </item>
+                   </layout>
+                  </widget>
+                 </item>
+                </layout>
+               </widget>
+              </item>
+             </layout>
+            </widget>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1329</width>
+     <height>23</height>
+    </rect>
+   </property>
+   <property name="font">
+    <font>
+     <family>Microsoft YaHei</family>
+     <stylestrategy>PreferAntialias</stylestrategy>
+     <kerning>true</kerning>
+    </font>
+   </property>
+   <widget class="QMenu" name="menuLanguage">
+    <property name="title">
+     <string>Language</string>
+    </property>
+    <addaction name="actionEnglish"/>
+    <addaction name="actionChinese"/>
+   </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionTutorial"/>
+   </widget>
+   <addaction name="menuLanguage"/>
+   <addaction name="menuHelp"/>
+  </widget>
+  <action name="actionEnglish">
+   <property name="text">
+    <string>English</string>
+   </property>
+  </action>
+  <action name="actionChinese">
+   <property name="text">
+    <string>Chinese</string>
+   </property>
+  </action>
+  <action name="actionTutorial">
+   <property name="text">
+    <string>Tutorial</string>
+   </property>
+  </action>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>
