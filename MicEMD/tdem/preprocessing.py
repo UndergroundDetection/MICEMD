@@ -8,13 +8,11 @@ Methods:
 """
 __all__ = ['preprocess']
 
-from MicEMD.handler import TDEMHandler
 from MicEMD.preprocessor import *
-from MicEMD.tdem import *
 
 
 def preprocess(response, dim_red_method=None):
-    """The data were normalized and dimensionalized
+    """The data were dimensionalized
 
     Parameters
     ----------

@@ -16,11 +16,31 @@ from abc import abstractmethod
 import numpy as np
 from scipy.constants import mu_0
 from ..optimization import *
-from .results import *
-from ..handler import FDEMHandler
 
 
 class BaseFDEMInversion(metaclass=ABCMeta):
+    """the abstract inversion base class
+
+    Parameters
+    ----------
+    data: tuple
+        conclude the observed data and the target class and detection class
+    method: str
+        the name of optimization
+    inv_para: dict
+        the parameters setting of the optimization
+
+    Methods
+    -------
+    true_properties:
+        Returns the ture properties
+    run:
+        Returns the estimate properties
+    error:
+        Returns the error between true value and estimate value
+    inv_objective_function:
+        Returns the calculated objective_function value in x position
+    """
     @abstractmethod
     def __init__(self, data, method, inv_para):
         pass
@@ -43,6 +63,49 @@ class BaseFDEMInversion(metaclass=ABCMeta):
 
 
 class Inversion(BaseFDEMInversion):
+    """inverse the properties of the target
+
+    based on the optimization algorithms to solve the inversion problem
+
+    Parameters
+    ----------
+    data: tuple
+        the data conclude the observed data, target class and detector class
+    method: str
+        the name of the optimization
+    inv_para: dict
+        the parameters setting of the optimization
+
+    Methods
+    -------
+    true_properties:
+        Returns the true properties of the target
+    inv_objective_function:
+        Returns the calculated objective_function value in x position
+    inv_objectfun_gradient:
+        Returns the calculated gradient value in x position
+    inv_residual_vector:
+        Returns the residual vector.
+    inv_get_preicted_data:
+        Returns Predicted secondary fields calculated by the dipole model at all receiver_loc.
+    inv_forward_calculation:
+        Returns  predicted secondary fields according the linear magnetic
+        dipole model at receiver_loc.
+    inv_residual_vector_grad:
+        Returns the gradient of all the residual vectors.
+    inv_forward_grad:
+        Returns the gradient of inv_forward_calculation()
+    polar_tensor_to_properties:
+        ransform the polar tensor to properties transform M11, M22, M33, M12, M13, M23
+        to polarizability and pitch and roll angle and return
+    find_xyz_polarizability_index:
+        make the order of eigenvalue correspond to the polarizability order
+    run:
+        run the process of the inversion and return the estimate values
+    error:
+        Returns the error between true value and estimate value
+
+    """
 
     def __init__(self, data, method, inv_para):  # , x0, iterations, tol, ForwardResult
         """
@@ -390,10 +453,35 @@ class Inversion(BaseFDEMInversion):
 
     @property
     def error(self):
+        """calculate the error of the true value and estimate value
+
+        Returns
+        -------
+        error: ndarray
+            return the error
+
+        """
         return abs(self.true_properties - self.estimate_properties)
 
 
 def inverse(data, method, inv_para, *args, **kwargs):
+    """ the interface is used to handle the process of inversion
+
+    Parameters
+    ----------
+    data: tuple
+        the data conclude the observed data, target class and detector class
+    method: str
+        the name of the optimization
+    inv_para: dict
+        the parameters setting of the optimization
+
+    Returns
+    -------
+    res: dict
+        res conclude the predicted value, true value and the error value
+
+    """
     if method in ['Levenberg-Marquardt', 'L-M']:
         method = 'LM'
     if method in ['最速下降', 'Steepest descent']:

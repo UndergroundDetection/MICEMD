@@ -32,8 +32,7 @@ class BaseTDEMSurvey(metaclass=ABCMeta):
 
     @abstractmethod
     def survey(self):
-        _survey = tdem.Survey(self.source.source_list)
-        return _survey
+        return
 
 
 class Survey(BaseTDEMSurvey):
@@ -43,5 +42,4 @@ class Survey(BaseTDEMSurvey):
 
     @property
     def survey(self):
-        _survey = tdem.Survey(self.source.source_list)
-        return _survey
+        return

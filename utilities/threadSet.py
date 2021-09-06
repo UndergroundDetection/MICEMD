@@ -1,3 +1,13 @@
+"""
+The thread class, To prevent the interface from dying, we use multithreading
+to call various time-consuming interface
+
+Class:
+- ThreadCalFdem: the thread to call the fdem simulation interface
+- ThreadInvFdem: the thread to call the fdem inversion interface
+- ThreadCalTdem: the thread to call the tdem simulation interface
+- ThreadClsTdem: the thread to call the tdem classification interface
+"""
 from PyQt5.QtCore import QTranslator, QThread, pyqtSignal
 import MicEMD.fdem as f
 import MicEMD.tdem as t
@@ -7,7 +17,9 @@ from MicEMD.handler import TDEMHandler
 from MicEMD.preprocessor import data_prepare
 
 import warnings
+
 warnings.filterwarnings("ignore")  # 忽略版本问题
+
 
 class ThreadCalFdem(QThread):
     """Fdem forward simulation thread.
@@ -42,7 +54,7 @@ class ThreadCalFdem(QThread):
     def run(self):
         """Use the information about the initial parameters to simulate"""
 
-        forward_result = f.simulate(self.target, self.detector, self.collection, 'simpeg')
+        forward_result = (f.simulate(self.target, self.detector, self.collection, 'simpeg'), )
         self.trigger.emit(forward_result)
 
 
