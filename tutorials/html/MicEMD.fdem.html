@@ -1,0 +1,808 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>MicEMD.fdem package &mdash; MicEMD  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> MicEMD
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">MicEMD.fdem package</a><ul>
+<li><a class="reference internal" href="#submodules">Submodules</a></li>
+<li><a class="reference internal" href="#module-MicEMD.fdem.collection">MicEMD.fdem.collection module</a></li>
+<li><a class="reference internal" href="#module-MicEMD.fdem.detector">MicEMD.fdem.detector module</a></li>
+<li><a class="reference internal" href="#module-MicEMD.fdem.inversion">MicEMD.fdem.inversion module</a></li>
+<li><a class="reference internal" href="#module-MicEMD.fdem.model">MicEMD.fdem.model module</a></li>
+<li><a class="reference internal" href="#module-MicEMD.fdem.results">MicEMD.fdem.results module</a></li>
+<li><a class="reference internal" href="#module-MicEMD.fdem.simulation">MicEMD.fdem.simulation module</a></li>
+<li><a class="reference internal" href="#module-MicEMD.fdem.source">MicEMD.fdem.source module</a></li>
+<li><a class="reference internal" href="#module-MicEMD.fdem.survey">MicEMD.fdem.survey module</a></li>
+<li><a class="reference internal" href="#module-MicEMD.fdem.target">MicEMD.fdem.target module</a></li>
+<li><a class="reference internal" href="#module-MicEMD.fdem">Module contents</a></li>
+</ul>
+</li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MicEMD</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>MicEMD.fdem package</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/MicEMD.fdem.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="micemd-fdem-package">
+<h1>MicEMD.fdem package<a class="headerlink" href="#micemd-fdem-package" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="submodules">
+<h2>Submodules<a class="headerlink" href="#submodules" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-MicEMD.fdem.collection">
+<span id="micemd-fdem-collection-module"></span><h2>MicEMD.fdem.collection module<a class="headerlink" href="#module-MicEMD.fdem.collection" title="Permalink to this headline">¶</a></h2>
+<p>The Collection class, conclude the parameters about collecting in underground detection system</p>
+<p>Class:
+- Collection: the class conclude the parameters about collecting in FDEM</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="MicEMD.fdem.collection.Collection">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MicEMD.fdem.collection.</span></span><span class="sig-name descname"><span class="pre">Collection</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">spacing</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">SNR</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_min</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">y_max</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection_direction</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.collection.Collection" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<dl class="simple">
+<dt>spacing: float</dt><dd><p>the spacing of collection in x and y axis</p>
+</dd>
+<dt>height: float</dt><dd><p>The height of the detector above the ground</p>
+</dd>
+<dt>SNR: float</dt><dd><p>the SNR of the environment</p>
+</dd>
+<dt>x_min: float</dt><dd><p>the min value of the x axis collection</p>
+</dd>
+<dt>x_max: float</dt><dd><p>the max value of the x axis collection</p>
+</dd>
+<dt>y_min: float</dt><dd><p>the min value of the y axis collection</p>
+</dd>
+<dt>y_max: float</dt><dd><p>the max value of the y axis collection</p>
+</dd>
+<dt>collection_direction: str</dt><dd><p>the direction of the collection magnetic field</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>receiver_location:</dt><dd><p>return the sample location of the receiver</p>
+</dd>
+<dt>source_locations:</dt><dd><p>return the location of the transmitter</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="MicEMD.fdem.collection.Collection.receiver_location">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">receiver_location</span></span><a class="headerlink" href="#MicEMD.fdem.collection.Collection.receiver_location" title="Permalink to this definition">¶</a></dt>
+<dd><p>define and get the sample location of the receiver</p>
+<dl class="simple">
+<dt>res: 2-D-ndarry</dt><dd><p>the location of the receiver, conclude the location of xyz axis
+every line is a location [x, y, z], the number of row represent
+the number of survey point</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="MicEMD.fdem.collection.Collection.source_locations">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">source_locations</span></span><a class="headerlink" href="#MicEMD.fdem.collection.Collection.source_locations" title="Permalink to this definition">¶</a></dt>
+<dd><p>define and get the sample location of the transmitter</p>
+<dl class="simple">
+<dt>res: 2-D-ndarry</dt><dd><p>the location of the receiver, conclude the location of xyz axis
+every line is a location [x, y, z], the number of row represent
+the number of survey point</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-MicEMD.fdem.detector">
+<span id="micemd-fdem-detector-module"></span><h2>MicEMD.fdem.detector module<a class="headerlink" href="#module-MicEMD.fdem.detector" title="Permalink to this headline">¶</a></h2>
+<p>The detector class, represent the detector in FDEM</p>
+<p>Class:
+- Detector: the detector class in FDEM</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="MicEMD.fdem.detector.Detector">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MicEMD.fdem.detector.</span></span><span class="sig-name descname"><span class="pre">Detector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">current</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">frequency</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pitch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roll</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.detector.Detector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>the detector of the FDEM</p>
+<dl class="simple">
+<dt>radius: float</dt><dd><p>the radius of the detector</p>
+</dd>
+<dt>current: float</dt><dd><p>the current of the detector</p>
+</dd>
+<dt>frequency: float</dt><dd><p>the frequency of the detector</p>
+</dd>
+<dt>pitch: float</dt><dd><p>the pitch angle of the detector</p>
+</dd>
+<dt>roll: float</dt><dd><p>the roll angle of the detector</p>
+</dd>
+</dl>
+<p>Methods:
+mag_moment:</p>
+<blockquote>
+<div><p>return the magnetic moment value of transmitter coil</p>
+</div></blockquote>
+<dl class="py property">
+<dt class="sig sig-object py" id="MicEMD.fdem.detector.Detector.mag_moment">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">mag_moment</span></span><a class="headerlink" href="#MicEMD.fdem.detector.Detector.mag_moment" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate magnetic moment value of transmitter coil according to
+detector parameters.</p>
+<dl class="simple">
+<dt>TYPE<span class="classifier">float</span></dt><dd><p>The value of magnetic moment of z axis.</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-MicEMD.fdem.inversion">
+<span id="micemd-fdem-inversion-module"></span><h2>MicEMD.fdem.inversion module<a class="headerlink" href="#module-MicEMD.fdem.inversion" title="Permalink to this headline">¶</a></h2>
+<p>The inversion class in FDEM</p>
+<p>Class:
+- Inversion: the implement class of the BaseFDEMInversion</p>
+<p>Methods:
+- inverse: the interface of the inverse in FDEM</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="MicEMD.fdem.inversion.Inversion">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MicEMD.fdem.inversion.</span></span><span class="sig-name descname"><span class="pre">Inversion</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inv_para</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.inversion.Inversion" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MicEMD.fdem.inversion.BaseFDEMInversion</span></code></p>
+<p>inverse the properties of the target</p>
+<p>based on the optimization algorithms to solve the inversion problem</p>
+<dl class="simple">
+<dt>data: tuple</dt><dd><p>the data conclude the observed data, target class and detector class</p>
+</dd>
+<dt>method: str</dt><dd><p>the name of the optimization</p>
+</dd>
+<dt>inv_para: dict</dt><dd><p>the parameters setting of the optimization</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>true_properties:</dt><dd><p>Returns the true properties of the target</p>
+</dd>
+<dt>inv_objective_function:</dt><dd><p>Returns the calculated objective_function value in x position</p>
+</dd>
+<dt>inv_objectfun_gradient:</dt><dd><p>Returns the calculated gradient value in x position</p>
+</dd>
+<dt>inv_residual_vector:</dt><dd><p>Returns the residual vector.</p>
+</dd>
+<dt>inv_get_preicted_data:</dt><dd><p>Returns Predicted secondary fields calculated by the dipole model at all receiver_loc.</p>
+</dd>
+<dt>inv_forward_calculation:</dt><dd><p>Returns  predicted secondary fields according the linear magnetic
+dipole model at receiver_loc.</p>
+</dd>
+<dt>inv_residual_vector_grad:</dt><dd><p>Returns the gradient of all the residual vectors.</p>
+</dd>
+<dt>inv_forward_grad:</dt><dd><p>Returns the gradient of inv_forward_calculation()</p>
+</dd>
+<dt>polar_tensor_to_properties:</dt><dd><p>ransform the polar tensor to properties transform M11, M22, M33, M12, M13, M23
+to polarizability and pitch and roll angle and return</p>
+</dd>
+<dt>find_xyz_polarizability_index:</dt><dd><p>make the order of eigenvalue correspond to the polarizability order</p>
+</dd>
+<dt>run:</dt><dd><p>run the process of the inversion and return the estimate values</p>
+</dd>
+<dt>error:</dt><dd><p>Returns the error between true value and estimate value</p>
+</dd>
+</dl>
+<dl class="py property">
+<dt class="sig sig-object py" id="MicEMD.fdem.inversion.Inversion.error">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">error</span></span><a class="headerlink" href="#MicEMD.fdem.inversion.Inversion.error" title="Permalink to this definition">¶</a></dt>
+<dd><p>calculate the error of the true value and estimate value</p>
+<dl class="simple">
+<dt>error: ndarray</dt><dd><p>return the error</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MicEMD.fdem.inversion.Inversion.find_xyz_polarizability_index">
+<span class="sig-name descname"><span class="pre">find_xyz_polarizability_index</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">polarizability</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.inversion.Inversion.find_xyz_polarizability_index" title="Permalink to this definition">¶</a></dt>
+<dd><p>make the order of eigenvalue correspond to the polarizability order</p>
+<dl class="simple">
+<dt>polarizability<span class="classifier">TYPE</span></dt><dd><p>DESCRIPTION.</p>
+</dd>
+</dl>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MicEMD.fdem.inversion.Inversion.inv_forward_calculation">
+<span class="sig-name descname"><span class="pre">inv_forward_calculation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">receiver_loc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.inversion.Inversion.inv_forward_calculation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Forward calculation in inversion process. It generates predicted secondary
+fields according the linear magnetic dipole model at receiver_loc.</p>
+<p>detector : class Detector
+receiver_loc : numpy.array, size=3</p>
+<blockquote>
+<div><p>A receiver location.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>x<span class="classifier">numpy.array, size=9</span></dt><dd><p>See inv_objective_function x.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>B<span class="classifier">numpy.mat, shape=(3*1)</span></dt><dd><p>Predicted secondary field.</p>
+</dd>
+</dl>
+<p>Wan Y, Wang Z, Wang P, et al. A Comparative Study of Inversion Optimization
+Algorithms for Underground Metal Target Detection[J]. IEEE Access, 2020, 8:
+126401-126413.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MicEMD.fdem.inversion.Inversion.inv_forward_grad">
+<span class="sig-name descname"><span class="pre">inv_forward_grad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">receiver_loc</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.inversion.Inversion.inv_forward_grad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Use the difference method to calculate the gradient of
+inv_forward_calculation().</p>
+<p>detector : class Detector
+receiver_loc : numpy.array, size=3</p>
+<blockquote>
+<div><p>A receiver location.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>x<span class="classifier">numpy.array, size=9</span></dt><dd><p>See inv_objective_function x.</p>
+</dd>
+</dl>
+<p>grad : numpy.mat, shape=(3*9)</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MicEMD.fdem.inversion.Inversion.inv_get_preicted_data">
+<span class="sig-name descname"><span class="pre">inv_get_preicted_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">receiver_locations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.inversion.Inversion.inv_get_preicted_data" title="Permalink to this definition">¶</a></dt>
+<dd><p>It generates predicted secondary fields at all receiver locations.</p>
+<p>detector : class Detector
+receiver_locations : numpy.ndarray, shape=(N*3)</p>
+<blockquote>
+<div><p>See inv_objective_function receiver_locations.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>x<span class="classifier">numpy.array, size=9</span></dt><dd><p>See inv_objective_function x.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>predicted_mag_data<span class="classifier">numpy.ndarray, shape=(N*3)</span></dt><dd><p>Predicted secondary fields.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MicEMD.fdem.inversion.Inversion.inv_objectfun_gradient">
+<span class="sig-name descname"><span class="pre">inv_objectfun_gradient</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">receiver_locations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_mag_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.inversion.Inversion.inv_objectfun_gradient" title="Permalink to this definition">¶</a></dt>
+<dd><p>The gradient of the objective function with respect to x.</p>
+<p>detector : class Detector
+receiver_locations : numpy.ndarray, shape=(N*3)</p>
+<blockquote>
+<div><p>See inv_objective_function receiver_locations.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>true_mag_data<span class="classifier">numpy.ndarray, shape=(N*3)</span></dt><dd><p>See inv_objective_function true_mag_data.</p>
+</dd>
+<dt>x<span class="classifier">numpy.array, size=9</span></dt><dd><p>See inv_objective_function x.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>grad<span class="classifier">numpy.array, size=9</span></dt><dd><p>The partial derivative of the objective function with respect to nine
+parameters.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MicEMD.fdem.inversion.Inversion.inv_objective_function">
+<span class="sig-name descname"><span class="pre">inv_objective_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">receiver_locations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_mag_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.inversion.Inversion.inv_objective_function" title="Permalink to this definition">¶</a></dt>
+<dd><p>Objective function.</p>
+<p>detector : class Detector
+receiver_locations : numpy.ndarray, shape=(N*3), N=len(receiver_locations)</p>
+<blockquote>
+<div><p>All acquisition locations of the detector. Each row represents an
+acquisition location and the three columns represent x, y and z axis
+locations of an acquisition location.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>true_mag_data<span class="classifier">numpy.ndarray, shape=(N*3)</span></dt><dd><p>All secondary fields of acquisition locations (x, y and z directions).</p>
+</dd>
+<dt>x<span class="classifier">numpy.array, size=9</span></dt><dd><p>target’s parameters in inversion process, including position x, y, z,
+polarizability M11, M22, M33, M12, M13, M23.</p>
+</dd>
+</dl>
+<p>objective_fun_value : float</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MicEMD.fdem.inversion.Inversion.inv_residual_vector">
+<span class="sig-name descname"><span class="pre">inv_residual_vector</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">receiver_locations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">true_mag_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.inversion.Inversion.inv_residual_vector" title="Permalink to this definition">¶</a></dt>
+<dd><p>Construct the residual vector.</p>
+<p>detector : class Detector
+receiver_locations : numpy.ndarray, shape=(N*3)</p>
+<blockquote>
+<div><p>See inv_objective_function receiver_locations.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>true_mag_data<span class="classifier">numpy.ndarray, shape=(N*3)</span></dt><dd><p>See inv_objective_function true_mag_data.</p>
+</dd>
+<dt>x<span class="classifier">numpy.array, size=9</span></dt><dd><p>See inv_objective_function x.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>residual<span class="classifier">numpy.mat, shape=(N*3,1)</span></dt><dd><p>Residual vector.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MicEMD.fdem.inversion.Inversion.inv_residual_vector_grad">
+<span class="sig-name descname"><span class="pre">inv_residual_vector_grad</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">detector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">receiver_locations</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">x</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.inversion.Inversion.inv_residual_vector_grad" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the gradient of all the residual vectors.</p>
+<p>detector : class Detector
+receiver_locations : numpy.ndarray, shape=(N * 3)</p>
+<blockquote>
+<div><p>See inv_objective_function receiver_locations.</p>
+</div></blockquote>
+<dl class="simple">
+<dt>x<span class="classifier">numpy.array, size=9</span></dt><dd><p>See inv_objective_function x.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>grad<span class="classifier">numpy.mat, shape=(N*3,9)</span></dt><dd><p>Jacobian matrix of the residual vector.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MicEMD.fdem.inversion.Inversion.polar_tensor_to_properties">
+<span class="sig-name descname"><span class="pre">polar_tensor_to_properties</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">polar_tensor_vector</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.inversion.Inversion.polar_tensor_to_properties" title="Permalink to this definition">¶</a></dt>
+<dd><p>transform the polar tensor to properties
+transform M11, M22, M33, M12, M13, M23 to polarizability
+and pitch and roll angle</p>
+<dl class="simple">
+<dt>polar_tensor_vector<span class="classifier">numpy.array, size=6</span></dt><dd><p>M11, M22, M33, M12, M13, M23.</p>
+</dd>
+</dl>
+<p>None.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MicEMD.fdem.inversion.Inversion.run">
+<span class="sig-name descname"><span class="pre">run</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.inversion.Inversion.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run the process of the inversion</p>
+<dl class="simple">
+<dt>res: ndarray</dt><dd><p>return the estimate properties[x, y, z, bx, by, bz, pitch, roll]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="MicEMD.fdem.inversion.Inversion.true_properties">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">true_properties</span></span><a class="headerlink" href="#MicEMD.fdem.inversion.Inversion.true_properties" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the true properties</p>
+<dl class="simple">
+<dt>res: ndarry</dt><dd><p>return the true properties, conclude position, polarizability, pitch and
+roll angle of the target, amount to 8 inverse parameters</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MicEMD.fdem.inversion.inverse">
+<span class="sig-prename descclassname"><span class="pre">MicEMD.fdem.inversion.</span></span><span class="sig-name descname"><span class="pre">inverse</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inv_para</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.inversion.inverse" title="Permalink to this definition">¶</a></dt>
+<dd><p>the interface is used to handle the process of inversion</p>
+<dl class="simple">
+<dt>data: tuple</dt><dd><p>the data conclude the observed data, target class and detector class</p>
+</dd>
+<dt>method: str</dt><dd><p>the name of the optimization</p>
+</dd>
+<dt>inv_para: dict</dt><dd><p>the parameters setting of the optimization</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>res: dict</dt><dd><p>res conclude the predicted value, true value and the error value</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-MicEMD.fdem.model">
+<span id="micemd-fdem-model-module"></span><h2>MicEMD.fdem.model module<a class="headerlink" href="#module-MicEMD.fdem.model" title="Permalink to this headline">¶</a></h2>
+<p>The model class, represent the model in FDEM</p>
+<p>Class:
+- Model: the implement class of the BaseFDEMModel</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="MicEMD.fdem.model.Model">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MicEMD.fdem.model.</span></span><span class="sig-name descname"><span class="pre">Model</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Survey</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.model.Model" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MicEMD.fdem.model.BaseFDEMModel</span></code></p>
+<p>the model class
+we simulate the FDEM response based on Simpeg in MicEMD</p>
+<dl class="simple">
+<dt>Survey: class</dt><dd><p>the Survey class</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>dpred:</dt><dd><p>Returns the observed data</p>
+</dd>
+<dt>mag_data_add_noise:</dt><dd><p>add the noise for the mag_data and return</p>
+</dd>
+<dt>add_wgn:</dt><dd><p>add the noise for the data</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="MicEMD.fdem.model.Model.add_wgn">
+<span class="sig-name descname"><span class="pre">add_wgn</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.model.Model.add_wgn" title="Permalink to this definition">¶</a></dt>
+<dd><p>add the noise for the data</p>
+<dl class="simple">
+<dt>data<span class="classifier">TYPE</span></dt><dd><p>DESCRIPTION.</p>
+</dd>
+<dt>snr<span class="classifier">TYPE</span></dt><dd><p>DESCRIPTION.</p>
+</dd>
+</dl>
+<p>res: ndarry</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MicEMD.fdem.model.Model.dpred">
+<span class="sig-name descname"><span class="pre">dpred</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.model.Model.dpred" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MicEMD.fdem.model.Model.getIndicesCylinder">
+<span class="sig-name descname"><span class="pre">getIndicesCylinder</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">center</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">height</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">oritation</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">ccMesh</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.model.Model.getIndicesCylinder" title="Permalink to this definition">¶</a></dt>
+<dd><p>Create the mesh indices of a custom cylinder</p>
+<dl class="simple">
+<dt>center<span class="classifier">TYPE</span></dt><dd><p>DESCRIPTION.</p>
+</dd>
+<dt>radius<span class="classifier">TYPE</span></dt><dd><p>DESCRIPTION.</p>
+</dd>
+<dt>height<span class="classifier">TYPE</span></dt><dd><p>DESCRIPTION.</p>
+</dd>
+<dt>oritation<span class="classifier">TYPE</span></dt><dd><p>DESCRIPTION.</p>
+</dd>
+<dt>ccMesh<span class="classifier">TYPE</span></dt><dd><p>DESCRIPTION.</p>
+</dd>
+</dl>
+<p>None.</p>
+<p><a class="reference external" href="https://zhuanlan.zhihu.com/p/24760577">https://zhuanlan.zhihu.com/p/24760577</a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="MicEMD.fdem.model.Model.mag_data_add_noise">
+<span class="sig-name descname"><span class="pre">mag_data_add_noise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">mag_data</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">snr</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.model.Model.mag_data_add_noise" title="Permalink to this definition">¶</a></dt>
+<dd><p>add the noise for the mag_data</p>
+<dl class="simple">
+<dt>mag_data<span class="classifier">TYPE</span></dt><dd><p>DESCRIPTION.</p>
+</dd>
+<dt>snr<span class="classifier">TYPE</span></dt><dd><p>DESCRIPTION.</p>
+</dd>
+</dl>
+<p>res: ndarry</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-MicEMD.fdem.results">
+<span id="micemd-fdem-results-module"></span><h2>MicEMD.fdem.results module<a class="headerlink" href="#module-MicEMD.fdem.results" title="Permalink to this headline">¶</a></h2>
+</div>
+<div class="section" id="module-MicEMD.fdem.simulation">
+<span id="micemd-fdem-simulation-module"></span><h2>MicEMD.fdem.simulation module<a class="headerlink" href="#module-MicEMD.fdem.simulation" title="Permalink to this headline">¶</a></h2>
+<p>The simulation in TDEM</p>
+<p>Class:
+- Simulation: the implement class of the BaseFDEMSimulation</p>
+<p>Methods:
+- simulate: the interface of the simulation in FDEM</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="MicEMD.fdem.simulation.Simulation">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MicEMD.fdem.simulation.</span></span><span class="sig-name descname"><span class="pre">Simulation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">model</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.simulation.Simulation" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MicEMD.fdem.simulation.BaseSimulation</span></code></p>
+<p>simulate the electromagnetic response</p>
+<dl class="simple">
+<dt>model: class</dt><dd><p>the model class which call the pred method to generate the observed data</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>pred: ndarry</dt><dd><p>Returns the observed data</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="MicEMD.fdem.simulation.Simulation.pred">
+<span class="sig-name descname"><span class="pre">pred</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.simulation.Simulation.pred" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="MicEMD.fdem.simulation.simulate">
+<span class="sig-prename descclassname"><span class="pre">MicEMD.fdem.simulation.</span></span><span class="sig-name descname"><span class="pre">simulate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">detector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">collection</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">model</span></span><span class="o"><span class="pre">=</span></span><span class="default_value"><span class="pre">'simpeg'</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.simulation.simulate" title="Permalink to this definition">¶</a></dt>
+<dd><p>the simulate interface is used to handle organization and dispatch of directives of the simulation</p>
+<dl class="simple">
+<dt>target: class</dt><dd><p>the target class</p>
+</dd>
+<dt>detector: class</dt><dd><p>the detector class</p>
+</dd>
+<dt>collection: class</dt><dd><p>the collection class</p>
+</dd>
+<dt>model: class</dt><dd><p>the model class</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>result: ndarry</dt><dd><p>the observed data conclude the position and the magnetic field intensity</p>
+</dd>
+</dl>
+</dd></dl>
+
+</div>
+<div class="section" id="module-MicEMD.fdem.source">
+<span id="micemd-fdem-source-module"></span><h2>MicEMD.fdem.source module<a class="headerlink" href="#module-MicEMD.fdem.source" title="Permalink to this headline">¶</a></h2>
+<p>The Source class, represent the source in FDEM</p>
+<p>Class:
+- Source: implement class of the BaseTDEMSource in FDEM</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="MicEMD.fdem.source.Source">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MicEMD.fdem.source.</span></span><span class="sig-name descname"><span class="pre">Source</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Target</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Detector</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">Collection</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.source.Source" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MicEMD.fdem.source.BaseFDEMSource</span></code></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="MicEMD.fdem.source.Source.source_list">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">source_list</span></span><a class="headerlink" href="#MicEMD.fdem.source.Source.source_list" title="Permalink to this definition">¶</a></dt>
+<dd><p>return the source list conclude the information of transmitter and receiver</p>
+<dl class="simple">
+<dt>res: list</dt><dd><p>res conclude all the MagDipole class in simpeg</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-MicEMD.fdem.survey">
+<span id="micemd-fdem-survey-module"></span><h2>MicEMD.fdem.survey module<a class="headerlink" href="#module-MicEMD.fdem.survey" title="Permalink to this headline">¶</a></h2>
+<p>The survey class, represent the survey in FDEM</p>
+<p>Class:
+- Survey: the implement class of the BaseFDEMSurvey</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="MicEMD.fdem.survey.Survey">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MicEMD.fdem.survey.</span></span><span class="sig-name descname"><span class="pre">Survey</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">Source</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.survey.Survey" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">MicEMD.fdem.survey.BaseFDEMSurvey</span></code></p>
+<dl class="py property">
+<dt class="sig sig-object py" id="MicEMD.fdem.survey.Survey.survey">
+<em class="property"><span class="pre">property</span> </em><span class="sig-name descname"><span class="pre">survey</span></span><a class="headerlink" href="#MicEMD.fdem.survey.Survey.survey" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-MicEMD.fdem.target">
+<span id="micemd-fdem-target-module"></span><h2>MicEMD.fdem.target module<a class="headerlink" href="#module-MicEMD.fdem.target" title="Permalink to this headline">¶</a></h2>
+<p>The target class, represent the target in underground detection</p>
+<p>Class:
+- Target: the target class in FDEM</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="MicEMD.fdem.target.Target">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">MicEMD.fdem.target.</span></span><span class="sig-name descname"><span class="pre">Target</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">conductivity</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">permeability</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">radius</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pitch</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">roll</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">length</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_x</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_y</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">position_z</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.target.Target" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">object</span></code></p>
+<p>Refer in particular to cylinder targets.</p>
+<dl class="simple">
+<dt>conductivity: float</dt><dd><p>the conductivity of the target</p>
+</dd>
+<dt>permeability: float</dt><dd><p>the permeability of the target</p>
+</dd>
+<dt>radius: float</dt><dd><p>The radius of the base of a cylinder</p>
+</dd>
+<dt>pitch: float</dt><dd><p>the pitch angle of the cylinder</p>
+</dd>
+<dt>roll: float</dt><dd><p>the roll angle of the cylinder</p>
+</dd>
+<dt>length: float</dt><dd><p>the length of the target</p>
+</dd>
+<dt>position: list</dt><dd><p>the position of the target, [x, y, z]</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>get_principal_axis_polarizability</dt><dd><p>return the principal axis polarizabilities of the target</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="MicEMD.fdem.target.Target.get_principal_axis_polarizability">
+<span class="sig-name descname"><span class="pre">get_principal_axis_polarizability</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">frequency</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#MicEMD.fdem.target.Target.get_principal_axis_polarizability" title="Permalink to this definition">¶</a></dt>
+<dd><p>Calculate the principal axis polarizabilities of the target according
+to the target’s parameters and the frequency of primary field.</p>
+<dl class="simple">
+<dt>frequency<span class="classifier">float</span></dt><dd><p>Frequency of the primary field.</p>
+</dd>
+</dl>
+<p>polarizability : numpy.array, size=3</p>
+<p>Wan Y, Wang Z, Wang P, et al. A Comparative Study of Inversion
+Optimization Algorithms for Underground Metal Target Detection[J].
+IEEE Access, 2020, 8: 126401-126413. equation (9)(10).</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+<div class="section" id="module-MicEMD.fdem">
+<span id="module-contents"></span><h2>Module contents<a class="headerlink" href="#module-MicEMD.fdem" title="Permalink to this headline">¶</a></h2>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Shi Haodong, Liu Wen, Wang Zheng.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

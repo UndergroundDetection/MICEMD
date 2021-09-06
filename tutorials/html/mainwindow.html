@@ -1,0 +1,353 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8" />
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <title>mainwindow module &mdash; MicEMD  documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+
+  
+  
+
+  
+  
+
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="index.html" class="icon icon-home"> MicEMD
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <!-- Local TOC -->
+              <div class="local-toc"><ul>
+<li><a class="reference internal" href="#">mainwindow module</a></li>
+</ul>
+</div>
+            
+          
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">MicEMD</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>mainwindow module</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+          
+            <a href="_sources/mainwindow.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="module-mainwindow">
+<span id="mainwindow-module"></span><h1>mainwindow module<a class="headerlink" href="#module-mainwindow" title="Permalink to this headline">¶</a></h1>
+<p>Created on Sun Aug 16 10:02:54 2020
+&#64;author: Shi haodong</p>
+<p>the graphical user interface</p>
+<p>Class:
+- MainWindow: the implement class of the GUI</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="mainwindow.MainWindow">
+<em class="property"><span class="pre">class</span> </em><span class="sig-prename descclassname"><span class="pre">mainwindow.</span></span><span class="sig-name descname"><span class="pre">MainWindow</span></span><a class="headerlink" href="#mainwindow.MainWindow" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <code class="xref py py-class docutils literal notranslate"><span class="pre">PyQt5.QtWidgets.QMainWindow</span></code>, <a class="reference internal" href="mainwindow_ui.html#mainwindow_ui.Ui_MainWindow" title="mainwindow_ui.Ui_MainWindow"><code class="xref py py-class docutils literal notranslate"><span class="pre">mainwindow_ui.Ui_MainWindow</span></code></a></p>
+<dl class="simple">
+<dt>thread_cal_fdem: class</dt><dd><p>the fdem forward simulation thread class.</p>
+</dd>
+<dt>thread_inv_fdem: class</dt><dd><p>the fdem inversion thread class.</p>
+</dd>
+<dt>thread_cal_tdem: class</dt><dd><p>the tdem forward simulation thread class.</p>
+</dd>
+<dt>thread_cls_tdem: class</dt><dd><p>the tdem classification thread class.</p>
+</dd>
+</dl>
+<dl class="simple">
+<dt>initialize:</dt><dd><p>initialization of the interface</p>
+</dd>
+<dt>connect_slots:</dt><dd><p>the slots functions</p>
+</dd>
+<dt>select_Chinese:</dt><dd><p>response to switch to Chinese language</p>
+</dd>
+<dt>select_English:</dt><dd><p>response to switch to Chinese language</p>
+</dd>
+<dt>select_detection_method:</dt><dd><p>response to switch the detection method tab</p>
+</dd>
+<dt>get_fdem_simulation_parameters:</dt><dd><p>get fdem simulation parameter values from the interface</p>
+</dd>
+<dt>run_fdem_forward_calculate:</dt><dd><p>call the fdem forward simulation interface to simulate</p>
+</dd>
+<dt>run_fdem_inversion:</dt><dd><p>call the fdem inversion interface</p>
+</dd>
+<dt>run_fdem_forward_result_process:</dt><dd><p>call the handler to handle the fdem forward results</p>
+</dd>
+<dt>run_fdem_inv_result_process:</dt><dd><p>call the handler to handle the fdem inversion results</p>
+</dd>
+<dt>get_tdem_simulation_parameters:</dt><dd><p>get tdem simulation parameter values from the interface</p>
+</dd>
+<dt>run_tdem_forward_calculate:</dt><dd><p>call the tdem forward simulation interface to simulate</p>
+</dd>
+<dt>run_tdem_forward_result_process:</dt><dd><p>call the handler to handle the tdem forward results</p>
+</dd>
+<dt>run_tdem_classification:</dt><dd><p>call the tdem classification interface</p>
+</dd>
+<dt>run_tdem_cls_result_process:</dt><dd><p>call the handler to handle the tdem classification results</p>
+</dd>
+</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.MainWindow.connect_slots">
+<span class="sig-name descname"><span class="pre">connect_slots</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow.connect_slots" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.MainWindow.get_fdem_simulation_parameters">
+<span class="sig-name descname"><span class="pre">get_fdem_simulation_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow.get_fdem_simulation_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>When parameters are update in fdem interface, the parameters used for
+calculation will be updated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.MainWindow.get_tdem_simulation_parameters">
+<span class="sig-name descname"><span class="pre">get_tdem_simulation_parameters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow.get_tdem_simulation_parameters" title="Permalink to this definition">¶</a></dt>
+<dd><p>When parameters are update in tdem interface, the parameters used for
+calculation will be updated.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.MainWindow.initialize">
+<span class="sig-name descname"><span class="pre">initialize</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow.initialize" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.MainWindow.run_fdem_forward_calculate">
+<span class="sig-name descname"><span class="pre">run_fdem_forward_calculate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow.run_fdem_forward_calculate" title="Permalink to this definition">¶</a></dt>
+<dd><p>When ‘run forward simulation’ button is clicked in fdem interface, this
+function will ba called.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.MainWindow.run_fdem_forward_result_process">
+<span class="sig-name descname"><span class="pre">run_fdem_forward_result_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">forward_result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow.run_fdem_forward_result_process" title="Permalink to this definition">¶</a></dt>
+<dd><p>When the forward calculation of FDEM is finished, the result process
+function will be called.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.MainWindow.run_fdem_inv_result_process">
+<span class="sig-name descname"><span class="pre">run_fdem_inv_result_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">inv_result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow.run_fdem_inv_result_process" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.MainWindow.run_fdem_inversion">
+<span class="sig-name descname"><span class="pre">run_fdem_inversion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow.run_fdem_inversion" title="Permalink to this definition">¶</a></dt>
+<dd><p>When ‘run fdem inversion’ button is clicked in fdem interface, this
+function will ba called.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.MainWindow.run_tdem_classification">
+<span class="sig-name descname"><span class="pre">run_tdem_classification</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow.run_tdem_classification" title="Permalink to this definition">¶</a></dt>
+<dd><p>When run fdem inversion’ button is clicked in fdem interface, this
+function will ba called.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.MainWindow.run_tdem_cls_result_process">
+<span class="sig-name descname"><span class="pre">run_tdem_cls_result_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cls_result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow.run_tdem_cls_result_process" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.MainWindow.run_tdem_forward_calculate">
+<span class="sig-name descname"><span class="pre">run_tdem_forward_calculate</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow.run_tdem_forward_calculate" title="Permalink to this definition">¶</a></dt>
+<dd><p>When ‘run forward simulation’ button is clicked in tdem interface, this
+function will ba called.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.MainWindow.run_tdem_forward_result_process">
+<span class="sig-name descname"><span class="pre">run_tdem_forward_result_process</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">forward_result</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow.run_tdem_forward_result_process" title="Permalink to this definition">¶</a></dt>
+<dd><p>When the forward calculation of TDEM is finished, the result process
+function will be called.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.MainWindow.select_Chinese">
+<span class="sig-name descname"><span class="pre">select_Chinese</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow.select_Chinese" title="Permalink to this definition">¶</a></dt>
+<dd><p>Translate English on the interface into Chinese.</p>
+<p><a class="reference external" href="https://blog.csdn.net/CholenMine/article/details/80725088">https://blog.csdn.net/CholenMine/article/details/80725088</a></p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.MainWindow.select_English">
+<span class="sig-name descname"><span class="pre">select_English</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow.select_English" title="Permalink to this definition">¶</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="mainwindow.MainWindow.select_detection_method">
+<span class="sig-name descname"><span class="pre">select_detection_method</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#mainwindow.MainWindow.select_detection_method" title="Permalink to this definition">¶</a></dt>
+<dd><p>When detection method is changed, this function will be called.</p>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &#169; Copyright 2021, Shi Haodong, Liu Wen, Wang Zheng.
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
