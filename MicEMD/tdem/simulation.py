@@ -16,10 +16,6 @@ from abc import abstractmethod
 from .survey import *
 from .source import *
 from .model import *
-from .results import *
-from ..handler import TDEMHandler
-from ..preprocessor import *
-import matplotlib.pyplot as plt
 
 
 class BaseTDEMSimulation(metaclass=ABCMeta):

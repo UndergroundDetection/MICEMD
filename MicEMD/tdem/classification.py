@@ -46,7 +46,7 @@ class Classification(BaseTDEMClassification):
 
     Methods:
     -------
-    - run: run the the classification algorithm
+    - run: run the the classification algorithm and return the result
     - error: return the res of the classification
     """
 

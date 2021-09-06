@@ -9,6 +9,7 @@ __all__ = ['numopt']
 import numpy as np
 from numpy import asarray, Inf, isinf
 from scipy.optimize.optimize import _line_search_wolfe12, _LineSearchError
+from scipy.optimize import minimize
 
 
 def steepest_descent(fun, grad, x0, iterations, tol):
@@ -372,22 +373,29 @@ def levenberg_marquardt(fun, grad, jacobian, x0, iterations, tol):
 
 
 def numopt(fun, grad, jacobian, x0, iterations, method='BFGS', tol=1e-9):
+    """Call optimization algorithms.
+
+    Parameters
+    ----------
+    fun: func
+        the cite of objective function
+    grad: func
+        the cite of calculate grad of the fun(objective function)
+    jacobian: func
+        the cite of calculate jacobian
+    x0: list
+        the initial value of the estimate value
+    method : str
+        The name of optimization algorithms.
+    iterations : int
+        Maximum iterations of optimization algorithms.
+    tol : float
+        Tolerance of optimization algorithms.
+
+    Returns
+    -------
+    res.x : numpy.array, size=9
     """
-        Call optimization algorithms.
-
-        Parameters
-        ----------
-        method : str
-            The name of optimization algorithms.
-        iterations : int
-            Maximum iterations of optimization algorithms.
-        tol : float
-            Tolerance of optimization algorithms.
-
-        Returns
-        -------
-        res.x : numpy.array, size=9
-        """
 
     if method == "SD":
         x, fval, grad_val, x_log, y_log, grad_log = steepest_descent(fun, grad, x0, iterations, tol)
@@ -397,5 +405,4 @@ def numopt(fun, grad, jacobian, x0, iterations, method='BFGS', tol=1e-9):
         x, fval, grad_val, x_log, y_log, grad_log = conjugate_gradient(fun, grad, x0, iterations, tol)
     else:
         x, fval, grad_val, x_log, y_log, grad_log = levenberg_marquardt(fun, grad, jacobian, x0, iterations, tol)
-
     return x

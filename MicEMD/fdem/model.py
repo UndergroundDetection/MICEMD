@@ -34,6 +34,7 @@ class BaseFDEMModel(metaclass=ABCMeta):
         the Survey in FDEM
 
     Methods:
+    ---------
     dpred
         Returns the forward simulation data of the FDEM
     """
@@ -48,6 +49,23 @@ class BaseFDEMModel(metaclass=ABCMeta):
 
 
 class Model(BaseFDEMModel):
+    """the model class
+    we simulate the FDEM response based on Simpeg in MicEMD
+
+    Parameters
+    ----------
+    Survey: class
+        the Survey class
+
+    Methods
+    -------
+    dpred:
+        Returns the observed data
+    mag_data_add_noise:
+        add the noise for the mag_data and return
+    add_wgn:
+        add the noise for the data
+    """
     def __init__(self, Survey):
         BaseFDEMModel.__init__(self, Survey)
 
@@ -145,8 +163,9 @@ class Model(BaseFDEMModel):
 
         mag_data = self.mag_data_add_noise(mag_data, collection.SNR)
         data = np.c_[collection.receiver_location, mag_data]
+        # data = (data, )
 
-        return data, mesh, sigma_map * model
+        return data  # 只保留磁场强度数据，删除后面的两个参数
 
     def mag_data_add_noise(self, mag_data, snr):
         """add the noise for the mag_data

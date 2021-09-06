@@ -45,7 +45,7 @@ class Source(BaseFDEMSource):
 
     @property
     def source_list(self):
-        """
+        """return the source list conclude the information of transmitter and receiver
 
         Returns
         -------

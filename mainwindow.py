@@ -1,8 +1,12 @@
 # -*- coding: utf-8 -*-
 """
 Created on Sun Aug 16 10:02:54 2020
+@author: Shi haodong
 
-@author: Wang Zhen
+the graphical user interface
+
+Class:
+- MainWindow: the implement class of the GUI
 """
 
 import sys
@@ -10,20 +14,68 @@ import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtCore import QTranslator
 
+import numpy as np
 from matplotlib.figure import Figure
 from matplotlib.backends.backend_qt5agg import FigureCanvasQTAgg
 
 from mainwindow_ui import Ui_MainWindow
+
 from result import TFResult
 import MicEMD.fdem as f
 import MicEMD.tdem as t
 from utilities.show import show_fdem_detection_scenario
 from utilities.threadSet import ThreadCalFdem, ThreadInvFdem, ThreadCalTdem, ThreadClsTdem
 from MicEMD.handler import FDEMHandler, TDEMHandler
-import numpy as np
 
 
 class MainWindow(QMainWindow, Ui_MainWindow):
+    """
+    Attributes
+    ----------
+    thread_cal_fdem: class
+        the fdem forward simulation thread class.
+    thread_inv_fdem: class
+        the fdem inversion thread class.
+    thread_cal_tdem: class
+        the tdem forward simulation thread class.
+    thread_cls_tdem: class
+        the tdem classification thread class.
+
+    Methods
+    -------
+    initialize:
+        initialization of the interface
+    connect_slots:
+        the slots functions
+    select_Chinese:
+        response to switch to Chinese language
+    select_English:
+        response to switch to Chinese language
+    select_detection_method:
+        response to switch the detection method tab
+    get_fdem_simulation_parameters:
+        get fdem simulation parameter values from the interface
+    run_fdem_forward_calculate:
+        call the fdem forward simulation interface to simulate
+    run_fdem_inversion:
+        call the fdem inversion interface
+    run_fdem_forward_result_process:
+        call the handler to handle the fdem forward results
+    run_fdem_inv_result_process:
+        call the handler to handle the fdem inversion results
+
+    get_tdem_simulation_parameters:
+        get tdem simulation parameter values from the interface
+    run_tdem_forward_calculate:
+        call the tdem forward simulation interface to simulate
+    run_tdem_forward_result_process:
+        call the handler to handle the tdem forward results
+    run_tdem_classification:
+        call the tdem classification interface
+    run_tdem_cls_result_process:
+        call the handler to handle the tdem classification results
+
+    """
 
     def __init__(self):
         super(MainWindow, self).__init__()
@@ -45,8 +97,8 @@ class MainWindow(QMainWindow, Ui_MainWindow):
         # so multi-thread is used to complete forward simulation and inversion
         self.thread_cal_fdem = ThreadCalFdem()  # Define the fdem forward simulation thread class.
         self.thread_inv_fdem = ThreadInvFdem()  # Define the fdem inversion thread class.
-        self.thread_cal_tdem = ThreadCalTdem()  # Define the fdem forward simulation thread class.
-        self.thread_cls_tdem = ThreadClsTdem()  # Define the fdem inversion thread class.
+        self.thread_cal_tdem = ThreadCalTdem()  # Define the tdem forward simulation thread class.
+        self.thread_cls_tdem = ThreadClsTdem()  # Define the tdem classification thread class.
 
     def initialize(self):
 
@@ -438,7 +490,7 @@ class MainWindow(QMainWindow, Ui_MainWindow):
 
         self.result.cls_result = cls_result
         handler = TDEMHandler(target=self.ttarget, collection=self.tcollection)
-        handler.plot_confusion_matrix_default(cls_result, self.thread_cls_tdem.task, self.fig_cls_result, False, self.thread_cls_tdem.save)
+        handler.show_cls_res_default(cls_result, self.thread_cls_tdem.task, self.fig_cls_result, False, self.thread_cls_tdem.save)
         handler.save_cls_res_default(cls_result)
         self.canvas_cls_result.draw()
         self.tab_show.setCurrentWidget(self.tab_classification_result_t)

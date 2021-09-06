@@ -31,6 +31,39 @@ class FDEMBaseHandler(metaclass=ABCMeta):
 
 
 class FDEMHandler(FDEMBaseHandler):
+    """The class is used to handle the results of the simulation and inversion
+
+    Parameters
+    ----------
+    kwargs: optional
+        if there is para, the para is used to create the default dir of saving files
+
+    Methods
+    -------
+    get_save_fdem_dir:
+        to create the file path by parameters about this target scene
+    save_fwd_data:
+        save the observed data that simulating by forward simulation
+    save_inv_res:
+        save the inversion result by custom path
+    save_fwd_data_default:
+        according to the default path to save the forward data
+    save_inv_res_default:
+        according to the default path to save the forward data
+
+    show_detection_scenario:
+        show the detection scenario
+    show_mag_map:
+        show the secondary field strength of some axis
+    show_inv_res:
+        show the inversion results in line chart and bar chart
+    show_detection_scenario_default:
+         according to the default path to save the scenerio
+    show_mag_map_default:
+        according to the default path to save the mag map
+    show_inv_res_default:
+        according to the default path to save the result display chart
+    """
     def __init__(self, **kwargs):
         FDEMBaseHandler.__init__(self)
         for key, val in kwargs.items():
@@ -79,6 +112,7 @@ class FDEMHandler(FDEMBaseHandler):
             path is '../results/fdemResults/forward_res',if you just input
             the file name, it will be saved in the path
         """
+
         mag_data = pd.DataFrame(data, columns=['x', 'y', 'z', 'hx', 'hy', 'hz'])
 
         path = os.path.dirname(file_name)
@@ -106,6 +140,7 @@ class FDEMHandler(FDEMBaseHandler):
             the file name, it will be saved in the path
 
         """
+        
         pred = np.array(inv_res['pred'])
         true = np.array(inv_res['true'])
         error = np.array(inv_res['error'])
@@ -249,7 +284,7 @@ class FDEMHandler(FDEMBaseHandler):
             fig.clf()  # Clear the figure in different detection scene
         else:
             fig = plt.figure()
-        # ax = fig.gca(projection='3d')
+
         ax = fig.add_subplot(projection='3d')
         ax.view_init(30, 45)
 
@@ -300,7 +335,7 @@ class FDEMHandler(FDEMBaseHandler):
                 fig.savefig('{}/{}'.format(path, name))
 
     def show_mag_map(self, loc_mag, Collection, show=False, save=False, file_name=None, fig=None):
-        """
+        """show the magnetic field map
 
         Parameters
         ----------
@@ -357,7 +392,7 @@ class FDEMHandler(FDEMBaseHandler):
         ax2 = fig.add_axes([0.85, 0.14, 0.03, 0.76])
         norm = mpl.colors.Normalize(vmin=v_min, vmax=v_max)
         cbar = mpl.colorbar.ColorbarBase(
-            ax2, norm=norm, orientation="vertical", cmap=mpl.cm.rainbow
+            ax2, norm=norm, orientation="vertical", cmap=mpl.cm.bwr
         )
         cbar.set_label("Secondary field [T]", rotation=270, labelpad=15)
         ax2.tick_params(width=0)
@@ -486,7 +521,7 @@ class FDEMHandler(FDEMBaseHandler):
             x_rotation[:, i] = rT[:, 0]
             y_rotation[:, i] = rT[:, 1]
             z_rotation[:, i] = rT[:, 2]
-        ax = fig.gca(projection='3d')
+        ax = fig.add_subplot(projection='3d')
         ax.view_init(30, 45)
 
         ax.plot_surface(x_rotation + target.position[0], y_rotation + target.position[1],
@@ -697,7 +732,7 @@ class FDEMHandler(FDEMBaseHandler):
 
         ax[0].scatter(list(range(8)), inv_res['true'], marker='x', s=50)
         ax[0].scatter(list(range(8)), inv_res['pred'], marker='+')
-        ax[1].bar(list(range(8)), inv_res['error'])
+        ax[1].bar(list(range(8)), inv_res['error'], color='gray')
         ticks = np.arange(0, 8, 1)
         labels = ['x', 'y', 'z', r'$\beta_x$', r'$\beta_y$', r'$\beta_z$', 'pitch', 'roll']
         ax[0].set_xticks(ticks)
@@ -717,13 +752,14 @@ class FDEMHandler(FDEMBaseHandler):
                 path = '../results/fdemResults/forward_res'
                 name = 'inv_res.png'
             if os.path.exists(path):
-                fig.savefig('{}/{}'.format(path, name))
+                fig.savefig('{}/{}'.format(path, name), bbox_inches='tight')
             else:
                 os.makedirs(path)
-                fig.savefig('{}/{}'.format(path, name))
+                fig.savefig('{}/{}'.format(path, name), bbox_inches='tight')
 
         if show:
-            plt.show()
+            fig.show()
+
 
 class TDEMBaseHandler(metaclass=ABCMeta):
     @abstractmethod
@@ -741,16 +777,35 @@ class TDEMBaseHandler(metaclass=ABCMeta):
 
 
 class TDEMHandler(TDEMBaseHandler):
-    """the data Handler class of TDEM
+    """The class is used to handle the results of the simulation and classification
 
+    Parameters
+    ----------
+    kwargs: optional
+        if there is para, the para is used to create the default dir of saving files
 
     Methods
     -------
-    - save_response_data:
-    - save_sample_data
-    - plot_data
-
-
+    get_save_tdem_dir:
+        to create the file path by parameters about this target scene
+    save_fwd_data:
+        save the observed data that simulating by forward simulation
+   save_sample_data:
+        save the sample data of the fwd_data
+    save_fwd_data_default:
+        according to the default path to save the forward data
+    save_sample_data_default:
+        according to the default path to save the sample data
+    save_preparation_default:
+        save the pre-processed data
+    save_dim_reduction_default:
+        save the data after dimension reduction according to the default path
+    plot_confusion_matrix:
+        plot the result of classification
+    plot_confusion_matrix_default:
+        plot the result of classification according to the default path
+    plot_data:
+        plot the sample data
     """
 
     def __init__(self, **kwargs):
@@ -826,13 +881,13 @@ class TDEMHandler(TDEMBaseHandler):
             path = '../results/tdemResults/forward_res'
         if os.path.exists(path):
             sample_data.to_csv('{}/{}'.format(path, name))
-            self.plot_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
+            self.show_sample_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
                            sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
                            sample['ta'], sample['tb'], '{}/{}'.format(path, pic_name), show)
         else:
             os.makedirs(path)
             sample_data.to_csv('{}/{}'.format(path, name))
-            self.plot_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
+            self.show_sample_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
                            sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
                            sample['ta'], sample['tb'], '{}/{}'.format(path, pic_name), show)
 
@@ -885,21 +940,21 @@ class TDEMHandler(TDEMBaseHandler):
             path = './results/tdemResults/{}/originData/sample selected'.format(file_name)
             if os.path.exists(path):
                 sample_data.to_csv('{}/sample_{}dB.csv'.format(path, snr))
-                self.plot_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
+                self.show_sample_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
                                sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
                                sample['ta'], sample['tb'], '{}/sample_{}dB.png'.format(path, snr), show, fig)
             else:
                 os.makedirs(path)
                 sample_data.to_csv('{}/sample_{}dB.csv'.format(path, snr))
-                self.plot_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
+                self.show_sample_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
                                sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
                                sample['ta'], sample['tb'], '{}/sample_{}dB.png'.format(path, snr), show, fig)
         else:
-            self.plot_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
+            self.show_sample_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
                            sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
                            sample['ta'], sample['tb'], None, show, fig)
 
-    def plot_data(self, M1, M2, M1_without_noise, M2_without_noise, t, SNR, material, ta, tb, file_name=None,
+    def show_sample_data(self, M1, M2, M1_without_noise, M2_without_noise, t, SNR, material, ta, tb, file_name=None,
                   show=False, fig=None):
         """show the sample data
 
@@ -1010,7 +1065,7 @@ class TDEMHandler(TDEMBaseHandler):
                 train_set_material.to_csv('{}/train_set.csv'.format(path_shape))
                 test_set_material.to_csv('{}/test_set.csv'.format(path_shape))
 
-    def plot_confusion_matrix(self, cls_res, type, fig=None, show=False, save=False, file_name=None):
+    def show_cls_res(self, cls_res, type, fig=None, show=False, save=False, file_name=None):
         """This function prints and plots the confusion matrix.
         Normalization can be applied by setting `normalize=True`.
         Parameters:
@@ -1056,6 +1111,7 @@ class TDEMHandler(TDEMBaseHandler):
             plt.text(j, i, format(cm[i, j], fmt),
                      horizontalalignment="center",
                      color="white" if cm[i, j] > thresh else "black", fontsize=26)
+        fig.colorbar(plt.cm.ScalarMappable(cmap=cmap), ax=ax)
         if show:
             fig.show()
         if save:
@@ -1074,7 +1130,7 @@ class TDEMHandler(TDEMBaseHandler):
                 plt.savefig('{}/{}'.format(path, name), format='pdf', bbox_inches='tight', dpi=600)
 
     # cm：混淆矩阵；classes：类别名称
-    def plot_confusion_matrix_default(self, cls_result, task, fig=None, show=False, save=True):
+    def show_cls_res_default(self, cls_result, task, fig=None, show=False, save=True):
         """
         This function prints and plots the confusion matrix.
         Normalization can be applied by setting `normalize=True`.
@@ -1113,6 +1169,8 @@ class TDEMHandler(TDEMBaseHandler):
             ax.text(j, i, format(cm[i, j], fmt),
                     horizontalalignment="center",
                     color="white" if cm[i, j] > thresh else "black", fontsize=26)
+
+        fig.colorbar(plt.cm.ScalarMappable(cmap=cmap), ax=ax)
 
         # fig.colorbar(shrink=1)
         # fig.colorbar(plt.cm.ScalarMappable(cmap=cmap), ax)

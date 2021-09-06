@@ -3,7 +3,7 @@
 The ANN classification method in TDEM
 
 Methods:
-- MLP: the ANN classification method
+    MLP: the ANN classification method
 """
 __all__ = ['MLP']
 
@@ -14,7 +14,6 @@ import numpy as np
 
 def MLP(train_set, test_set, solver='lbfgs', hidden_layer_sizes=(50,), activation='tanh'):
     """the ANN classification algorithm
-
 
     Parameters
     ----------

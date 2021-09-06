@@ -10,10 +10,32 @@ import numpy as np
 
 
 def my_mad(X=None):
+    """calculate the Median absolute deviation
+
+    Parameters
+    ----------
+    X: the dataset
+
+    Returns
+    -------
+    Returns median absolute deviation
+
+    """
     return np.sum(np.absolute(X - np.mean(X, axis=1).reshape((-1, 1))), axis=1).reshape((-1, 1)) / X.shape[1]
 
 
 def skeness(X=None):
+    """
+
+    Parameters
+    ----------
+    X: ndarry
+        the dataset
+
+    Returns
+    -------
+    Returns the skeness of the input
+    """
     skeness = []
     for i in range(X.shape[0]):
         mean = np.mean(X[i, :])
@@ -23,10 +45,20 @@ def skeness(X=None):
 
 
 def statistic_feature(data):
+    """
+
+    Parameters
+    ----------
+    data: tuple
+        conclude the train set and test set
+
+    Returns
+    -------
+        return the train set and test set after dimensionality
+    """
     train = data[0]
     test = data[1]
 
-    # 数据概况预览
     train_feature_lable = np.array(train)
     test_feature_lable = np.array(test)
 
