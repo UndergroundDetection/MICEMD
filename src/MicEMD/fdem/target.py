@@ -30,6 +30,8 @@ class Target(object):
         the length of the target
     position: list
         the position of the target, [x, y, z]
+    kwgs: dict
+        the extensible attribute
 
     Methods
     -------
@@ -47,6 +49,8 @@ class Target(object):
         self.roll = roll
         self.length = length
         self.position = [position_x, position_y, position_z]
+        for key, val in kwargs.items():
+            setattr(self, key, val)
 
     def get_principal_axis_polarizability(self, frequency):
         """

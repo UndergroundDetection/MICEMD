@@ -17,11 +17,15 @@ class Collection(object):
         the sampled times of the response every second
     SNR: int
         the Signal to Noise Ratio
+    kwgs: dict
+        the extensible attribute
     """
 
     def __init__(self, t_split, snr, **kwargs):
         self.t_split = t_split
         self.SNR = snr
+        for key, val in kwargs.items():
+            setattr(self, key, val)
 
 
 

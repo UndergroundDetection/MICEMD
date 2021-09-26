@@ -113,7 +113,7 @@ class Inversion(BaseFDEMInversion):
         Parameters
         ----------
         data: tuple or list
-            conclude receiver_location, magnetic data, targer and detector
+            conclude receiver_location, magnetic data, target and detector
         method: str
             the optimization method
         inv_para: dict
