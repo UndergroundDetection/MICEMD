@@ -33,6 +33,8 @@ class Collection(object):
         the max value of the y axis collection
     collection_direction: str
         the direction of the collection magnetic field
+    kwgs: dict
+        the extensible attribute
 
     Methods
     -------
@@ -43,7 +45,7 @@ class Collection(object):
     """
 
     def __init__(self, spacing, height, SNR, x_min, x_max, y_min, y_max,
-                 collection_direction):
+                 collection_direction, **kwargs):
         self.spacing = spacing
         self.height = height
         self.SNR = SNR
@@ -52,6 +54,8 @@ class Collection(object):
         self.y_min = y_min
         self.y_max = y_max
         self.collection_direction = collection_direction
+        for key, val in kwargs.items():
+            setattr(self, key, val)
 
     @property
     def receiver_location(self):

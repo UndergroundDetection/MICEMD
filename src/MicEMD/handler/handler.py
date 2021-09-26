@@ -119,7 +119,7 @@ class FDEMHandler(FDEMBaseHandler):
         name = os.path.basename(file_name)
 
         if path is '':
-            path = '../results/fdemResults/forward_res'
+            path = './results/fdemResults/forward_res'
         if os.path.exists(path):
             mag_data.to_csv('{}/{}'.format(path, name))
         else:
@@ -152,9 +152,9 @@ class FDEMHandler(FDEMBaseHandler):
             path = os.path.dirname(file_name)
             name = os.path.basename(file_name)
             if path is '':
-                path = '../results/fdemResults/inverse_res'
+                path = './results/fdemResults/inverse_res'
         else:
-            path = '../results/fdemResults/inverse_res'
+            path = './results/fdemResults/inverse_res'
             name = 'inv_res.csv'
 
         if os.path.exists(path):
@@ -324,9 +324,9 @@ class FDEMHandler(FDEMBaseHandler):
                 path = os.path.dirname(file_name)
                 name = os.path.basename(file_name)
                 if path is '':
-                    path = '../results/fdemResults/forward_res'
+                    path = './results/fdemResults/forward_res'
             else:
-                path = '../results/fdemResults/forward_res'
+                path = './results/fdemResults/forward_res'
                 name = 'detection_scenario.png'
             if os.path.exists(path):
                 fig.savefig('{}/{}'.format(path, name))
@@ -405,9 +405,9 @@ class FDEMHandler(FDEMBaseHandler):
                 path = os.path.dirname(file_name)
                 name = os.path.basename(file_name)
                 if path is '':
-                    path = '../results/fdemResults/forward_res'
+                    path = './results/fdemResults/forward_res'
             else:
-                path = '../results/fdemResults/forward_res'
+                path = './results/fdemResults/forward_res'
                 name = 'mag_map.png'
             if os.path.exists(path):
                 fig.savefig('{}/{}'.format(path, name))
@@ -747,9 +747,9 @@ class FDEMHandler(FDEMBaseHandler):
                 path = os.path.dirname(file_name)
                 name = os.path.basename(file_name)
                 if path is '':
-                    path = '../results/fdemResults/forward_res'
+                    path = './results/fdemResults/inv_res'
             else:
-                path = '../results/fdemResults/forward_res'
+                path = './results/fdemResults/inv_res'
                 name = 'inv_res.png'
             if os.path.exists(path):
                 fig.savefig('{}/{}'.format(path, name), bbox_inches='tight')
@@ -851,7 +851,7 @@ class TDEMHandler(TDEMBaseHandler):
         name = os.path.basename(file_name)
 
         if path is '':
-            path = '../results/tdemResults/forward_res'
+            path = './results/tdemResults/forward_res'
         if os.path.exists(path):
             response.to_csv('{}/{}'.format(path, name))
         else:
@@ -867,7 +867,7 @@ class TDEMHandler(TDEMBaseHandler):
             the dataset to save
         file_name: str
             the name of the file that you want to save, the Default relative
-            path is '../results/tdemResults/forward_res',if you just input
+            path is './results/tdemResults/forward_res',if you just input
             the file name, it will be saved in the path
         show: bool
             show the picture of the sample data
@@ -878,7 +878,7 @@ class TDEMHandler(TDEMBaseHandler):
         pic_name = name.replace('.csv', '.png')
 
         if path is '' or None:
-            path = '../results/tdemResults/forward_res'
+            path = './results/tdemResults/forward_res'
         if os.path.exists(path):
             sample_data.to_csv('{}/{}'.format(path, name))
             self.show_sample_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
@@ -901,7 +901,7 @@ class TDEMHandler(TDEMBaseHandler):
             the dataset to save
         file_name: str
             the name of the file that you want to save, the Default relative
-            path is '../results/tdemResults/forward_res',if you just input
+            path is './results/tdemResults/forward_res',if you just input
             the file name, it will be saved in the path
         """
 
@@ -924,7 +924,7 @@ class TDEMHandler(TDEMBaseHandler):
             the dataset to save
         file_name: str
             the name of the file that you want to save, the Default relative
-            path is '../results/tdemResults/forward_res',if you just input
+            path is './results/tdemResults/forward_res',if you just input
             the file name, it will be saved in the path
         show: bool
             show the picture of the sample data
@@ -980,7 +980,7 @@ class TDEMHandler(TDEMBaseHandler):
             the axial radius of the target of the sample
         file_name: str
             the name of the file that you want to save, the Default relative
-            path is '../results/tdemResults/forward_res',if you just input
+            path is './results/tdemResults/forward_res',if you just input
             the file name, it will be saved in the path
         show: bool
             whether to show the picture
@@ -1078,7 +1078,7 @@ class TDEMHandler(TDEMBaseHandler):
             whether to save
         file_name: str
             the name of the file that you want to save, the Default relative
-            path is '../results/tdemResults/classify_res',if you just input
+            path is './results/tdemResults/classify_res',if you just input
             the file name, it will be saved in the path, if you don't input
             the file name, it will be saved by the name 'cls_res.pdf'
 
@@ -1119,15 +1119,15 @@ class TDEMHandler(TDEMBaseHandler):
                 path = os.path.dirname(file_name)
                 name = os.path.basename(file_name)
                 if path is '':
-                    path = '../results/tdemResults/classify_res'
+                    path = './results/tdemResults/classify_res'
             else:
-                path = '../results/tdemResults/classify_res'
+                path = './results/tdemResults/classify_res'
                 name = 'cls_res.pdf'
             if os.path.exists(path):
-                plt.savefig('{}/{}'.format(path, name), format='pdf', bbox_inches='tight', dpi=600)
+                fig.savefig('{}/{}'.format(path, name), format='pdf', bbox_inches='tight', dpi=600)
             else:
                 os.makedirs(path)
-                plt.savefig('{}/{}'.format(path, name), format='pdf', bbox_inches='tight', dpi=600)
+                fig.savefig('{}/{}'.format(path, name), format='pdf', bbox_inches='tight', dpi=600)
 
     # cm：混淆矩阵；classes：类别名称
     def show_cls_res_default(self, cls_result, task, fig=None, show=False, save=True):
@@ -1197,7 +1197,7 @@ class TDEMHandler(TDEMBaseHandler):
             the pred value
         file_name: str
             the name of the file that you want to save, the Default relative
-            path is '../results/tdemResults/classify_res',if you just input
+            path is './results/tdemResults/classify_res',if you just input
             the file name, it will be saved in the path
 
         """
@@ -1214,9 +1214,9 @@ class TDEMHandler(TDEMBaseHandler):
             path = os.path.dirname(file_name)
             name = os.path.basename(file_name)
             if path is '':
-                path = '../results/tdemResults/classify_res'
+                path = './results/tdemResults/classify_res'
         else:
-            path = '../results/tdemResults/classify_res'
+            path = './results/tdemResults/classify_res'
             name = 'cls_res.csv'
 
         if os.path.exists(path):
@@ -1235,7 +1235,7 @@ class TDEMHandler(TDEMBaseHandler):
             the pred value
         file_name: str
             the name of the file that you want to save, the Default relative
-            path is '../results/tdemResults/classify_res',if you just input
+            path is './results/tdemResults/classify_res',if you just input
             the file name, it will be saved in the path
 
         """

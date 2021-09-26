@@ -31,6 +31,8 @@ class Target(object):
         represent the changed step of radial radius
     b_r_step: float
         represent the changed step of axial radius
+    kwgs: dict
+        the extensible attribute
 
     """
 
@@ -44,3 +46,5 @@ class Target(object):
         self.tb_max = tb_max
         self.a_r_step = a_r_step
         self.b_r_step = b_r_step
+        for key, val in kwargs.items():
+            setattr(self, key, val)
