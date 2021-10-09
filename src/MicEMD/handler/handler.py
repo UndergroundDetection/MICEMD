@@ -329,10 +329,10 @@ class FDEMHandler(FDEMBaseHandler):
                 path = './results/fdemResults/forward_res'
                 name = 'detection_scenario.png'
             if os.path.exists(path):
-                fig.savefig('{}/{}'.format(path, name))
+                fig.savefig('{}/{}'.format(path, name), dpi=600)
             else:
                 os.makedirs(path)
-                fig.savefig('{}/{}'.format(path, name))
+                fig.savefig('{}/{}'.format(path, name), dpi=600)
 
     def show_mag_map(self, loc_mag, Collection, show=False, save=False, file_name=None, fig=None):
         """show the magnetic field map
@@ -410,10 +410,10 @@ class FDEMHandler(FDEMBaseHandler):
                 path = './results/fdemResults/forward_res'
                 name = 'mag_map.png'
             if os.path.exists(path):
-                fig.savefig('{}/{}'.format(path, name))
+                fig.savefig('{}/{}'.format(path, name), dpi=600)
             else:
                 os.makedirs(path)
-                fig.savefig('{}/{}'.format(path, name))
+                fig.savefig('{}/{}'.format(path, name), dpi=600)
 
     def show_discretize(self, mesh, mapped_model, Collection, Target, show=False, save=False, file_name=None, fig=None):
         if fig is not None:
@@ -465,10 +465,10 @@ class FDEMHandler(FDEMBaseHandler):
                 path = '../results/fdemResults/forward_res'
                 name = 'discretize.png'
             if os.path.exists(path):
-                fig.savefig('{}/{}'.format(path, name))
+                fig.savefig('{}/{}'.format(path, name), dpi=600)
             else:
                 os.makedirs(path)
-                fig.savefig('{}/{}'.format(path, name))
+                fig.savefig('{}/{}'.format(path, name), dpi=600)
 
     def show_detection_scenario_default(self, fig=None, show=True, save=True):
         """
@@ -556,11 +556,11 @@ class FDEMHandler(FDEMBaseHandler):
             path = './results/fdemResults/{}'.format(self.get_save_fdem_dir())
             if os.path.exists(path):
                 path = '{}/{}.png'.format(path, 'detection_scenario')
-                fig.savefig(path)
+                fig.savefig(path, dpi=600)
             else:
                 os.makedirs(path)
                 path = '{}/{}.png'.format(path, 'detection_scenario')
-                fig.savefig(path)
+                fig.savefig(path, dpi=600)
 
         if show:
             plt.show()
@@ -631,11 +631,11 @@ class FDEMHandler(FDEMBaseHandler):
             path = './results/fdemResults/{}'.format(self.get_save_fdem_dir())
             if os.path.exists(path):
                 path = '{}/{}.png'.format(path, 'mag_map')
-                fig.savefig(path)
+                fig.savefig(path, dpi=600)
             else:
                 os.makedirs(path)
                 path = '{}/{}.png'.format(path, 'mag_map')
-                fig.savefig(path)
+                fig.savefig(path, dpi=600)
 
         if show:
             plt.show()
@@ -682,11 +682,11 @@ class FDEMHandler(FDEMBaseHandler):
             path = './results/fdemResults/{}'.format(self.get_save_fdem_dir())
             if os.path.exists(path):
                 path = '{}/{}.png'.format(path, 'discretize')
-                fig.savefig(path)
+                fig.savefig(path, dpi=600)
             else:
                 os.makedirs(path)
                 path = '{}/{}.png'.format(path, 'discretize')
-                fig.savefig(path)
+                fig.savefig(path, dpi=600)
 
         if show:
             plt.show()
@@ -715,11 +715,11 @@ class FDEMHandler(FDEMBaseHandler):
             path = './results/fdemResults/{}'.format(self.get_save_fdem_dir())
             if os.path.exists(path):
                 path = '{}/{}.png'.format(path, 'inv_res')
-                fig.savefig(path)
+                fig.savefig(path, dpi=600)
             else:
                 os.makedirs(path)
                 path = '{}/{}.png'.format(path, 'inv_res')
-                fig.savefig(path)
+                fig.savefig(path, dpi=600)
 
         if show:
             plt.show()
@@ -752,10 +752,10 @@ class FDEMHandler(FDEMBaseHandler):
                 path = './results/fdemResults/inv_res'
                 name = 'inv_res.png'
             if os.path.exists(path):
-                fig.savefig('{}/{}'.format(path, name), bbox_inches='tight')
+                fig.savefig('{}/{}'.format(path, name), bbox_inches='tight', dpi=600)
             else:
                 os.makedirs(path)
-                fig.savefig('{}/{}'.format(path, name), bbox_inches='tight')
+                fig.savefig('{}/{}'.format(path, name), bbox_inches='tight', dpi=600)
 
         if show:
             fig.show()
@@ -1006,7 +1006,7 @@ class TDEMHandler(TDEMBaseHandler):
         ax.set_ylabel("M")
         ax.set_title(str(material) + " ta=" + "%.2f" % ta + " tb=" + "%.2f" % tb + " SNR=" + str(SNR) + "dB")
         if file_name is not None:
-            fig.savefig(file_name, dpi=1000, bbox_inches='tight')
+            fig.savefig(file_name, dpi=600, bbox_inches='tight')
         if show:
             fig.show()
 

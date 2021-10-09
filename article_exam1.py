@@ -2,6 +2,7 @@ import numpy as np
 import MicEMD.fdem as fdem
 from MicEMD.handler import FDEMHandler
 
+
 # Create and Initial the target, detector, collection class
 target = fdem.Target(conductivity=5.71e7, permeability=1.26e-6, radius=0.2, pitch=0,
                      roll=0, length=1, position_x=0, position_y=0, position_z=-5)

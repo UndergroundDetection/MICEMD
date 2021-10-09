@@ -45,7 +45,7 @@ def skeness(X=None):
 
 
 def statistic_feature(data):
-    """
+    """the statistic feature dimensionality reduction algorithms
 
     Parameters
     ----------
@@ -62,8 +62,8 @@ def statistic_feature(data):
     train_feature_lable = np.array(train)
     test_feature_lable = np.array(test)
 
-    train_set = train_feature_lable[:, 0:400]
-    test_set = test_feature_lable[:, 0:400]
+    train_set = train_feature_lable[:, 0:-1]
+    test_set = test_feature_lable[:, 0:-1]
 
     # compute the feature of the statistic
     train_statistic = np.max(train_set, axis=1).reshape((-1, 1))

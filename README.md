@@ -11,6 +11,7 @@ Installing Packages
 
 `conda install pyqt`
 
+`conda install scikit-learn=0.24.2`
 
 Run MicEMD
 Then **run mainwindow.py in your python IDE or in command line:**
