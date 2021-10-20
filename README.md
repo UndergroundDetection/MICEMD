@@ -1,5 +1,5 @@
-# MicEMD
-Modeling, inversion and classification in electromagnetic detection
+# Installation
+MicEMD(Modeling, Inversion and Classification in ElectroMagnetic Detection)
 
 Prerequisite: Installing Python and Conda
 
@@ -18,5 +18,4 @@ Then **run mainwindow.py in your python IDE or in command line:**
 
 `python mainwindow.py`
 
-![image-20210906093009616](./doc/build/html/images/GUI.png)
 
