@@ -18,4 +18,5 @@ Then **run mainwindow.py in your python IDE or in command line:**
 
 `python mainwindow.py`
 
-
+# GUI
+![image](https://github.com/UndergroundDetection/MICEMD/blob/master/doc/image/GUI.png)
