@@ -18,6 +18,4 @@ Then **run mainwindow.py in your python IDE or in command line:**
 
 `python mainwindow.py`
 
-# GUI
-![enter description here](./doc/build/html/images/GUI.png)
 
