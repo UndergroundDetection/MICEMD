@@ -8,6 +8,10 @@ target = fdem.Target(conductivity=5.71e7, permeability=1.26e-6, radius=0.2, pitc
 detector = fdem.Detector(radius=0.4, current=20, frequency=1000, pitch=0, roll=0)
 collection = fdem.Collection(spacing=0.5, height=0.1, SNR=30, x_min=-2, x_max=2,
                              y_min=-2, y_max=2, collection_direction='z-axis')
+collection1 = fdem.Collection(spacing=0.5, height=0.1, SNR=30, x_min=-2, x_max=2,
+                             y_min=-2, y_max=2, collection_direction='x-axis')
+collection2 = fdem.Collection(spacing=0.5, height=0.1, SNR=30, x_min=-2, x_max=2,
+                             y_min=-2, y_max=2, collection_direction='y-axis')
 # call the interface of the fdem forward modeling
 fwd_res = fdem.simulate(target, detector, collection, 'simpeg')
 
@@ -15,7 +19,7 @@ fwd_res = fdem.simulate(target, detector, collection, 'simpeg')
 # set the inputs and parameters of the inversion
 inv_inputs = (fwd_res, target, detector)
 x0 = np.array([0.0, 0.0, -2, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-inv_para = {'x0': x0, 'iterations': 10, 'tol': 1e-9}
+inv_para = {'x0': x0, 'iterations': 1000, 'tol': 1e-9}
 
 # call the interface of the inversion
 inv_res = fdem.inverse(inv_inputs, 'BFGS', inv_para)
@@ -31,6 +35,8 @@ handler.save_fwd_data(fwd_res, 'magdata.csv')
 # if you want get other axial mag_map, you can creat another collection with other
 # collection_direction parameter, and input to the method show_mag_map
 handler.show_mag_map(fwd_res, collection, show=True, save=True, file_name='mag_map.png')
+handler.show_mag_map(fwd_res, collection1, show=True, save=True, file_name='mag_map1.png')
+handler.show_mag_map(fwd_res, collection2, show=True, save=True, file_name='mag_map2.png')
 handler.show_detection_scenario(target, collection, show=True, save=True)
 handler.save_inv_res(inv_res, 'BFGS.csv')
 handler.show_inv_res(inv_res, show=True, save=True, file_name='inv_res.png')

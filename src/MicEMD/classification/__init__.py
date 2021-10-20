@@ -1,4 +1,4 @@
 from .ANN import *
-from ._classfiy import *
+from .classfiy import *
 # del ANN
 # __all__ = dir()

@@ -13,7 +13,7 @@ __all__ = ['Classification', 'classify']
 from abc import ABCMeta
 from abc import abstractmethod
 
-from ..classification._classfiy import classify_method
+from ..classification.classfiy import classify_method
 
 
 class BaseTDEMClassification(metaclass=ABCMeta):

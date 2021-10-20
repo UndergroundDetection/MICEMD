@@ -22,11 +22,11 @@ class FDEMBaseHandler(metaclass=ABCMeta):
             setattr(self, key, val)
 
     @abstractmethod
-    def save_forward(self):
+    def save_fwd_data(self):
         pass
 
     @abstractmethod
-    def save_inv(self):
+    def save_inv_res(self):
         pass
 
 
@@ -152,9 +152,9 @@ class FDEMHandler(FDEMBaseHandler):
             path = os.path.dirname(file_name)
             name = os.path.basename(file_name)
             if path is '':
-                path = './results/fdemResults/inverse_res'
+                path = './results/fdemResults/inv_res'
         else:
-            path = './results/fdemResults/inverse_res'
+            path = './results/fdemResults/inv_res'
             name = 'inv_res.csv'
 
         if os.path.exists(path):
@@ -384,9 +384,13 @@ class FDEMHandler(FDEMBaseHandler):
             clim=(-v_max, v_max),
             contourOpts={"cmap": "bwr"},
         )
+        font1 = {'family': 'Times New Roman',
+                 'weight': 'normal',
+                 'size': 12,
+                 }
         ax1.tick_params(width=0)
-        ax1.set_xlabel("x direction [m]")
-        ax1.set_ylabel("y direction [m]")
+        ax1.set_xlabel("x direction [m]", font1)
+        ax1.set_ylabel("y direction [m]", font1)
         ax1.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
 
         ax2 = fig.add_axes([0.85, 0.14, 0.03, 0.76])
@@ -394,7 +398,7 @@ class FDEMHandler(FDEMBaseHandler):
         cbar = mpl.colorbar.ColorbarBase(
             ax2, norm=norm, orientation="vertical", cmap=mpl.cm.bwr
         )
-        cbar.set_label("Secondary field [T]", rotation=270, labelpad=15)
+        cbar.set_label("Secondary field [T]", fontdict=font1, rotation=270, labelpad=15)
         ax2.tick_params(width=0)
         ax2.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
 
@@ -614,9 +618,13 @@ class FDEMHandler(FDEMBaseHandler):
             clim=(-v_max, v_max),
             contourOpts={"cmap": "bwr"},
         )
+        font1 = {'family': 'Times New Roman',
+                 'weight': 'normal',
+                 'size': 12,
+                 }
         ax1.tick_params(width=0)
-        ax1.set_xlabel("x direction [m]")
-        ax1.set_ylabel("y direction [m]")
+        ax1.set_xlabel("x direction [m]", font1)
+        ax1.set_ylabel("y direction [m]", font1)
         ax1.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
 
         ax2 = fig.add_axes([0.85, 0.14, 0.03, 0.76])
@@ -624,7 +632,7 @@ class FDEMHandler(FDEMBaseHandler):
         cbar = mpl.colorbar.ColorbarBase(
             ax2, norm=norm, orientation="vertical", cmap=mpl.cm.bwr
         )
-        cbar.set_label("Secondary field [T]", rotation=270, labelpad=15)
+        cbar.set_label("Secondary field [T]", fontdict=font1, rotation=270, labelpad=15)
         ax2.tick_params(width=0)
         ax2.ticklabel_format(axis='y', style='sci', scilimits=(0, 0))
         if save:
@@ -696,6 +704,10 @@ class FDEMHandler(FDEMBaseHandler):
             fig.clf()
         else:
             fig, ax = plt.subplots(nrows=1, ncols=2)
+        font1 = {'family': 'Times New Roman',
+                 'weight': 'normal',
+                 'size': 12,
+                 }
         ax1 = fig.add_subplot(1, 2, 1)
         ax2 = fig.add_subplot(1, 2, 2)
         # ax = fig.add_axes([0.13, 0.12, 0.7, 0.8])
@@ -705,12 +717,12 @@ class FDEMHandler(FDEMBaseHandler):
         ticks = np.arange(0, 8, 1)
         labels = ['x', 'y', 'z', r'$\beta_x$', r'$\beta_y$', r'$\beta_z$', 'pitch', 'roll']
         ax1.set_xticks(ticks)
-        ax1.set_xticklabels(labels, rotation=30)
+        ax1.set_xticklabels(labels, fontdict=font1, rotation=30)
         ax2.set_xticks(ticks)
-        ax2.set_xticklabels(labels, rotation=30)
+        ax2.set_xticklabels(labels, fontdict=font1, rotation=30)
         ax1.legend(['True', 'predicted'])
-        ax1.set_title('result')
-        ax2.set_title('error')
+        ax1.set_title('result', font1)
+        ax2.set_title('error', font1)
         if save:
             path = './results/fdemResults/{}'.format(self.get_save_fdem_dir())
             if os.path.exists(path):
@@ -729,19 +741,22 @@ class FDEMHandler(FDEMBaseHandler):
             fig.clf()
         else:
             fig, ax = plt.subplots(nrows=1, ncols=2)
-
+        font1 = {'family': 'Times New Roman',
+                 'weight': 'normal',
+                 'size': 12,
+                 }
         ax[0].scatter(list(range(8)), inv_res['true'], marker='x', s=50)
         ax[0].scatter(list(range(8)), inv_res['pred'], marker='+')
         ax[1].bar(list(range(8)), inv_res['error'], color='gray')
         ticks = np.arange(0, 8, 1)
         labels = ['x', 'y', 'z', r'$\beta_x$', r'$\beta_y$', r'$\beta_z$', 'pitch', 'roll']
         ax[0].set_xticks(ticks)
-        ax[0].set_xticklabels(labels, rotation=30)
+        ax[0].set_xticklabels(labels, fontdict=font1, rotation=30)
         ax[1].set_xticks(ticks)
-        ax[1].set_xticklabels(labels, rotation=30)
+        ax[1].set_xticklabels(labels, fontdict=font1, rotation=30)
         ax[0].legend(['True', 'predicted'])
-        ax[0].set_title('result')
-        ax[1].set_title('error')
+        ax[0].set_title('result', fontdict=font1)
+        ax[1].set_title('error', fontdict=font1)
         if save:
             if file_name is not None:
                 path = os.path.dirname(file_name)
@@ -767,13 +782,13 @@ class TDEMBaseHandler(metaclass=ABCMeta):
         for key, val in kwargs.items():
             setattr(self, key, val)
 
-    # @abstractmethod
-    # def save_forward(self):
-    #     pass
-    #
-    # @abstractmethod
-    # def save_cls(self):
-    #     pass
+    @abstractmethod
+    def save_fwd_data(self):
+        pass
+
+    @abstractmethod
+    def save_cls_res(self):
+        pass
 
 
 class TDEMHandler(TDEMBaseHandler):
@@ -993,7 +1008,10 @@ class TDEMHandler(TDEMBaseHandler):
         else:
             fig = plt.figure()
             ax = fig.add_axes([0.23, 0.12, 0.7, 0.8])
-
+        font1 = {'family': 'Times New Roman',
+                 'weight': 'normal',
+                 'size': 12,
+                 }
         ax.set_xscale("log")
         # ax.set_yscale("log")
         ax.set_xlim(1e-8, 1e0)
@@ -1002,9 +1020,9 @@ class TDEMHandler(TDEMBaseHandler):
         ax.plot(t, np.array(M2_without_noise).flatten(), '--', color="b", label="M2_noiseless")
         ax.plot(t, M1, 'x', color="plum", label="M1")
         ax.plot(t, M2, 'x', color="lightskyblue", label="M2")
-        ax.set_xlabel("t /s")
-        ax.set_ylabel("M")
-        ax.set_title(str(material) + " ta=" + "%.2f" % ta + " tb=" + "%.2f" % tb + " SNR=" + str(SNR) + "dB")
+        ax.set_xlabel("t /s", font1)
+        ax.set_ylabel("M", font1)
+        ax.set_title(str(material) + " ta=" + "%.2f" % ta + " tb=" + "%.2f" % tb + " SNR=" + str(SNR) + "dB", font1)
         if file_name is not None:
             fig.savefig(file_name, dpi=600, bbox_inches='tight')
         if show:
@@ -1091,19 +1109,26 @@ class TDEMHandler(TDEMBaseHandler):
             fig = plt.figure()
             ax = fig.add_axes([0.23, 0.12, 0.7, 0.8])
         cmap = plt.cm.YlGnBu
-
+        font1 = {'family': 'Times New Roman',
+                 'weight': 'normal',
+                 'size': 12,
+                 }
         cm = confusion_matrix(y_true=cls_res['y_true'], y_pred=cls_res['y_pred'])
         classes = type
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        ax.set_ylabel('True label', fontsize=12)
-        ax.set_xlabel('Predicted label', fontsize=12)
+        ax.set_ylabel('True label', font1)
+        ax.set_xlabel('Predicted label', font1)
         ax.imshow(cm, interpolation='nearest', cmap=cmap)
-        ax.set_title('Confusion matrix', fontsize=12)
+        # ax.set_title('Confusion matrix', font1)
         tick_marks = np.arange(len(classes))
         ax.set_xticks(tick_marks)
-        ax.set_yticks(tick_marks)
-        ax.set_xticklabels(classes, rotation=0, fontsize=8)
-        ax.set_yticklabels(classes, rotation=360, fontsize=8)
+        if len(classes) == 2:
+            ax.set_yticks(tick_marks-0.25)
+        else:
+            ax.set_yticks(tick_marks)
+        ax.tick_params(bottom=False, top=False, left=False, right=False)
+        ax.set_xticklabels(classes, fontdict=font1, rotation=0)
+        ax.set_yticklabels(classes, fontdict=font1, rotation=90)
 
         fmt = '.2f'
         thresh = cm.max() / 2.
@@ -1143,21 +1168,30 @@ class TDEMHandler(TDEMBaseHandler):
             fig = plt.figure()
             ax = fig.add_axes([0.23, 0.12, 0.7, 0.8])
         cmap = plt.cm.YlGnBu
+        font1 = {'family': 'Times New Roman',
+                 'weight': 'normal',
+                 'size': 12,
+                 }
         cm = confusion_matrix(y_true=cls_result['y_true'], y_pred=cls_result['y_pred'])
         if task == 'material':
             classes = self.target.material
         else:
             classes = self.target.shape
         cm = cm.astype('float') / cm.sum(axis=1)[:, np.newaxis]
-        ax.set_ylabel('True label', fontsize=12)
-        ax.set_xlabel('Predicted label', fontsize=12)
+        ax.set_ylabel('True label', font1)
+        ax.set_xlabel('Predicted label', font1)
         ax.imshow(cm, interpolation='nearest', cmap=cmap)
-        ax.set_title('Confusion matrix', fontsize=12)
+        # ax.set_title('Confusion matrix', font1)
         tick_marks = np.arange(len(classes))
         ax.set_xticks(tick_marks)
-        ax.set_yticks(tick_marks)
-        ax.set_xticklabels(classes, rotation=0, fontsize=8)
-        ax.set_yticklabels(classes, rotation=360, fontsize=8)
+        if task == 'material':
+            ax.set_yticks(tick_marks)
+        else:
+            ax.set_yticks(tick_marks - 0.35)
+        ax.tick_params(bottom=False, top=False, left=False, right=False)
+
+        ax.set_xticklabels(classes, fontdict=font1, rotation=0)
+        ax.set_yticklabels(classes, fontdict=font1, rotation=90)
         # ax.set_xticks(tick_marks, classes)
         # plt.xticks(tick_marks, classes, rotation=0, fontsize=15)
         # plt.yticks(tick_marks - 0.25, classes, rotation=90, fontsize=15)
