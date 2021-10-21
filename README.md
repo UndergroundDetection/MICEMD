@@ -23,7 +23,8 @@ Then **run mainwindow.py in your python IDE or in command line:**
 The left of the GUI are two tabs about parameters setting: FDEM detection and TDEM detection. We demonstrate the inversion application based on the FDEM detection and demonstrate the classification application based on the TDEM detection. From top to bottom on the right of the GUI are the tab-based results display, the output of the current program, and function buttons.
 
 # A list of API methods
-![image](https://github.com/UndergroundDetection/MICEMD/blob/master/doc/image/API.jpg)
+![image](https://github.com/UndergroundDetection/MICEMD/blob/master/doc/image/API.jpg)<br>
+
 For more detailes, visit https://antsesame.github.io/
 
 # The Simulation steps
