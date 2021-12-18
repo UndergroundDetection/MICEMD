@@ -160,8 +160,8 @@ class Model(BaseFDEMModel):
         bz_total = np.sqrt(np.square(bz_real) + np.square(bz_imag))
 
         mag_data = np.c_[mkvc(bx_total), mkvc(by_total), mkvc(bz_total)]
-
-        mag_data = self.mag_data_add_noise(mag_data, collection.SNR)
+        if collection.SNR is not None:
+            mag_data = self.mag_data_add_noise(mag_data, collection.SNR)
         data = np.c_[collection.receiver_location, mag_data]
         # data = (data, )
 
