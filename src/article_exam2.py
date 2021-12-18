@@ -4,7 +4,7 @@ from MicEMD.preprocessor import data_prepare
 from MicEMD.handler import TDEMHandler
 import math
 
-# the attribute of the steel, Ni, and Al conclude permeability, permeability of vacuum and conductivity
+# the attribute of the steel, Ni, and Al including permeability, permeability of vacuum and conductivity
 attribute = np.array([[696.3028547, 4*math.pi*1e-7, 50000000], [99.47183638, 4*math.pi*1e-7, 14619883.04],
                       [1.000022202, 4*math.pi*1e-7, 37667620.91]])
 # create and initial the target, detector, collection class of Tdem

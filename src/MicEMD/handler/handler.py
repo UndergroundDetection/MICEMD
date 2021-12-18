@@ -64,6 +64,7 @@ class FDEMHandler(FDEMBaseHandler):
     show_inv_res_default:
         according to the default path to save the result display chart
     """
+
     def __init__(self, **kwargs):
         FDEMBaseHandler.__init__(self)
         for key, val in kwargs.items():
@@ -88,7 +89,9 @@ class FDEMHandler(FDEMBaseHandler):
 
         collection = self.collection
         target = self.target
-        file_name = "T.pos=[{:g},{:g},{:g}];T.R={:g};T.L={:g};T.pitch={:g};T.roll={:g};C.snr={:g};C.sp={:g};C.h={:g};" \
+        # if collection.SNR is None:
+        #     collection.SNR = "None"
+        file_name = "T.pos=[{:g},{:g},{:g}];T.R={:g};T.L={:g};T.pitch={:g};T.roll={:g};C.snr={};C.sp={:g};C.h={:g};" \
                     "C.x=[{:g},{:g}];" \
                     "C.y=[{:g},{:g}]".format(target.position[0], target.position[1],
                                              target.position[2],
@@ -140,7 +143,7 @@ class FDEMHandler(FDEMBaseHandler):
             the file name, it will be saved in the path
 
         """
-        
+
         pred = np.array(inv_res['pred'])
         true = np.array(inv_res['true'])
         error = np.array(inv_res['error'])
@@ -747,6 +750,17 @@ class FDEMHandler(FDEMBaseHandler):
                  }
         ax[0].scatter(list(range(8)), inv_res['true'], marker='x', s=50)
         ax[0].scatter(list(range(8)), inv_res['pred'], marker='+')
+        # error = []
+        # print(inv_res['true'])
+        # print(inv_res['error'])
+        # for (i, j) in zip(inv_res['true'], inv_res['error']):
+        #     if i == 0:
+        #         error.append(abs(j)/(1+abs(i)))
+        #     else:
+        #         error.append(abs(j)/abs(i))
+        # print(error)
+        # ax[1].bar(list(range(8)), error, color='gray')
+
         ax[1].bar(list(range(8)), inv_res['error'], color='gray')
         ticks = np.arange(0, 8, 1)
         labels = ['x', 'y', 'z', r'$\beta_x$', r'$\beta_y$', r'$\beta_z$', 'pitch', 'roll']
@@ -897,14 +911,14 @@ class TDEMHandler(TDEMBaseHandler):
         if os.path.exists(path):
             sample_data.to_csv('{}/{}'.format(path, name))
             self.show_sample_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
-                           sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
-                           sample['ta'], sample['tb'], '{}/{}'.format(path, pic_name), show)
+                                  sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
+                                  sample['ta'], sample['tb'], '{}/{}'.format(path, pic_name), show)
         else:
             os.makedirs(path)
             sample_data.to_csv('{}/{}'.format(path, name))
             self.show_sample_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
-                           sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
-                           sample['ta'], sample['tb'], '{}/{}'.format(path, pic_name), show)
+                                  sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
+                                  sample['ta'], sample['tb'], '{}/{}'.format(path, pic_name), show)
 
     def save_fwd_data_default(self, response):
         """save the data of the forward_res
@@ -956,21 +970,21 @@ class TDEMHandler(TDEMBaseHandler):
             if os.path.exists(path):
                 sample_data.to_csv('{}/sample_{}dB.csv'.format(path, snr))
                 self.show_sample_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
-                               sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
-                               sample['ta'], sample['tb'], '{}/sample_{}dB.png'.format(path, snr), show, fig)
+                                      sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
+                                      sample['ta'], sample['tb'], '{}/sample_{}dB.png'.format(path, snr), show, fig)
             else:
                 os.makedirs(path)
                 sample_data.to_csv('{}/sample_{}dB.csv'.format(path, snr))
                 self.show_sample_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
-                               sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
-                               sample['ta'], sample['tb'], '{}/sample_{}dB.png'.format(path, snr), show, fig)
+                                      sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
+                                      sample['ta'], sample['tb'], '{}/sample_{}dB.png'.format(path, snr), show, fig)
         else:
             self.show_sample_data(sample['M1'], sample['M2'], sample['M1_without_noise'],
-                           sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
-                           sample['ta'], sample['tb'], None, show, fig)
+                                  sample['M2_without_noise'], sample['t'], sample['SNR'], sample['material'],
+                                  sample['ta'], sample['tb'], None, show, fig)
 
     def show_sample_data(self, M1, M2, M1_without_noise, M2_without_noise, t, SNR, material, ta, tb, file_name=None,
-                  show=False, fig=None):
+                         show=False, fig=None):
         """show the sample data
 
         Parameters
@@ -1123,7 +1137,7 @@ class TDEMHandler(TDEMBaseHandler):
         tick_marks = np.arange(len(classes))
         ax.set_xticks(tick_marks)
         if len(classes) == 2:
-            ax.set_yticks(tick_marks-0.25)
+            ax.set_yticks(tick_marks - 0.25)
         else:
             ax.set_yticks(tick_marks)
         ax.tick_params(bottom=False, top=False, left=False, right=False)
@@ -1235,7 +1249,6 @@ class TDEMHandler(TDEMBaseHandler):
             the file name, it will be saved in the path
 
         """
-
         y_true = np.array(cls_res['y_true'], dtype=np.int)
         y_pred = np.array(cls_res['y_pred'], dtype=np.int)
         y = np.c_[y_true, y_pred]
