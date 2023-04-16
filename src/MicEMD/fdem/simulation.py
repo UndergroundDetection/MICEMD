@@ -90,3 +90,10 @@ def simulate(target, detector, collection, model='simpeg', *args, **kwargs):
         simulation = Simulation(_model)
         result = simulation.pred()
         return result
+    elif model == 'dipole':
+        source = Source(target, detector, collection)
+        survey = Survey(source)
+        _model = DipoleModle(survey)
+        simulation = Simulation(_model)
+        result = simulation.pred()
+        return result

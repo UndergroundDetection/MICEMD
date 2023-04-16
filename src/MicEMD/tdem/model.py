@@ -197,7 +197,9 @@ class Model(BaseTDEMModel):
         lable = []
         feature = []
         material_cnt = 0
-        t = np.array(10 ** (np.linspace(-8, 1, t_split * 10)))
+        # t = np.linspace(0, 0.1, t_split * 10)
+        t = np.array(10 ** np.linspace(-8, 1, t_split * 10))  # 采集10s内的数据
+        t = np.hstack((0, t))
         sample_num = 0
         plot_flag = 0
 
@@ -218,6 +220,7 @@ class Model(BaseTDEMModel):
                             M2_without_noise = np.array(
                                 list(map(partial(self.func, k=k2_ellipsoid, a=a2, b=b2, R=R2), t)))
                             M = np.hstack((M1_without_noise, M2_without_noise))
+                            sample = None
 
                         if snr != None:
                             k1_ellipsoid, a1, b1, R1, k2_ellipsoid, a2, b2, R2 = self.ellipsoid_parameter(c, c0, d, ta,
@@ -233,7 +236,7 @@ class Model(BaseTDEMModel):
                             M = np.hstack((M1, M2))
                             # sample the number of 400 sample
                             plot_flag += 1
-                            if plot_flag == 400:
+                            if plot_flag == 1:
                                 data_collect = np.vstack((M1, M2, M1_without_noise, M2_without_noise, t))
                                 data_collect = pd.DataFrame(data_collect,
                                                             index=['M1', 'M2', 'M1_WITHOUT', 'M2_WITHOUT', 't'])

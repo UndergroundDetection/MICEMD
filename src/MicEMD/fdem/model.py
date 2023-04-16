@@ -5,12 +5,12 @@ The model class, represent the model in FDEM
 Class:
 - Model: the implement class of the BaseFDEMModel
 """
-__all__ = ['Model']
+__all__ = ['Model', 'DipoleModle']
 
 from abc import ABCMeta
 from abc import abstractmethod
 import numpy as np
-from ..utils import RotationMatrix
+from MicEMD.utils import RotationMatrix
 from discretize import TreeMesh
 from discretize.utils import mkvc, refine_tree_xyz
 
@@ -66,6 +66,7 @@ class Model(BaseFDEMModel):
     add_wgn:
         add the noise for the data
     """
+
     def __init__(self, Survey):
         BaseFDEMModel.__init__(self, Survey)
 
@@ -165,7 +166,7 @@ class Model(BaseFDEMModel):
         data = np.c_[collection.receiver_location, mag_data]
         # data = (data, )
 
-        return data  # 只保留磁场强度数据，删除后面的两个参数
+        return data
 
     def mag_data_add_noise(self, mag_data, snr):
         """add the noise for the mag_data
@@ -268,4 +269,236 @@ class DipoleModle(BaseFDEMModel):
         BaseFDEMModel.__init__(self, Survey)
 
     def dpred(self):
-        pass
+        target = self.survey.source.target
+        collection = self.survey.source.collection
+        detector = self.survey.source.detector
+        Pm = np.array([0, 0, detector.mag_moment])[np.newaxis, :]  # (1, 3)
+        t_postion = np.array(target.position)
+        d_postion = collection.receiver_location
+        rdt = np.tile(t_postion, (d_postion.shape[0], 1)) - d_postion  # (m, 3)
+        # print(np.linalg.norm(rdt, axis=1)[:, np.newaxis])
+        r = np.sqrt(np.sum(rdt ** 2, axis=1))[:, np.newaxis]  # (m, 1)
+        Hxyz = 1 / (4 * np.pi) * (
+                (3 * np.inner(rdt, Pm) * rdt) / r ** 5 - Pm / r ** 3)  # np.inner(rdt, Pm) (m,1)  (m, 3)
+
+        beta = target.get_principal_axis_polarizability_complex(detector.frequency)  # (3,)
+        rotaion = RotationMatrix(target.pitch, target.roll, 0)  # (3, 3)
+        m = rotaion @ np.diag(beta) @ rotaion.T  # (3, 3)
+        mt = Hxyz @ m  # m,3
+
+
+        rtd = d_postion - np.tile(t_postion, (d_postion.shape[0], 1))  # (m, 3)
+        Bxyz = mu_0 / (4 * np.pi) * (
+                (3 * np.sum(np.multiply(rtd, mt), axis=1).A * rtd) / r ** 5 - mt / r ** 3) * 1e9  # m,3 rtd和mt是内积
+
+        mag_data = np.abs(Bxyz).A
+        # print(mag_data.shape)
+        # mag_data = np.array(Bxyz)
+        # print(mag_data.shape)
+        if collection.SNR is not None:
+            mag_data = self.mag_data_add_noise(mag_data, collection.SNR)
+        data = np.c_[collection.receiver_location, mag_data]
+
+        return data
+
+        # target = self.survey.source.target
+        # collection = self.survey.source.collection
+        # detector = self.survey.source.detector
+        # Pm = np.array([0, 0, detector.mag_moment])[np.newaxis, :]  # (1, 3)
+        # t_postion = np.mat(target.position).T
+        # d_postion = collection.receiver_location
+        # m_d = np.mat([0, 0, detector.mag_moment]).T
+        #
+        #
+        # bxyz = []
+        #
+        # for i in range(d_postion.shape[0]):
+        #     r_dt = t_postion - np.mat(d_postion[i]).T
+        #     # Calculate primary field using formaula (2)
+        #     H = 1 / (4 * np.pi) * (
+        #             (3 * r_dt * (m_d.T * r_dt)) / (np.linalg.norm(r_dt)) ** 5
+        #             - m_d / (np.linalg.norm(r_dt)) ** 3
+        #     )  # 3,1
+        #
+        #     beta = target.get_principal_axis_polarizability_complex(detector.frequency)  # (3,)
+        #     rotaion = RotationMatrix(target.pitch, target.roll, 0)  # (3, 3)
+        #     m = rotaion @ np.diag(beta) @ rotaion.T  # (3, 3)
+        #     m_t = m * H  # m,3
+        #
+        #     # Calculate secondary field using formula (5)
+        #     r_td = - r_dt
+        #     B = mu_0 / (4 * np.pi) * (
+        #             (3 * r_td * (m_t.T * r_td)) / (np.linalg.norm(r_td)) ** 5
+        #             - m_t / (np.linalg.norm(r_td)) ** 3
+        #     )
+        #     B = B * 1e9
+        #
+        #     bxyz.append(B)
+        # print(bxyz[0], bxyz[1])
+
+    def mag_data_add_noise(self, mag_data, snr):
+        """add the noise for the mag_data
+
+        Parameters
+        ----------
+        mag_data : TYPE
+            DESCRIPTION.
+        snr : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        res: ndarry
+        """
+
+        mag_data[:, 0] = self.add_wgn(mag_data[:, 0], snr)
+        mag_data[:, 1] = self.add_wgn(mag_data[:, 1], snr)
+        mag_data[:, 2] = self.add_wgn(mag_data[:, 2], snr)
+
+        return mag_data
+
+    def add_wgn(self, data, snr):
+        """add the noise for the data
+
+        Parameters
+        ----------
+        data : TYPE
+            DESCRIPTION.
+        snr : TYPE
+            DESCRIPTION.
+
+        Returns
+        -------
+        res: ndarry
+        """
+
+        ps = np.sum(abs(data) ** 2) / len(data)
+        pn = ps / (10 ** ((snr / 10.0)))
+        noise = np.random.randn(len(data)) * np.sqrt(pn)
+        signal_add_noise = data + noise
+        return signal_add_noise
+
+
+if __name__ == '__main__':
+    import MicEMD.fdem as fdem
+
+    target = fdem.Target(conductivity=5.71e7, permeability=1.26e-6, radius=0.1, pitch=0,
+                         roll=0, length=0.8, position_x=0, position_y=0, position_z=-3)
+    detector = fdem.Detector(radius=0.4, current=20, frequency=1000, pitch=0, roll=0)
+    collection = fdem.Collection(spacing=0.1, height=0, SNR=20, x_min=-0.1, x_max=0,
+                                 y_min=-0.1, y_max=0, collection_direction='z-axis')
+    Pm = np.array([0, 0, detector.mag_moment])[np.newaxis, :]  # (1, 3)
+    t_postion = np.array(target.position)
+    # d_postion = collection.receiver_location
+    rdt = t_postion - np.array([-2, -2, 0])
+    print(rdt)
+    # print(np.linalg.norm(rdt, axis=1)[:, np.newaxis])
+    r = np.sqrt(np.sum(rdt ** 2))
+    Hxyz = 1 / (4 * np.pi) * (
+            (3 * np.inner(rdt, Pm) * rdt) / r ** 5 - Pm / r ** 3)  # np.inner(rdt, Pm) (m,1)  (m, 3)
+
+    beta = target.get_principal_axis_polarizability_complex(detector.frequency)  # (3,)
+
+    rotaion = RotationMatrix(target.pitch, target.roll, 0)  # (3, 3)
+
+    m = rotaion @ np.diag(beta) @ rotaion.T  # (3, 3)
+    print('m', m)
+
+    mt = Hxyz @ m  # m,3
+    print('mt', mt)
+
+    rtd = np.array([-2, -2, 3])  # (m, 3)
+    Bxyz = mu_0 / (4 * np.pi) * (
+            (3 * np.sum(np.multiply(rtd, mt), axis=1).A * rtd) / r ** 5 - mt / r ** 3) * 1e9  # m,3 rtd和mt是内积
+
+    mag_data = Bxyz
+    print('mag', mag_data)
+
+
+
+
+
+
+
+
+
+    # import MicEMD.fdem as fdem
+    #
+    # target = fdem.Target(conductivity=5.71e7, permeability=1.26e-6, radius=0.1, pitch=0,
+    #                      roll=0, length=0.8, position_x=0, position_y=0, position_z=-3)
+    # detector = fdem.Detector(radius=0.4, current=20, frequency=1000, pitch=0, roll=0)
+    # collection = fdem.Collection(spacing=0.1, height=0, SNR=20, x_min=-0.1, x_max=0,
+    #                              y_min=-0.1, y_max=0, collection_direction='z-axis')
+    # source = fdem.Source(target, detector, collection)
+    # survey = fdem.Survey(source)
+    # _model = fdem.DipoleModle(survey)
+    # simulation = fdem.Simulation(_model)
+    # result = simulation.pred()
+    # print(np.abs(result[2]))
+    #
+    # M11, M22, M33, M12, M13, M23 = np.abs(result[1])
+    # M = np.mat([[M11, M12, M13], [M12, M22, M23], [M13, M23, M33]])
+    # eigenvalue, eigenvector = np.linalg.eig(M)
+    #
+    #
+    # # because of bx=by, so we can know which is bx,by,bz
+    # def find_xyz_polarizability_index(polarizability):
+    #     """make the order of eigenvalue correspond to the polarizability order
+    #
+    #     Parameters
+    #     ----------
+    #     polarizability : TYPE
+    #         DESCRIPTION.
+    #
+    #     Returns
+    #     -------
+    #     None.
+    #
+    #     """
+    #
+    #     difference = dict()
+    #     difference['012'] = abs(polarizability[0] - polarizability[1])
+    #     difference['021'] = abs(polarizability[0] - polarizability[2])
+    #     difference['120'] = abs(polarizability[1] - polarizability[2])
+    #     sorted_diff = sorted(difference.items(), key=lambda item: item[1])
+    #
+    #     return sorted_diff[0][0]
+    #
+    #
+    # xyz_polar_index = find_xyz_polarizability_index(eigenvalue)
+    # numx = int(xyz_polar_index[0])
+    # numy = int(xyz_polar_index[1])
+    # numz = int(xyz_polar_index[2])
+    # xyz_eigenvalue = np.array([eigenvalue[numx], eigenvalue[numy], eigenvalue[numz]])
+    # xyz_eigenvector = np.mat(np.zeros((3, 3)))
+    # xyz_eigenvector[:, 0] = eigenvector[:, numx]
+    # xyz_eigenvector[:, 1] = eigenvector[:, numy]
+    # xyz_eigenvector[:, 2] = eigenvector[:, numz]
+    #
+    # if xyz_eigenvector[0, 2] > 0:
+    #     xyz_eigenvector[:, 2] = - xyz_eigenvector[:, 2]
+    # pitch = np.arcsin(-xyz_eigenvector[0, 2])
+    # roll = np.arcsin(xyz_eigenvector[1, 2] / np.cos(pitch))
+    # pitch = pitch * 180 / np.pi
+    # roll = roll * 180 / np.pi
+    #
+    # print(np.append(xyz_eigenvalue, [pitch, roll]))
+    #
+    # a = 97 * 3.5 + 92 * 1.5 + 99 * 1.5 + 72 * 1.0 + 94 * 0.3 + 89 * 3.0 + 92 * 2.0 + 90 * 1.0 + 86 * 3.0 + 91 * 2.0 + 85 * 2.0 + 96 * 4.0 + 94 * 2 + 74 * 1 + 71 * 2 + \
+    #       90 * 1 + 81 * 1.5 + 89 * 3.5 + 93 * 0.3 + 85 * 1 + 77 * 3.5 + 89 * 3 + 76 * 4 + 100 * 0.3 \
+    #       + 78 * 2 + 87 * 5.5 + 99 * 1 + 78 * 3 + 95 * 2.5 + 84 * 1 + 91 * 1 + 83 * 2 + 85 * 6 + 88 * 2 + 89 * 3.5 + 86 * 1 + 95 * 0.3 + 87 * 3 + 89 * 2 + \
+    #       97 * 3 + 97 * 3 + 88 * 3 + 92 * 0.3 + 89 * 1 + 95 * 3 + 92 * 3.5 + 90 * 2 + 95 * 2 + 86 * 3 + 91 * 1 + 85 * 3 + 91 * 3 + 86 * 3 + 80 * 2 + 87 * 2
+    #
+    # score = 3.5 + 1.5 + 1.5 + 1.0 + 0.3 + 3.0 + 2.0 + 1.0 + 3.0 + 2.0 + 2.0 + 4.0 + 2.0 + 1.0 + 2.0 + 1.0 + 1.5 + 3.5 + \
+    #         0.3 + 1.0 + 3.5 + 3.0 + 4.0 + 0.3 + 2.0 + 5.5 + 1.0 + 3.0 + 2.5 + 1.0 + 1.0 + 2.0 + 6.0 + 2.0 + 3.5 + 1.0 + \
+    #         0.3 + 3.0 + 2.0 + 3.0 + 3.0 + 3.0 + 0.3 + 1.0 + 3.0 + 3.5 + 2.0 + 2.0 + 3.0 + 1.0 + 3.0 + 3.0 + 3.0 + 2.0 + 2.0
+    # print(a*4/(score*100))
+    #
+    #
+    # b = [90, 91, 92, 87, 88, 91, 81, 86, 97, 87, 95, 84, 91]
+    # score2 = [2, 3, 1, 3, 2, 2, 2, 2, 2, 2, 2, 2, 2]
+    # x = sum(list(map(lambda x,y: x*y, b, score2)))
+    #
+    # print(x * 4 / (sum(score2)*100))
+    #
+    # pass

@@ -66,4 +66,3 @@ handler.save_fwd_data(dim_dataset_shape[0], file_name='dim_shape_train.csv')
 handler.save_fwd_data(dim_dataset_shape[1], file_name='dim_shape_test.csv')
 handler.show_cls_res(cls_shape_res, ['Oblate spheroid', 'Prolate spheroid'], show=True, save=True, file_name='cls_result_shape.pdf')
 handler.save_cls_res(cls_shape_res, 'cls_shape_res.csv')
-
