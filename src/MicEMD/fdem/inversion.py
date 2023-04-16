@@ -41,6 +41,7 @@ class BaseFDEMInversion(metaclass=ABCMeta):
     inv_objective_function:
         Returns the calculated objective_function value in x position
     """
+
     @abstractmethod
     def __init__(self, data, method, inv_para):
         pass
@@ -144,7 +145,7 @@ class Inversion(BaseFDEMInversion):
             roll angle of the target, amount to 8 inverse parameters
         """
         true_properties = np.array(self.target.position)
-        true_polarizability = self.target.get_principal_axis_polarizability(self.detector.frequency)
+        true_polarizability = np.abs(self.target.get_principal_axis_polarizability_complex(self.detector.frequency))
         true_properties = np.append(true_properties, true_polarizability)
         true_properties = np.append(true_properties, self.target.pitch)
         true_properties = np.append(true_properties, self.target.roll)
@@ -201,7 +202,6 @@ class Inversion(BaseFDEMInversion):
         rx = self.inv_residual_vector(detector, receiver_locations, true_mag_data, x)
         jx = self.inv_residual_vector_grad(detector, receiver_locations, x)
         grad = rx.T * jx
-
         grad = np.array(grad)[0]
         return grad
 
@@ -301,6 +301,7 @@ class Inversion(BaseFDEMInversion):
         )
         # Calculate induced magnetic moment
         m_t = M * H
+
         # Calculate secondary field using formula (5)
         r_td = - r_dt
         B = mu_0 / (4 * np.pi) * (
@@ -308,6 +309,7 @@ class Inversion(BaseFDEMInversion):
                 - m_t / (np.linalg.norm(r_td)) ** 3
         )
         B = abs(B) * 1e9
+        # B = np.array(B) * 1e9  # 复数
 
         return B
 
@@ -355,7 +357,7 @@ class Inversion(BaseFDEMInversion):
 
         """
 
-        epsilon = 1e-8
+        epsilon = 1e-9
         grad = np.mat(np.zeros((3, len(x))))
         ei = [0 for i in range(len(x))]
         ei = np.array(ei)
@@ -392,6 +394,7 @@ class Inversion(BaseFDEMInversion):
 
         M11, M22, M33, M12, M13, M23 = polar_tensor_vector[:]
         M = np.mat([[M11, M12, M13], [M12, M22, M23], [M13, M23, M33]])
+        # print(M)
         eigenvalue, eigenvector = np.linalg.eig(M)
         # because of bx=by, so we can know which is bx,by,bz
         xyz_polar_index = self.find_xyz_polarizability_index(eigenvalue)
@@ -399,17 +402,40 @@ class Inversion(BaseFDEMInversion):
         numy = int(xyz_polar_index[1])
         numz = int(xyz_polar_index[2])
         xyz_eigenvalue = np.array([eigenvalue[numx], eigenvalue[numy], eigenvalue[numz]])
+        # print(xyz_eigenvalue)
         xyz_eigenvector = np.mat(np.zeros((3, 3)))
         xyz_eigenvector[:, 0] = eigenvector[:, numx]
         xyz_eigenvector[:, 1] = eigenvector[:, numy]
         xyz_eigenvector[:, 2] = eigenvector[:, numz]
-
-        if xyz_eigenvector[0, 2] > 0:
+        # print(xyz_eigenvector)
+        # we suppose the pitch angle and roll angle > 0
+        if xyz_eigenvector[0, 2] > 1e-3:
             xyz_eigenvector[:, 2] = - xyz_eigenvector[:, 2]
         pitch = np.arcsin(-xyz_eigenvector[0, 2])
-        roll = np.arcsin(xyz_eigenvector[1, 2] / np.cos(pitch))
+
+        # roll = np.arcsin(xyz_eigenvector[1, 2] / np.cos(pitch))
+        # 假定角度都为正
+        tmp = xyz_eigenvector[1, 2] / np.cos(pitch)
+        # tmp = -tmp if tmp < 0 else tmp
+
+        roll = np.arcsin(tmp)
         pitch = pitch * 180 / np.pi
         roll = roll * 180 / np.pi
+
+        # # roll = np.arctan(xyz_eigenvector[1, 2] / xyz_eigenvector[2, 2])
+        # # 判断是否为0-90度
+        #
+        # if xyz_eigenvector[0, 2] > 0:
+        #     xyz_eigenvector[:, 2] = - xyz_eigenvector[:, 2]
+        # if xyz_eigenvector[0, 0] < 0:
+        #     xyz_eigenvector[:, 0] = - xyz_eigenvector[:, 0]
+        #
+        # pitch = np.arcsin(-xyz_eigenvector[0, 2])
+        # # pitch = np.arccos(xyz_eigenvector[2, 2]/np.cos(roll))
+        # roll = np.arcsin(xyz_eigenvector[1, 2]/np.cos(pitch))
+        # pitch = pitch * 180 / np.pi
+        # roll = roll * 180 / np.pi
+        # print(pitch, roll)
 
         return np.append(xyz_eigenvalue, [pitch, roll])
 

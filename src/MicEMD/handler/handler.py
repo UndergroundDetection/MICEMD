@@ -761,7 +761,7 @@ class FDEMHandler(FDEMBaseHandler):
         # print(error)
         # ax[1].bar(list(range(8)), error, color='gray')
 
-        ax[1].bar(list(range(8)), inv_res['error'], color='gray')
+        ax[1].bar(list(range(8)), inv_res['error'], color='cornflowerblue')
         ticks = np.arange(0, 8, 1)
         labels = ['x', 'y', 'z', r'$\beta_x$', r'$\beta_y$', r'$\beta_z$', 'pitch', 'roll']
         ax[0].set_xticks(ticks)
@@ -1028,7 +1028,7 @@ class TDEMHandler(TDEMBaseHandler):
                  }
         ax.set_xscale("log")
         # ax.set_yscale("log")
-        ax.set_xlim(1e-8, 1e0)
+        ax.set_xlim(1e-8, 1e2)
         # ax.set_ylim(5e-2, 4.6e-1)
         ax.plot(t, np.array(M1_without_noise).flatten(), '--', color="r", label="M1_noiseless")
         ax.plot(t, np.array(M2_without_noise).flatten(), '--', color="b", label="M2_noiseless")
@@ -1123,6 +1123,7 @@ class TDEMHandler(TDEMBaseHandler):
             fig = plt.figure()
             ax = fig.add_axes([0.23, 0.12, 0.7, 0.8])
         cmap = plt.cm.YlGnBu
+        # cmap = plt.cm.Reds
         font1 = {'family': 'Times New Roman',
                  'weight': 'normal',
                  'size': 12,
@@ -1181,7 +1182,8 @@ class TDEMHandler(TDEMBaseHandler):
         else:
             fig = plt.figure()
             ax = fig.add_axes([0.23, 0.12, 0.7, 0.8])
-        cmap = plt.cm.YlGnBu
+        # cmap = plt.cm.YlGnBu
+        cmap = plt.cm.rainbow
         font1 = {'family': 'Times New Roman',
                  'weight': 'normal',
                  'size': 12,

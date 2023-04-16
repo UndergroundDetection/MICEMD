@@ -5,14 +5,14 @@ The ANN classification method in TDEM
 Methods:
     MLP: the ANN classification method
 """
-__all__ = ['MLP']
+__all__ = ['KNN']
 
-from sklearn.neural_network import MLPClassifier  # 'tanh'，lbfgs,(50,)
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import accuracy_score
 import numpy as np
 
 
-def MLP(train_set, test_set, solver='lbfgs', hidden_layer_sizes=(50,), activation='tanh'):
+def KNN(train_set, test_set):
     """the ANN classification algorithm
 
     Parameters
@@ -36,7 +36,7 @@ def MLP(train_set, test_set, solver='lbfgs', hidden_layer_sizes=(50,), activatio
 
     """
     res = {}
-    clf = MLPClassifier(solver=solver, hidden_layer_sizes=hidden_layer_sizes, activation=activation, max_iter=10000)
+    clf = KNeighborsClassifier()
     trainTarget = np.array(train_set)[:, -1]
     testTarget = np.array(test_set)[:, -1]
 

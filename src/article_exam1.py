@@ -13,7 +13,7 @@ collection1 = fdem.Collection(spacing=0.5, height=0.1, SNR=30, x_min=-2, x_max=2
 collection2 = fdem.Collection(spacing=0.5, height=0.1, SNR=30, x_min=-2, x_max=2,
                              y_min=-2, y_max=2, collection_direction='y-axis')
 # call the interface of the fdem forward modeling
-fwd_res = fdem.simulate(target, detector, collection, 'simpeg')
+fwd_res = fdem.simulate(target, detector, collection, 'dipole')
 
 
 # set the inputs and parameters of the inversion
@@ -48,5 +48,4 @@ handler.save_fwd_data_default(fwd_res)
 handler.show_detection_scenario_default(show=True)
 handler.show_mag_map_default(fwd_res, show=True)
 handler.save_inv_res_default(inv_res, 'BFGS')
-
 

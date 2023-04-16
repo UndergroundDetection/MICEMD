@@ -8,6 +8,8 @@ Methods:
 """
 __all__ = ['classify_method']
 from .ANN import *
+from .DT import *
+from .KNN import *
 
 
 def classify_method(train_set, test_set, cls_method='ANN', cls_para=None):
@@ -40,4 +42,8 @@ def classify_method(train_set, test_set, cls_method='ANN', cls_para=None):
             res = MLP(train_set, test_set, solver, hidden_layer_sizes, activation)
         else:
             res = MLP(train_set, test_set)
+    elif cls_method == 'DT':
+        res = DT(train_set, test_set)
+    elif cls_method == 'KNN':
+        res = KNN(train_set, test_set)
     return res

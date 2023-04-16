@@ -31,7 +31,6 @@ class BaseTDEMClassification(metaclass=ABCMeta):
     def error(self):
         pass
 
-
 class Classification(BaseTDEMClassification):
     """the class of the classification algorithm
 

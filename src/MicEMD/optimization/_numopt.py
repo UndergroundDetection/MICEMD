@@ -400,7 +400,10 @@ def numopt(fun, grad, jacobian, x0, iterations, method='BFGS', tol=1e-9):
     if method == "SD":
         x, fval, grad_val, x_log, y_log, grad_log = steepest_descent(fun, grad, x0, iterations, tol)
     elif method == "BFGS":
-        x, fval, grad_val, x_log, y_log, grad_log = bfgs(fun, grad, x0, iterations, tol)
+        res = minimize(fun, x0, method='BFGS', jac=grad,
+                       options={'maxiter': iterations, 'gtol': tol, 'disp': True})
+        x = res.x
+        # x, fval, grad_val, x_log, y_log, grad_log = bfgs(fun, grad, x0, iterations, tol)
     elif method == "CG":
         x, fval, grad_val, x_log, y_log, grad_log = conjugate_gradient(fun, grad, x0, iterations, tol)
     else:
