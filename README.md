@@ -34,3 +34,6 @@ The simulation can be built by following steps:
 3. Finally, create the Handler class to analyze, show, and save the results.
 
 Get the simulation examples, you can visit https://antsesame.github.io/.
+
+# Installation tutorial
+
