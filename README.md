@@ -39,4 +39,4 @@ Get the simulation examples, you can visit https://antsesame.github.io/.
 We provide a more detailed installation tutorial and document possible problems that may occur during the installation process. For more detailes, visit [Installation tutorial.md](https://github.com/UndergroundDetection/MICEMD/blob/master/Installation%20tutorial.md).
 
 # Underground metal target detection
-We provide a documentation to better explain the principles and processes of underground metal target detection, to make the use of the software more convenient. For more detailes, visit [Detection of underground metal targets.md](https://github.com/UndergroundDetection/MICEMD/blob/master/Installation%20tutorial.md).
+We provide a documentation to better explain the principles and processes of underground metal target detection, to make the use of the software more convenient. For more detailes, visit [Detection of underground metal targets.md](https://github.com/UndergroundDetection/MICEMD/blob/master/Detection%20of%20underground%20metal%20targets.md).
