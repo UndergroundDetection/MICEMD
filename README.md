@@ -36,4 +36,4 @@ The simulation can be built by following steps:
 Get the simulation examples, you can visit https://antsesame.github.io/.
 
 # Installation tutorial
-
+We provide a more detailed installation tutorial and document possible problems that may occur during the installation process. For more detailes, visit https://antsesame.github.io/.
