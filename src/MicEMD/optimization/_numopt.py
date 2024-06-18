@@ -8,7 +8,8 @@ __all__ = ['numopt']
 
 import numpy as np
 from numpy import asarray, Inf, isinf
-from scipy.optimize.optimize import _line_search_wolfe12, _LineSearchError
+# from scipy.optimize.optimize import _line_search_wolfe12, _LineSearchError
+from scipy.optimize.optimize import *
 from scipy.optimize import minimize
 
 
